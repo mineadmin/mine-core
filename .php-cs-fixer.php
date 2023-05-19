@@ -15,7 +15,7 @@ $header = <<<'EOF'
     * @Document https://doc.mineadmin.com/
 
     EOF;
-// $header = '';
+
 $config = new PhpCsFixer\Config();
 
 return $config

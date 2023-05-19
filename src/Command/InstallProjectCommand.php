@@ -41,6 +41,7 @@ class InstallProjectCommand extends MineCommand
 
     protected array $redis = [];
 
+
     public function configure()
     {
         parent::configure();
@@ -294,6 +295,24 @@ class InstallProjectCommand extends MineCommand
     {
         $this->line(PHP_EOL . ' MineAdmin set others items...' . PHP_EOL, 'comment');
         $this->call('mine:update');
+        $this->call('mine:jwt-gen', [ '--jwtSecret' => 'JWT_SECRET' ]);
+        $this->call('mine:jwt-gen', [ '--jwtSecret' => 'JWT_API_SECRET' ]);
+
+        if (! file_exists(BASE_PATH . '/config/autoload/mineadmin.php')) {
+            $this->call('vendor:publish', [ 'package' => 'xmo/mine' ]);
+        }
+
+        $downloadFrontCode = $this->confirm('Do you downloading the front-end code to "./web" directory?', true);
+
+        // 下载前端代码
+        if ($downloadFrontCode) {
+            $this->line(PHP_EOL . ' Now about to start downloading the front-end code' . PHP_EOL, 'comment');
+            if (shell_exec('which git')) {
+                system('git clone https://gitee.com/mineadmin/mineadmin-vue.git ./web/');
+            } else {
+                $this->warn('Your server does not have the `git` command installed and will skip downloading the front-end project');
+            }
+        }
     }
 
     protected function initUserData()
