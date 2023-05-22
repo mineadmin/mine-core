@@ -17,21 +17,12 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 
 /**
  * 数据库事务注解。
- * @Annotation
- * @Target({"METHOD"})
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class Transaction extends AbstractAnnotation
 {
     /**
-     * retry 重试次数
-     * @var int
+     * @param int $retry 重试次数
      */
-    public int $retry = 1;
-
-    public function __construct($value = 1)
-    {
-        parent::__construct($value);
-        $this->bindMainProperty('retry', [ $value ]);
-    }
+    public function __construct(public int $retry = 1) {}
 }

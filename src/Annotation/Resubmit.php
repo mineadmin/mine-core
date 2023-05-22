@@ -17,28 +17,13 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 
 /**
  * 禁止重复提交
- * @Annotation
- * @Target({"METHOD"})
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class Resubmit extends AbstractAnnotation
 {
     /**
-     * second
-     * @var int
+     * @var int $second 限制时间（秒）
+     * @var string|null $message 提示信息
      */
-    public int $second = 3;
-
-    /**
-     * 提示信息
-     * @var string
-     */
-    public string $message;
-
-    public function __construct($value, $message = null)
-    {
-        parent::__construct($value);
-        $this->bindMainProperty('second', [ $value ]);
-        $this->bindMainProperty('message', [ $message ]);
-    }
+    public function __construct(public int $second = 3, public ?string $message = null) {}
 }

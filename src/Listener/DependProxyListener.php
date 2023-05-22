@@ -25,7 +25,7 @@ class DependProxyListener implements ListenerInterface
 {
     public function listen(): array
     {
-        return [BootApplication::class];
+        return [ BootApplication::class ];
     }
 
     public function process(object $event): void

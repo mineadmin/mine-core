@@ -17,21 +17,12 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 
 /**
  * 用户登录验证。
- * @Annotation
- * @Target({"CLASS","METHOD"})
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Auth extends AbstractAnnotation
 {
     /**
-     * scene
-     * @var string
+     * @param string $scene 场景名
      */
-    public string $scene;
-
-    public function __construct($value = 'default')
-    {
-        parent::__construct($value);
-        $this->bindMainProperty('scene', [ $value ]);
-    }
+    public function __construct(public string $scene = 'default') {}
 }

@@ -12,8 +12,6 @@ declare(strict_types=1);
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-//declare(strict_types=1);
-
 namespace Mine\Factory;
 
 use Hyperf\Context\ApplicationContext;
@@ -28,13 +26,11 @@ use function interface_exists;
 
 class DependProxyFactory
 {
-    public static function define(string $name, string $definition, bool $is_logger = true): void
+    public static function define(string $name, string $definition, bool $isLogger = true): void
     {
         /** @var ContainerInterface $container */
         $container = ApplicationContext::getContainer();
         $config = $container->get(ConfigInterface::class);
-        // ->get(LoggerFactory::class)->get($name)
-        // $logger = $container->get(LoggerFactory::class)->get('Definition');
 
         if (interface_exists($definition) || class_exists($definition)) {
             $config->set("dependencies.{$name}", $definition);
@@ -45,11 +41,11 @@ class DependProxyFactory
         }
 
          if ($container->has($name)) {
-             $is_logger && logger()->info(
+             $isLogger && logger()->info(
                  sprintf('Dependencies [%s] Injection to the [%s] successfully.', $definition, $name)
              );
          } else {
-             logger()->warning(sprintf('Dependencies [%s] Injection to the [%s] failed.', $definition, $name));
+             $isLogger && logger()->warning(sprintf('Dependencies [%s] Injection to the [%s] failed.', $definition, $name));
          }
     }
 }
