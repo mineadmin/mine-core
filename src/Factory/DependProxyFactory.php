@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-declare(strict_types=1);
+//declare(strict_types=1);
 
 namespace Mine\Factory;
 
@@ -28,7 +28,7 @@ use function interface_exists;
 
 class DependProxyFactory
 {
-    public static function define(string $name, string $definition, $is_logger = true): void
+    public static function define(string $name, string $definition, bool $is_logger = true): void
     {
         /** @var ContainerInterface $container */
         $container = ApplicationContext::getContainer();
@@ -44,12 +44,12 @@ class DependProxyFactory
             $config->set("mineadmin.dependProxy.{$name}", $definition);
         }
 
-        // if ($container->has($name)) {
-        //     $is_logger && $logger->debug(
-        //         sprintf('Dependencies [%s] Injection to the [%s] successfully.', $definition, $name)
-        //     );
-        // } else {
-        //     $logger->warning(sprintf('Dependencies [%s] Injection to the [%s] failed.', $definition, $name));
-        // }
+         if ($container->has($name)) {
+             $is_logger && logger()->info(
+                 sprintf('Dependencies [%s] Injection to the [%s] successfully.', $definition, $name)
+             );
+         } else {
+             logger()->warning(sprintf('Dependencies [%s] Injection to the [%s] failed.', $definition, $name));
+         }
     }
 }

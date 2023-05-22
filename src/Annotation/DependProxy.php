@@ -23,7 +23,10 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 #[Attribute(Attribute::TARGET_CLASS)]
 class DependProxy extends AbstractAnnotation
 {
-    public function __construct( public array $values = [], public ?string $provider = null) {}
+    public ?string $provider = null;
+    public array $values = [];
+
+    public function __construct(array $values = [], ?string $provider = null) {}
 
     public function collectClass(string $className): void
     {
