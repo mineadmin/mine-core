@@ -70,7 +70,8 @@
         "ext-json": "Required to use JSON.",
         "ext-pdo": "Required to use MySQL Client.",
         "ext-pdo_mysql": "Required to use MySQL Client.",
-        "ext-redis": "Required to use Redis Client."
+        "ext-redis": "Required to use Redis Client.",
+        "ext-xlswriter": "Required to use xlswriter."
     },
     "config": {
         "optimize-autoloader": true,
@@ -82,12 +83,6 @@
     "extra": {
         "hyperf": {
             "config": "Mine\\ConfigProvider"
-        }
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.tencent.com/composer/"
         }
     }
 }
