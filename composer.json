@@ -1,10 +1,9 @@
 {
-    "name": "xmo/mine",
+    "name": "xmo/mine-core",
     "type": "library",
     "license": "Apache-2.0",
     "keywords": [
         "php",
-        "mine",
         "mineadmin core"
     ],
     "description": "mineadmin core package",
@@ -18,7 +17,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "MineTest\\": "tests"
         }
     },
     "require": {
