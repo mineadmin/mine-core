@@ -34,7 +34,6 @@ class DependProxyListener implements ListenerInterface
             $targets = $collector->values;
             $definition = $collector->provider;
             foreach ($targets as $target) {
-                console()->info($target);
                 DependProxyFactory::define($target, $definition, true);
             }
         }
