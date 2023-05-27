@@ -24,13 +24,15 @@ use Mine\Crontab\Mutex\RedisTaskMutex;
 use Mine\Crontab\Mutex\ServerMutex;
 use Mine\Crontab\Mutex\TaskMutex;
 use Hyperf\Guzzle\ClientFactory;
-use Hyperf\Utils\Coroutine;
+use Hyperf\Coroutine\Coroutine;
 use Mine\MineModel;
 use Psr\Container\ContainerInterface;
 use Swoole\Timer;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use App\Setting\Model\SettingCrontab;
+
+use function Hyperf\Support\make;
 
 class MineExecutor
 {

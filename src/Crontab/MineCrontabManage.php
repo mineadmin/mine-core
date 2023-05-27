@@ -20,6 +20,8 @@ use Hyperf\Redis\Redis;
 use Mine\MineModel;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Config\config;
+
 /**
  * 定时任务管理器
  * Class MineCrontabManage
