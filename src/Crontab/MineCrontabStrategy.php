@@ -15,6 +15,8 @@ namespace Mine\Crontab;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 
+use function Hyperf\Coroutine\co;
+
 class MineCrontabStrategy
 {
     /**
