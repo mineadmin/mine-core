@@ -57,8 +57,8 @@ class CreateModel extends MineCommand
             $info = $moduleInfos[$module];
             $path = "app/{$module}/Model";
 
-            $db = \Hyperf\Support\env('DB_DATABASE');
-            $prefix = \Hyperf\Support\env('DB_PREFIX');
+            $db = env('DB_DATABASE');
+            $prefix = env('DB_PREFIX');
 
             $tables = Db::select('SHOW TABLES');
             $key = "Tables_in_{$db}";

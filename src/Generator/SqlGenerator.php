@@ -200,7 +200,7 @@ class SqlGenerator extends MineGenerator implements CodeGenerator
      */
     protected function getTableName(): string
     {
-        return \Hyperf\Support\env('DB_PREFIX') . (SystemMenu::getModel())->getTable();
+        return env('DB_PREFIX') . (SystemMenu::getModel())->getTable();
     }
 
     /**
@@ -254,7 +254,7 @@ class SqlGenerator extends MineGenerator implements CodeGenerator
         return Str::camel(str_replace(
             Str::lower($this->model->module_name),
             '',
-            str_replace(\Hyperf\Support\env('DB_PREFIX'), '', $this->model->table_name)
+            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
         ));
     }
 

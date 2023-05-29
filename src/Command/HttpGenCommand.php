@@ -33,7 +33,7 @@ class HttpGenCommand extends MineCommand
         $outputDir = BASE_PATH . "/runtime/http";
         $fileSystem->exists($outputDir) && $fileSystem->deleteDirectory($outputDir);
         $fileSystem->makeDirectory($outputDir);
-        $httpJsonFile = \Hyperf\Config\config('api_docs.output_dir') . "/http.json";
+        $httpJsonFile = config('api_docs.output_dir') . "/http.json";
         if(!$fileSystem->exists($httpJsonFile)) {
             throw new NormalStatusException("请先生成swagger文档");
         }
@@ -91,7 +91,7 @@ class HttpGenCommand extends MineCommand
     public function genEnvFile(): void
     {
         $fileSystem = make(Filesystem::class);
-        $host = \Hyperf\Support\env('HTTP_HOST', '127.0.0.1:9501');
+        $host = env('HTTP_HOST', '127.0.0.1:9501');
         $content = <<<JSON
         {
           "dev": {
