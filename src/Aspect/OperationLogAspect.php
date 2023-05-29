@@ -19,6 +19,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Mine\Annotation\OperationLog;
 use Mine\Annotation\Permission;
 use Mine\Event\Operation;
+use Mine\Helper\Ip2region;
 use Mine\Helper\LoginUser;
 use Mine\Helper\Str;
 use Mine\MineRequest;
@@ -42,9 +43,12 @@ class OperationLogAspect extends AbstractAspect
      */
     protected ContainerInterface $container;
 
+    protected Ip2region $ip2region;
+
     public function __construct()
     {
         $this->container = container();
+        $this->ip2region = $this->container->get(Ip2region::class);
     }
 
     /**
@@ -92,7 +96,7 @@ class OperationLogAspect extends AbstractAspect
             'router' => $request->getServerParams()['path_info'],
             'protocol' => $request->getServerParams()['server_protocol'],
             'ip' => $request->ip(),
-            'ip_location' => Str::ipToRegion($request->ip()),
+            'ip_location' => $this->ip2region->search($request->ip()),
             'service_name' => $data['name'] ?: $this->getOperationMenuName($data['code']),
             'request_data' => $request->all(),
             'response_code' => $data['response_code'],
