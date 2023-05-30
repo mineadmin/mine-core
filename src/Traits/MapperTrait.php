@@ -57,6 +57,69 @@ trait MapperTrait
     }
 
     /**
+     * 远程通用列表查询
+     * 主要服务于远程下拉菜单使用，其功能也支持单选、复选、级联选择等组件的使用，但下拉菜单组件适配最好。
+     * 接口支持分页、不分页、模型关联、条件过滤、排序、分组，数据权限等一系列功能
+     *
+     * 声明提示：该接口虽然方便快捷，但由于参数是前端传入，后端对接口仅在控制器做了登录检查，有一定的安全性影响，需谨慎使用。
+     */
+    public function getRemoteList(?array $params): array
+    {
+        /* @var $model MineModel */
+        $model = $this->getModel();
+
+        if ($params['relations'] && is_array($params['relations'])) {
+            $relations = &$params['relations'];
+            $query = null;
+            foreach ($relations as $item) {
+                $this->dynamicRelations($model, $item);
+                /* @var $query Builder */
+                $query = $model::getQuery();
+                $query->with([ $item['name'] => function($query) use ($item) {
+                    $names = $wheres = [];
+                    if ($item['request'] && is_array($item['request'])) foreach ($item['request'] as $name => $where) {
+                        $names[] = $name;
+                        $wheres[] = $where;
+                    }
+                    return $this->paramsEmptyQuery($names, $wheres, $query);
+                }]);
+            }
+        }
+
+        /* @var $query Builder */
+        if (is_null($query)) $query = $model::getQuery();
+
+        $names = $wheres = [];
+        if ($params['request'] && is_array($params['request'])) foreach ($params['request'] as $name => $where) {
+            $names[] = $name;
+            $wheres[] = $where;
+            $query = $this->paramsEmptyQuery($names, $wheres, $query);
+        }
+
+        if ($params['sort'] && is_array($params['sort'])) foreach($params['sort'] as $name => $sortType) {
+            $query->orderBy($name, $sortType ?? 'asc');
+        }
+
+        if ($params['group'] && is_array($params['group'])) foreach($params['group'] as $sortType) {
+            $query->groupBy($sortType);
+        }
+
+        if ($params['dataScope']) {
+            $query->userDataScope();
+        }
+
+        if (isset($params['openPage']) && $params['openPage'] === true) {
+            $pageName = $params['pageName'] ?? 'page';
+            $pageSize = $params['pageSize'] ?? $this->model::PAGE_SIZE;
+            return $this->setPaginate($query->paginate($pageSize, $params['select'] ?? ['*'], $pageName, $params[$pageName] ?? 1));
+        }
+
+        return method_exists($this, 'handleItems')
+            ? ( new MineCollection($this->handleItems($query->get($params['select'] ?? ['*']))) )->toArray()
+            : $query->get($params['select'] ?? ['*'])->toArray();
+    }
+
+    /**
      * 设置数据库分页
      * @param LengthAwarePaginatorInterface $paginate
      * @param array $params
@@ -161,7 +224,7 @@ trait MapperTrait
      * @param bool $removePk
      * @return array
      */
-    protected function filterQueryAttributes(array $fields, bool $removePk = false): array
+    public function filterQueryAttributes(array $fields, bool $removePk = false): array
     {
         $model = new $this->model;
         $attrs = $model->getFillable();
@@ -184,7 +247,7 @@ trait MapperTrait
      * @param array $data
      * @param bool $removePk
      */
-    protected function filterExecuteAttributes(array &$data, bool $removePk = false): void
+    public function filterExecuteAttributes(array &$data, bool $removePk = false): void
     {
         $model = new $this->model;
         $attrs = $model->getFillable();
@@ -595,5 +658,41 @@ trait MapperTrait
             }
         };
         return $object->getQuery();
+    }
+
+    public function dynamicRelations(\Mine\MineModel &$model, &$config)
+    {
+        $model->resolveRelationUsing($config['name'], function($primaryModel) use($config) {
+            if ($config['type'] === 'hasOne') {
+                return $primaryModel->hasOne($config['model'], $config['foreignKey'], $config['localKey']);
+            }
+            if ($config['type'] === 'hasMany') {
+                return $primaryModel->hasMany($config['model'], $config['foreignKey'], $config['localKey']);
+            }
+            if ($config['type'] === 'belongsTo') {
+                return $primaryModel->belongsTo($config['model'], $config['foreignKey'], $config['localKey']);
+            }
+            if ($config['type'] === 'belongsToMany') {
+                $primaryModel->belongsToMany(
+                    $config['model'],
+                    $config['middleTable'],
+                    $config['foreignKey'],
+                    $config['localKey']
+                );
+                if ($config['as']) {
+                    $primaryModel->as($config['as']);
+                }
+                if ($config['where'] && is_array($config['where'])) {
+                    foreach ($config['where'] as $field => $value) {
+                        $primaryModel->wherePivot($field, $value);
+                    }
+                }
+                if ($config['whereIn'] && is_array($config['whereIn'])) {
+                    foreach ($config['whereIn'] as $field => $value) {
+                        $primaryModel->wherePivotIn($field, $value);
+                    }
+                }
+            }
+        });
     }
 }
