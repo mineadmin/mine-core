@@ -10,6 +10,8 @@
 // +----------------------------------------------------------------------
 namespace Mine\Helper;
 
+use Mine\Helper\Ip2region;
+
 class Str
 {
 
@@ -241,19 +243,7 @@ class Str
      */
     public static function ipToRegion(string $ip): string
     {
-        $ip2Region = make(\Ip2Region::class);
-        if (empty($ip2Region->btreeSearch($ip)['region'])) {
-            return t('jwt.unknown');
-        }
-        $region = $ip2Region->btreeSearch($ip)['region'];
-        list($country, $number, $province, $city, $network) = explode('|', $region);
-        if ($country == '中国') {
-            return $province . '-' . $city . ':' . $network;
-        } else if ($country == '0') {
-            return t('jwt.unknown');
-        } else {
-            return $country;
-        }
+        return make(Ip2Region::class)->search($ip);
     }
 
     /**
