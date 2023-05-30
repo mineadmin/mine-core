@@ -53,18 +53,19 @@ trait MapperTrait
         $paginate = $this->listQuerySetting($params, $isScope)->paginate(
             $params['pageSize'] ?? $this->model::PAGE_SIZE, ['*'], $pageName, $params[$pageName] ?? 1
         );
-        return $this->setPaginate($paginate);
+        return $this->setPaginate($paginate, $params);
     }
 
     /**
      * 设置数据库分页
      * @param LengthAwarePaginatorInterface $paginate
+     * @param array $params
      * @return array
      */
-    public function setPaginate(LengthAwarePaginatorInterface $paginate): array
+    public function setPaginate(LengthAwarePaginatorInterface $paginate, array $params = []): array
     {
         return [
-            'items' => method_exists($this, 'handlePageItems') ? $this->handlePageItems($paginate->items()) : $paginate->items(),
+            'items' => method_exists($this, 'handlePageItems') ? $this->handlePageItems($paginate->items(), $params) : $paginate->items(),
             'pageInfo' => [
                 'total' => $paginate->total(),
                 'currentPage' => $paginate->currentPage(),
