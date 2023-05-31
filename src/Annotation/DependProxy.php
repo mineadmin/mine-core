@@ -8,7 +8,7 @@ declare(strict_types=1);
  * For the full copyright and license information.
  * Thank you very much for using MineAdmin.
  *
- * @Author @小小只^v^ <littlezov@qq.com>, X.Mo<root@imoi.cn> 
+ * @Author @小小只^v^ <littlezov@qq.com>, X.Mo<root@imoi.cn>
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
@@ -29,6 +29,10 @@ class DependProxy extends AbstractAnnotation
     {
         if (! $this->provider) {
             $this->provider = $className;
+        }
+        if (count($this->values) == 0 && class_exists($className)) {
+            $reflectionClass = new \ReflectionClass(make($className));
+            $this->values = array_keys($reflectionClass->getInterfaces());
         }
         parent::collectClass($className);
         DependProxyCollector::setAround($className, $this);
