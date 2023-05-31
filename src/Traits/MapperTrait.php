@@ -15,6 +15,7 @@ use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
 use Mine\Annotation\Transaction;
+use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineCollection;
 use Mine\MineModel;
@@ -65,46 +66,44 @@ trait MapperTrait
      */
     public function getRemoteList(?array $params): array
     {
+        if (! config('mineadmin.remote_api_enabled')) {
+            throw new MineException('系统未启用【远程通用列表查询】', 500);
+        }
         /* @var $model MineModel */
         $model = $this->getModel();
-
-        if ($params['relations'] && is_array($params['relations'])) {
-            $relations = &$params['relations'];
-            $query = null;
-            foreach ($relations as $item) {
+        $query = null;
+        if (!empty($params['relations']) && is_array($params['relations'])) {
+            foreach ($params['relations'] as $item) {
                 $this->dynamicRelations($model, $item);
                 /* @var $query Builder */
-                $query = $model::getQuery();
-                $query->with([ $item['name'] => function($query) use ($item) {
-                    $names = $wheres = [];
-                    if ($item['request'] && is_array($item['request'])) foreach ($item['request'] as $name => $where) {
-                        $names[] = $name;
-                        $wheres[] = $where;
+                $query = $model->with([ $item['name'] => function($query) use ($item) {
+                    $paramsWhere = [];
+                    if (!empty($item['params']) && is_array($item['params'])) foreach ($item['params'] as $name => $where) {
+                        $paramsWhere[$name] = $where;
                     }
-                    return $this->paramsEmptyQuery($names, $wheres, $query);
+                    return $this->emptyBuildQuery($paramsWhere, $query);
                 }]);
             }
         }
 
         /* @var $query Builder */
-        if (is_null($query)) $query = $model::getQuery();
+        if (is_null($query)) $query = $model::query();
 
-        $names = $wheres = [];
-        if ($params['request'] && is_array($params['request'])) foreach ($params['request'] as $name => $where) {
-            $names[] = $name;
-            $wheres[] = $where;
-            $query = $this->paramsEmptyQuery($names, $wheres, $query);
+        $paramsWhere = [];
+        if (!empty($params['params']) && is_array($params['params'])) foreach ($params['params'] as $name => $where) {
+            $paramsWhere[$name] = $where;
         }
+        $query = $this->emptyBuildQuery($paramsWhere, $query);
 
-        if ($params['sort'] && is_array($params['sort'])) foreach($params['sort'] as $name => $sortType) {
+        if (!empty($params['sort']) && is_array($params['sort'])) foreach($params['sort'] as $name => $sortType) {
             $query->orderBy($name, $sortType ?? 'asc');
         }
 
-        if ($params['group'] && is_array($params['group'])) foreach($params['group'] as $sortType) {
+        if (!empty($params['group']) && is_array($params['group'])) foreach($params['group'] as $sortType) {
             $query->groupBy($sortType);
         }
 
-        if ($params['dataScope']) {
+        if (isset($params['dataScope']) && $params['dataScope'] === true) {
             $query->userDataScope();
         }
 
@@ -526,10 +525,10 @@ trait MapperTrait
      * 搜索参数注入
      * @param $params
      * @param array $where
-     * @param \Hyperf\Database\Model\Builder|null $query
-     * @return \Mine\MineModel|\Hyperf\Database\Model\Builder
+     * @param mixed|null $query
+     * @return mixed
      */
-    public function paramsEmptyQuery($params, array $where = [], Builder $query = null): MineModel|Builder
+    public function paramsEmptyQuery($params, array $where = [], mixed $query = null): mixed
     {
         if (!$query) {
             $query = $this->model::query();
@@ -599,19 +598,19 @@ trait MapperTrait
      *  'field' => ['=', 'index']
      * ]
      * @param array $paramsWhere
-     * @param $query
-     * @return \Mine\MineModel|\Hyperf\Database\Model\Builder
+     * @param mixed $query
+     * @return mixed
      */
-    public function emptyBuildQuery(array $paramsWhere = [], $query = null): MineModel|Builder
+    public function emptyBuildQuery(array $paramsWhere = [], mixed $query = null): mixed
     {
         if (!$query) {
             $query = $this->model::query();
         }
         $object = new class($paramsWhere, $query){
 
-            public Builder $query;
+            public mixed $query;
 
-            public function __construct($paramsWhere, Builder $query)
+            public function __construct($paramsWhere, mixed $query)
             {
                 $this->query = $query;
                 foreach ($paramsWhere as $field => $value) {
@@ -652,7 +651,7 @@ trait MapperTrait
                 return [$operator, $value];
             }
 
-            public function getQuery(): Builder
+            public function getQuery(): mixed
             {
                 return $this->query;
             }
@@ -663,18 +662,19 @@ trait MapperTrait
     public function dynamicRelations(\Mine\MineModel &$model, &$config)
     {
         $model->resolveRelationUsing($config['name'], function($primaryModel) use($config) {
+            $namespace = str_replace('.', "\\", $config['model']);
             if ($config['type'] === 'hasOne') {
-                return $primaryModel->hasOne($config['model'], $config['foreignKey'], $config['localKey']);
+                return $primaryModel->hasOne(new $namespace, $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'hasMany') {
-                return $primaryModel->hasMany($config['model'], $config['foreignKey'], $config['localKey']);
+                return $primaryModel->hasMany(new $namespace, $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'belongsTo') {
-                return $primaryModel->belongsTo($config['model'], $config['foreignKey'], $config['localKey']);
+                return $primaryModel->belongsTo(new $namespace, $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'belongsToMany') {
                 $primaryModel->belongsToMany(
-                    $config['model'],
+                    new $namespace,
                     $config['middleTable'],
                     $config['foreignKey'],
                     $config['localKey']
@@ -682,15 +682,11 @@ trait MapperTrait
                 if ($config['as']) {
                     $primaryModel->as($config['as']);
                 }
-                if ($config['where'] && is_array($config['where'])) {
-                    foreach ($config['where'] as $field => $value) {
-                        $primaryModel->wherePivot($field, $value);
-                    }
+                if ($config['where'] && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
+                    $primaryModel->wherePivot($field, $value);
                 }
-                if ($config['whereIn'] && is_array($config['whereIn'])) {
-                    foreach ($config['whereIn'] as $field => $value) {
-                        $primaryModel->wherePivotIn($field, $value);
-                    }
+                if ($config['whereIn'] && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
+                    $primaryModel->wherePivotIn($field, $value);
                 }
             }
         });

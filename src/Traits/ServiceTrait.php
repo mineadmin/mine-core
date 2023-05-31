@@ -385,4 +385,14 @@ trait ServiceTrait
     {
         return [];
     }
+
+    /**
+     * 远程通用列表查询
+     */
+    public function getRemoteList(array $params = []): array
+    {
+        $remoteOption = $params['remoteOption'] ?? [];
+        unset($params['remoteOption']);
+        return $this->mapper->getRemoteList(array_merge($params, $remoteOption));
+    }
 }
