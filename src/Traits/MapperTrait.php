@@ -78,7 +78,7 @@ trait MapperTrait
                 /* @var $query Builder */
                 $query = $model->with([ $item['name'] => function($query) use ($item) {
                     $paramsWhere = [];
-                    if (!empty($item['params']) && is_array($item['params'])) foreach ($item['params'] as $name => $where) {
+                    if (!empty($item['filter']) && is_array($item['filter'])) foreach ($item['filter'] as $name => $where) {
                         $paramsWhere[$name] = $where;
                     }
                     return $this->emptyBuildQuery($paramsWhere, $query);
@@ -90,17 +90,17 @@ trait MapperTrait
         if (is_null($query)) $query = $model::query();
 
         $paramsWhere = [];
-        if (!empty($params['params']) && is_array($params['params'])) foreach ($params['params'] as $name => $where) {
+        if (!empty($params['filter']) && is_array($params['filter'])) foreach ($params['filter'] as $name => $where) {
             $paramsWhere[$name] = $where;
         }
         $query = $this->emptyBuildQuery($paramsWhere, $query);
 
         if (!empty($params['sort']) && is_array($params['sort'])) foreach($params['sort'] as $name => $sortType) {
-            $query->orderBy($name, $sortType ?? 'asc');
+            $query->orderBy($name, $sortType);
         }
 
-        if (!empty($params['group']) && is_array($params['group'])) foreach($params['group'] as $sortType) {
-            $query->groupBy($sortType);
+        if (!empty($params['group']) && is_array($params['group'])) foreach($params['group'] as $name) {
+            $query->groupBy($name);
         }
 
         if (isset($params['dataScope']) && $params['dataScope'] === true) {
