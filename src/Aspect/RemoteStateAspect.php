@@ -37,8 +37,8 @@ class RemoteStateAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $state = $proceedingJoinPoint->getAnnotationMetadata()->method[RemoteState::class] ?? true;
-        if (! $state) {
+        $remote = $proceedingJoinPoint->getAnnotationMetadata()->method[RemoteState::class];
+        if (! $remote->state) {
             throw new MineException('当前功能服务已禁止使用远程通用接口', 500);
         }
 
