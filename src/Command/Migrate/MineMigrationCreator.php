@@ -19,6 +19,6 @@ class MineMigrationCreator extends MigrationCreator
 
     public function stubPath(): string
     {
-        return BASE_PATH . '/mine/Command/Migrate/Stubs';
+        return BASE_PATH . '/vendor/xmo/mine-core/src/Migrate/Stubs';
     }
 }
