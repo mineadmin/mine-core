@@ -98,8 +98,10 @@ class {CLASS_NAME} extends AbstractService
      */
     protected function handleData($data): array
     {
-        if (is_array($data['{FIELD_PID}']) && !empty($data['{FIELD_PID}'])) {
+        if (!empty($data['{FIELD_PID}']) && is_array($data['{FIELD_PID}'])) {
             $data['{FIELD_PID}'] = array_pop($data['{FIELD_PID}']);
+        } else {
+            $data['{FIELD_PID}'] = 0;
         }
         return $data;
     }
