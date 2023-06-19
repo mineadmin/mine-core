@@ -133,7 +133,7 @@ class MineUpload
         /* @var UploadedFile $uploadFile */
         $path = BASE_PATH . '/runtime/chunk/';
         $chunkName = "{$path}{$data['hash']}_{$data['total']}_{$data['index']}.chunk";
-        $fs = container()->get(\Hyperf\Utils\Filesystem\Filesystem::class);
+        $fs = container()->get(\Hyperf\Support\Filesystem\Filesystem::class);
         $fs->isDirectory($path) || $fs->makeDirectory($path);
         $uploadFile->moveTo($chunkName);
         if ($data['index'] === $data['total']) {
@@ -205,7 +205,7 @@ class MineUpload
             }
 
             $realPath = BASE_PATH . '/runtime/' . $filename;
-            $fs = container()->get(\Hyperf\Utils\Filesystem\Filesystem::class);
+            $fs = container()->get(\Hyperf\Support\Filesystem\Filesystem::class);
             $fs->put($realPath, $content);
 
             $hash = md5_file($realPath);
