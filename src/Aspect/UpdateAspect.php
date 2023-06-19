@@ -12,6 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
+use Hyperf\Context\Context;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -20,6 +21,7 @@ use Mine\MineModel;
 use Mine\MineRequest;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class UpdateAspect
@@ -46,6 +48,7 @@ class UpdateAspect extends AbstractAspect
         if ($instance instanceof MineModel &&
             in_array('updated_by', $instance->getFillable()) &&
             config('mineadmin.data_scope_enabled') &&
+            Context::has(ServerRequestInterface::class) &&
             container()->get(MineRequest::class)->getHeaderLine('authorization')
         ) {
             try {
