@@ -17,9 +17,9 @@ class MApiRequestParam extends AbstractAnnotation
         public string $dataType = 'String',
         // 默认值
         public string $defaultValue = '',
-        // 是否必须填 1 必填 0 否
+        // 是否必须填 1 非必填 2 必填
         public int $isRequired = 1,
-        // 是否启用 1 启动 0 不启用
+        // 是否启用 1 启用 2 不启用
         public int $status = 1,
     ) {
 
