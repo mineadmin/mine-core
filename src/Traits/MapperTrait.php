@@ -309,11 +309,12 @@ trait MapperTrait
      * 获取单列值
      * @param array $condition
      * @param string $columns
+     * @param string|null $key
      * @return array
      */
-    public function pluck(array $condition, string $columns = 'id'): array
+    public function pluck(array $condition, string $columns = 'id', ?string $key = null): array
     {
-        return $this->model::where($condition)->pluck($columns)->toArray();
+        return $this->model::where($condition)->pluck($columns, $key)->toArray();
     }
 
     /**
