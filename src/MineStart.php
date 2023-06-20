@@ -28,7 +28,7 @@ class MineStart extends ServerStartCallback
         $console = console();
         $console->info('MineAdmin start success...');
         $console->info($this->welcome());
-        PHP_OS !== 'WINNT' && $console->info('current booting the user: ' . shell_exec('whoami'));
+        str_contains(PHP_OS, 'CYGWIN') && $console->info('current booting the user: ' . shell_exec('whoami'));
     }
 
     protected function welcome(): string
