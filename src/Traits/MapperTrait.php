@@ -276,11 +276,12 @@ trait MapperTrait
     /**
      * 读取一条数据
      * @param int $id
+     * @param array $column
      * @return MineModel|null
      */
-    public function read(int $id): ?MineModel
+    public function read(int $id, array $column = ['*']): ?MineModel
     {
-        return ($model = $this->model::find($id)) ? $model : null;
+        return ($model = $this->model::find($id, $column)) ? $model : null;
     }
 
     /**

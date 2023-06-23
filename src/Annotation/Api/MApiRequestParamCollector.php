@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mine\Annotation\Api;
 
-use App\System\Service\SystemDictDataService;
+use Mine\Interfaces\serviceInterface\DictDataServiceInterface;
 use Hyperf\Di\MetadataCollector;
 
 class MApiRequestParamCollector extends MetadataCollector
@@ -29,7 +29,7 @@ class MApiRequestParamCollector extends MetadataCollector
 
     public static function parseParams()
     {
-        $service = container()->get(SystemDictDataService::class);
+        $service = container()->get(DictDataServiceInterface::class);
         $dataType = $service->getList([
             'code' => 'api_data_type'
         ]);

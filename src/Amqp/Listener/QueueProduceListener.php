@@ -9,10 +9,9 @@
 declare(strict_types=1);
 namespace Mine\Amqp\Listener;
 
-use App\System\Mapper\SystemQueueMessageMapper;
-use App\System\Model\SystemQueueLog;
-use App\System\Queue\Producer\MessageProducer;
-use App\System\Service\SystemQueueLogService;
+use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Mine\Interfaces\serviceInterface\QueueMessageServiceInterface;
+use Mine\Interfaces\serviceInterface\QueueLogServiceInterface;
 use Hyperf\Context\Context;
 use Mine\Amqp\Event\AfterProduce;
 use Mine\Amqp\Event\BeforeProduce;
@@ -30,7 +29,27 @@ use Hyperf\Event\Annotation\Listener;
 #[Listener]
 class QueueProduceListener implements ListenerInterface
 {
-    private SystemQueueLogService $service;
+    /**
+     * @Message("未生产")
+     */
+    const PRODUCE_STATUS_WAITING = 1;
+    /**
+     * @Message("生产中")
+     */
+    const PRODUCE_STATUS_DOING = 2;
+    /**
+     * @Message("生产成功")
+     */
+    const PRODUCE_STATUS_SUCCESS = 3;
+    /**
+     * @Message("生产失败")
+     */
+    const PRODUCE_STATUS_FAIL = 4;
+    /**
+     * @Message("生产重复")
+     */
+    const PRODUCE_STATUS_REPEAT = 5;
+    private QueueLogServiceInterface $service;
 
     public function listen(): array
     {
@@ -52,7 +71,7 @@ class QueueProduceListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $this->service = container()->get(SystemQueueLogService::class);
+        $this->service = container()->get(QueueLogServiceInterface::class);
         $class = get_class($event);
         $func = lcfirst(trim(strrchr($class, '\\'),'\\'));
         $this->$func($event);
@@ -73,7 +92,7 @@ class QueueProduceListener implements ListenerInterface
             'queue_name' => $queueName,
             'queue_content' => $event->producer->payload(),
             'delay_time' => $event->delayTime ?? 0,
-            'produce_status' => SystemQueueLog::PRODUCE_STATUS_SUCCESS
+            'produce_status' => self::PRODUCE_STATUS_SUCCESS
         ]);
 
         $this->setId($id);
@@ -106,8 +125,8 @@ class QueueProduceListener implements ListenerInterface
      */
     public function afterProduce(object $event): void
     {
-        if (isset($event->producer) && $event->producer instanceof MessageProducer) {
-            (new SystemQueueMessageMapper)->save(
+        if (isset($event->producer) && $event->producer instanceof ProducerMessageInterface) {
+            container()->get(QueueMessageServiceInterface::class)->save(
                 json_decode($event->producer->payload(), true)['data']
             );
         }
@@ -120,7 +139,7 @@ class QueueProduceListener implements ListenerInterface
     public function failToProduce(object $event): void
     {
         $this->service->update((int) $this->getId(), [
-            'produce_status' => SystemQueueLog::PRODUCE_STATUS_FAIL,
+            'produce_status' => self::PRODUCE_STATUS_FAIL,
             'log_content' => $event->throwable ?: $event->throwable->getMessage()
         ]);
     }

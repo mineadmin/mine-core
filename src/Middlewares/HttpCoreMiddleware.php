@@ -14,13 +14,16 @@ namespace Mine\Middlewares;
 
 use Hyperf\Context\Context;
 use Hyperf\HttpMessage\Stream\SwooleStream;
+use Mine\Annotation\DependProxy;
 use Mine\Helper\MineCode;
 use Hyperf\Utils\Codec\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Hyperf\HttpServer\CoreMiddleware;
 
-class HttpCoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
+#[DependProxy(values: [ CoreMiddleware::class ])]
+class HttpCoreMiddleware extends CoreMiddleware
 {
     /**
      * 跨域

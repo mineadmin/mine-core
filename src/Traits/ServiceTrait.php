@@ -142,11 +142,12 @@ trait ServiceTrait
     /**
      * 读取一条数据
      * @param int $id
+     * @param array $column
      * @return MineModel|null
      */
-    public function read(int $id): ?MineModel
+    public function read(int $id, array $column = ['*']): ?MineModel
     {
-        return $this->mapper->read($id);
+        return $this->mapper->read($id, $column);
     }
 
     /**

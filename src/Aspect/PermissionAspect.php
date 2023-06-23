@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
-use App\System\Service\SystemUserService;
+use Mine\Interfaces\serviceInterface\UserServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -34,9 +34,9 @@ class PermissionAspect extends AbstractAspect
     ];
 
     /**
-     * SystemUserService
+     * UserServiceInterface
      */
-    protected SystemUserService $service;
+    protected UserServiceInterface $service;
 
     /**
      * MineRequest
@@ -50,12 +50,12 @@ class PermissionAspect extends AbstractAspect
 
     /**
      * PermissionAspect constructor.
-     * @param SystemUserService $service
+     * @param UserServiceInterface $service
      * @param MineRequest $request
      * @param LoginUser $loginUser
      */
     public function __construct(
-        SystemUserService $service,
+        UserServiceInterface $service,
         MineRequest $request,
         LoginUser $loginUser
     )
@@ -120,7 +120,7 @@ class PermissionAspect extends AbstractAspect
             foreach (explode(',', $codeString) as $code) {
                 $code = trim($code);
                 if (! in_array($code, $codes)) {
-                    $service = container()->get(\App\System\Service\SystemMenuService::class);
+                    $service = container()->get(\Mine\Interfaces\serviceInterface\MenuServiceInterface::class);
                     throw new NoPermissionException(
                         t('system.no_permission') . ' -> [ ' . $service->findNameByCode($code) . ' ]'
                     );

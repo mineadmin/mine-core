@@ -12,7 +12,7 @@
 declare (strict_types=1);
 namespace Mine\Listener;
 
-use App\System\Service\SystemOperLogService;
+use Mine\Interfaces\serviceInterface\OperLogServiceInterface;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Mine\Event\Operation;
@@ -51,7 +51,7 @@ class OperationListener implements ListenerInterface
     {
         $requestInfo = $event->getRequestInfo();
         if (!in_array($requestInfo['router'], $this->ignoreRouter)) {
-            $service = $this->container->get(SystemOperLogService::class);
+            $service = $this->container->get(OperLogServiceInterface::class);
             $requestInfo['request_data'] = json_encode($requestInfo['request_data'], JSON_UNESCAPED_UNICODE);
             //            $requestInfo['response_data'] = $requestInfo['response_data'];
             $service->save($requestInfo);

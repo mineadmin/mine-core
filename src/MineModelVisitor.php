@@ -12,14 +12,16 @@
 declare(strict_types=1);
 namespace Mine;
 
-use Hyperf\Database\Commands\Ast\ModelUpdateVisitor as Visitor;
+use Hyperf\Database\Commands\Ast\ModelUpdateVisitor;
 use Hyperf\Utils\Str;
+use Mine\Annotation\DependProxy;
 
 /**
  * Class MineModelVisitor
  * @package System
  */
-class MineModelVisitor extends  Visitor
+#[DependProxy(values: [ ModelUpdateVisitor::class ])]
+class MineModelVisitor extends ModelUpdateVisitor
 {
     /**
      * @param string $type

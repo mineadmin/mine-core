@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Crontab;
 
-use App\Setting\Service\SettingCrontabLogService;
+use Mine\Interfaces\serviceInterface\CrontabLogServiceInterface;
 use Carbon\Carbon;
 use Closure;
 use Hyperf\Contract\ApplicationInterface;
@@ -30,12 +30,19 @@ use Psr\Container\ContainerInterface;
 use Swoole\Timer;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use App\Setting\Model\SettingCrontab;
 
 use function Hyperf\Support\make;
 
 class MineExecutor
 {
+    public const COMMAND_CRONTAB = 1;
+    // 类任务
+    public const CLASS_CRONTAB = 2;
+    // URL任务
+    public const URL_CRONTAB = 3;
+    // EVAL 任务
+    public const EVAL_CRONTAB = 4;
+
     /**
      * @var ContainerInterface
      */
@@ -88,7 +95,7 @@ class MineExecutor
         !$run && $diff = $crontab->getExecuteTime()->diffInRealSeconds(new Carbon());
         $callback = null;
         switch ($crontab->getType()) {
-            case SettingCrontab::CLASS_CRONTAB:
+            case self::CLASS_CRONTAB:
                 $class = $crontab->getCallback();
                 $method = 'execute';
                 $parameters = $crontab->getParameter() ?: null;
@@ -115,7 +122,7 @@ class MineExecutor
                     };
                 }
                 break;
-            case SettingCrontab::COMMAND_CRONTAB:
+            case self::COMMAND_CRONTAB:
                 $command = ['command' => $crontab->getCallback()];
                 $parameter = $crontab->getParameter() ?: '{}';
                 $input = make(ArrayInput::class, ['parameters' => array_merge($command, json_decode($parameter, true))]);
@@ -130,7 +137,7 @@ class MineExecutor
                     $this->decorateRunnable($crontab, $runnable)();
                 };
                 break;
-            case SettingCrontab::URL_CRONTAB:
+            case self::URL_CRONTAB:
                 $clientFactory = $this->container->get(ClientFactory::class);
                 $client = $clientFactory->create();
                 $callback = function () use ($client, $crontab) {
@@ -150,7 +157,7 @@ class MineExecutor
                     $this->decorateRunnable($crontab, $runnable)();
                 };
                 break;
-            case SettingCrontab::EVAL_CRONTAB:
+            case self::EVAL_CRONTAB:
                 $callback = function () use ($crontab) {
                     $runnable = function () use ($crontab) {
                         $result = true;
@@ -249,7 +256,7 @@ class MineExecutor
                 $this->logger->error(sprintf('Crontab task [%s] failed execution at %s.', $crontab->getName(), date('Y-m-d H:i:s')));
             }
         }
-        $logService = $this->container->get(SettingCrontabLogService::class);
+        $logService = $this->container->get(CrontabLogServiceInterface::class);
         $data = [
             'crontab_id' => $crontab->getCrontabId(),
             'name' => $crontab->getName(),

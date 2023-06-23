@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Mine;
 
-use App\Setting\Service\SettingConfigService;
+use Mine\Interfaces\serviceInterface\ConfigServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use League\Flysystem\Filesystem;
@@ -315,7 +315,7 @@ class MineUpload
      */
     public function getStorageMode(): int|string
     {
-        return $this->container->get(SettingConfigService::class)->getConfigByKey('upload_mode')['value'] ?? 1;
+        return $this->container->get(ConfigServiceInterface::class)->getConfigByKey('upload_mode')['value'] ?? 1;
     }
 
     /**

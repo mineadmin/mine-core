@@ -12,7 +12,7 @@
 declare(strict_types = 1);
 namespace Mine\Command;
 
-use App\Setting\Service\ModuleService;
+use Mine\Interfaces\serviceInterface\ModuleServiceInterface;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\ConfirmableTrait;
 use Hyperf\Database\Migrations\Migrator;
@@ -89,7 +89,7 @@ class ModuleCommand extends MineCommand
             exit;
         }
 
-        $service = make(ModuleService::class);
+        $service = make(ModuleServiceInterface::class);
         $name = ucfirst($name);
 
         // other module

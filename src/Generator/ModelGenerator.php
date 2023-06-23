@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateTables;
-use App\Setting\Service\SettingGenerateColumnsService;
+use Mine\Interfaces\serviceInterface\GenerateColumnServiceInterface;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
@@ -240,7 +240,7 @@ class ModelGenerator extends MineGenerator implements CodeGenerator
      */
     protected function getFillAble(): string
     {
-        $data = make(SettingGenerateColumnsService::class)->getList(
+        $data = make(GenerateColumnServiceInterface::class)->getList(
             ['select' => 'column_name', 'table_id' => $this->model->id]
         );
         $columns = [];

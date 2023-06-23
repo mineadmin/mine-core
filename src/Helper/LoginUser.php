@@ -12,9 +12,8 @@
 declare(strict_types=1);
 namespace Mine\Helper;
 
-use App\System\Model\SystemRole;
-use App\System\Model\SystemUser;
-use App\System\Service\SystemUserService;
+use Mine\Interfaces\serviceInterface\RoleServiceInterface;
+use Mine\Interfaces\serviceInterface\UserServiceInterface;
 use Mine\Exception\TokenException;
 use Mine\MineRequest;
 use Xmo\JWTAuth\JWT;
@@ -110,7 +109,7 @@ class LoginUser
      */
     public function getUserRole(array $columns = ['id', 'name', 'code']): array
     {
-        return SystemUser::find($this->getId(), ['id'])->roles()->get($columns)->toArray();
+        return container()->get(UserServiceInterface::class)->read($this->getId(), ['id'])->roles()->get($columns)->toArray();
     }
 
     /**
@@ -120,7 +119,7 @@ class LoginUser
      */
     public function getUserPost(array $columns = ['id', 'name', 'code']): array
     {
-        return SystemUser::find($this->getId(), ['id'])->posts()->get($columns)->toArray();
+        return container()->get(UserServiceInterface::class)->read($this->getId(), ['id'])->posts()->get($columns)->toArray();
     }
 
     /**
@@ -130,7 +129,7 @@ class LoginUser
      */
     public function getUserDept(array $columns = ['id', 'name']): array
     {
-        return SystemUser::find($this->getId(), ['id'])->depts()->get($columns)->toArray();
+        return container()->get(UserServiceInterface::class)->read($this->getId(), ['id'])->depts()->get($columns)->toArray();
     }
 
     /**
@@ -160,8 +159,8 @@ class LoginUser
     public function isAdminRole(): bool
     {
         return in_array(
-            SystemRole::find(env('ADMIN_ROLE'), ['code'])->code,
-            container()->get(SystemUserService::class)->getInfo()['roles']
+            container()->get(RoleServiceInterface::class)->read(env('ADMIN_ROLE'), ['code'])->code,
+            container()->get(UserServiceInterface::class)->getInfo()['roles']
         );
     }
 

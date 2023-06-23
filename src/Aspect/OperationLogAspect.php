@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
-use App\System\Service\SystemMenuService;
+use Mine\Interfaces\serviceInterface\MenuServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -21,7 +21,6 @@ use Mine\Annotation\Permission;
 use Mine\Event\Operation;
 use Mine\Helper\Ip2region;
 use Mine\Helper\LoginUser;
-use Mine\Helper\Str;
 use Mine\MineRequest;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -120,6 +119,6 @@ class OperationLogAspect extends AbstractAspect
      */
     protected function getOperationMenuName(string $code): string
     {
-        return $this->container->get(SystemMenuService::class)->findNameByCode($code);
+        return $this->container->get(MenuServiceInterface::class)->findNameByCode($code);
     }
 }

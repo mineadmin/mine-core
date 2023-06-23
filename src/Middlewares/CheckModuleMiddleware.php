@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Middlewares;
 
-use App\Setting\Service\ModuleService;
+use Mine\Interfaces\serviceInterface\ModuleServiceInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\Inject;
 use Mine\Helper\Str;
@@ -29,10 +29,10 @@ class CheckModuleMiddleware implements MiddlewareInterface
 {
     /**
      * 模块服务
-     * @var ModuleService
+     * @var ModuleServiceInterface
      */
     #[Inject]
-    protected ModuleService $service;
+    protected ModuleServiceInterface $service;
 
     /**
      * @param ServerRequestInterface $request

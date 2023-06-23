@@ -9,8 +9,7 @@
 declare(strict_types=1);
 namespace Mine\Amqp\Listener;
 
-use App\System\Model\SystemQueueLog;
-use App\System\Service\SystemQueueLogService;
+use Mine\Interfaces\serviceInterface\QueueLogServiceInterface;
 use Mine\Amqp\Event\AfterConsume;
 use Mine\Amqp\Event\BeforeConsume;
 use Mine\Amqp\Event\ConsumeEvent;
@@ -27,7 +26,28 @@ use Hyperf\Event\Annotation\Listener;
 #[Listener]
 class QueueConsumeListener implements ListenerInterface
 {
-    private SystemQueueLogService $service;
+    /**
+     * @Message("未消费")
+     */
+    const CONSUME_STATUS_NO = 1;
+    /**
+     * @Message("消费中")
+     */
+    const CONSUME_STATUS_DOING = 2;
+    /**
+     * @Message("消费成功")
+     */
+    const CONSUME_STATUS_SUCCESS = 3;
+    /**
+     * @Message("消费失败")
+     */
+    const CONSUME_STATUS_FAIL = 4;
+    /**
+     * @Message("消费重复")
+     */
+    const CONSUME_STATUS_REPEAT = 5;
+
+    private QueueLogServiceInterface $service;
 
     public function listen(): array
     {
@@ -48,7 +68,7 @@ class QueueConsumeListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $this->service = container()->get(SystemQueueLogService::class);
+        $this->service = container()->get(QueueLogServiceInterface::class);
         if ($event->message) {
             $class = get_class($event);
             $func = lcfirst(trim(strrchr($class, '\\'),'\\'));
@@ -65,7 +85,7 @@ class QueueConsumeListener implements ListenerInterface
     {
         $this->service->update(
             (int)$event->data['queue_id'],
-            ['consume_status' => SystemQueueLog::CONSUME_STATUS_DOING]
+            ['consume_status' => self::CONSUME_STATUS_DOING]
         );
     }
 
@@ -88,7 +108,7 @@ class QueueConsumeListener implements ListenerInterface
     {
         $this->service->update(
             (int)$event->data['queue_id'],
-            ['consume_status' => SystemQueueLog::CONSUME_STATUS_SUCCESS]
+            ['consume_status' => self::CONSUME_STATUS_SUCCESS]
         );
     }
 
@@ -101,7 +121,7 @@ class QueueConsumeListener implements ListenerInterface
     {
         $this->service->update(
             (int)$event->data['queue_id'], [
-            'consume_status' => SystemQueueLog::CONSUME_STATUS_REPEAT,
+            'consume_status' => self::CONSUME_STATUS_REPEAT,
             'log_content' => $event->throwable ?: $event->throwable->getMessage()
         ]);
     }
