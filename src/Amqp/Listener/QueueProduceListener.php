@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Mine\Amqp\Listener;
 
 use Hyperf\Amqp\Message\ProducerMessageInterface;
-use Mine\Interfaces\serviceInterface\QueueMessageServiceInterface;
-use Mine\Interfaces\serviceInterface\QueueLogServiceInterface;
+use Mine\Interfaces\ServiceInterface\QueueMessageServiceInterface;
+use Mine\Interfaces\ServiceInterface\QueueLogServiceInterface;
 use Hyperf\Context\Context;
 use Mine\Amqp\Event\AfterProduce;
 use Mine\Amqp\Event\BeforeProduce;

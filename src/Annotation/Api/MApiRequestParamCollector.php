@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mine\Annotation\Api;
 
-use Mine\Interfaces\serviceInterface\DictDataServiceInterface;
+use Mine\Interfaces\ServiceInterface\DictDataServiceInterface;
 use Hyperf\Di\MetadataCollector;
 
 class MApiRequestParamCollector extends MetadataCollector

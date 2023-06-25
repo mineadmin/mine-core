@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Crontab;
 
-use Mine\Interfaces\serviceInterface\CrontabLogServiceInterface;
+use Mine\Interfaces\ServiceInterface\CrontabLogServiceInterface;
 use Carbon\Carbon;
 use Closure;
 use Hyperf\Contract\ApplicationInterface;

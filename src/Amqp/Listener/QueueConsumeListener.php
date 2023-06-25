@@ -9,7 +9,7 @@
 declare(strict_types=1);
 namespace Mine\Amqp\Listener;
 
-use Mine\Interfaces\serviceInterface\QueueLogServiceInterface;
+use Mine\Interfaces\ServiceInterface\QueueLogServiceInterface;
 use Mine\Amqp\Event\AfterConsume;
 use Mine\Amqp\Event\BeforeConsume;
 use Mine\Amqp\Event\ConsumeEvent;

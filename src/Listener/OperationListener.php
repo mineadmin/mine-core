@@ -12,7 +12,7 @@
 declare (strict_types=1);
 namespace Mine\Listener;
 
-use Mine\Interfaces\serviceInterface\OperLogServiceInterface;
+use Mine\Interfaces\ServiceInterface\OperLogServiceInterface;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Mine\Event\Operation;

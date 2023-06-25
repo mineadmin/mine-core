@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Mine;
 
-use Mine\Interfaces\serviceInterface\ConfigServiceInterface;
+use Mine\Interfaces\ServiceInterface\ConfigServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use League\Flysystem\Filesystem;

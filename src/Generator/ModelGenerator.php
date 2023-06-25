@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateTables;
-use Mine\Interfaces\serviceInterface\GenerateColumnServiceInterface;
+use Mine\Interfaces\ServiceInterface\GenerateColumnServiceInterface;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;

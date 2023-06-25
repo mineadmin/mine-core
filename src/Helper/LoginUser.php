@@ -12,8 +12,8 @@
 declare(strict_types=1);
 namespace Mine\Helper;
 
-use Mine\Interfaces\serviceInterface\RoleServiceInterface;
-use Mine\Interfaces\serviceInterface\UserServiceInterface;
+use Mine\Interfaces\ServiceInterface\RoleServiceInterface;
+use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\Exception\TokenException;
 use Mine\MineRequest;
 use Xmo\JWTAuth\JWT;

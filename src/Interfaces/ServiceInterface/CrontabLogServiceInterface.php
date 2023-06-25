@@ -1,6 +1,6 @@
 <?php
 
-namespace Mine\Interfaces\serviceInterface;
+namespace Mine\Interfaces\ServiceInterface;
 
 interface CrontabLogServiceInterface
 {

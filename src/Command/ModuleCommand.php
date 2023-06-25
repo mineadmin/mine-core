@@ -12,7 +12,7 @@
 declare(strict_types = 1);
 namespace Mine\Command;
 
-use Mine\Interfaces\serviceInterface\ModuleServiceInterface;
+use Mine\Interfaces\ServiceInterface\ModuleServiceInterface;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\ConfirmableTrait;
 use Hyperf\Database\Migrations\Migrator;

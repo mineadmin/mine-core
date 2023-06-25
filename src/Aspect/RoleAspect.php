@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
-use Mine\Interfaces\serviceInterface\UserServiceInterface;
+use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -121,7 +121,7 @@ class RoleAspect extends AbstractAspect
             foreach (explode(',', $codeString) as $code) {
                 $code = trim($code);
                 if (! in_array($code, $roles)) {
-                    $service = container()->get(\Mine\Interfaces\serviceInterface\RoleServiceInterface::class);
+                    $service = container()->get(\Mine\Interfaces\ServiceInterface\RoleServiceInterface::class);
                     throw new NoPermissionException(
                         t('system.no_role') . ' -> [ ' . $service->findNameByCode($code) . ' ]'
                     );

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Mine;
 
 use Hyperf\Framework\Bootstrap\ServerStartCallback;
-use Mine\Interfaces\serviceInterface\ModuleServiceInterface;
+use Mine\Interfaces\ServiceInterface\ModuleServiceInterface;
 
 class MineStart extends ServerStartCallback
 {

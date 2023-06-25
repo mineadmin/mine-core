@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
-use Mine\Interfaces\serviceInterface\MenuServiceInterface;
+use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;

@@ -12,7 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Middlewares;
 
-use Mine\Interfaces\serviceInterface\ModuleServiceInterface;
+use Mine\Interfaces\ServiceInterface\ModuleServiceInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\Inject;
 use Mine\Helper\Str;
