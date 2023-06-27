@@ -124,14 +124,14 @@ class MineExecutor
                 break;
             case self::COMMAND_CRONTAB:
                 $command = ['command' => $crontab->getCallback()];
-                $parameter = $crontab->getParameter() ?: '{}';
-                $input = make(ArrayInput::class, ['parameters' => array_merge($command, json_decode($parameter, true))]);
+                $parametersInfo = ['parameters' => json_decode($crontab->getParameter() ?: '[]', true)];
+                $input = make(ArrayInput::class, array_merge($command, $parametersInfo));
                 $output = make(NullOutput::class);
                 $application = $this->container->get(ApplicationInterface::class);
                 $application->setAutoExit(false);
-                $callback = function () use ($application, $input, $output, $crontab) {
-                    $runnable = function () use ($application, $input, $output, $crontab) {
-                        $result = $application->run($input, $output);
+                $callback = function () use ($application, $input, $output, $crontab, $command) {
+                    $runnable = function () use ($application, $input, $output, $crontab, $command) {
+                        $result = $application->find($command['command'])->run($input, $output);
                         $this->logResult($crontab, $result === 0, $result);
                     };
                     $this->decorateRunnable($crontab, $runnable)();
