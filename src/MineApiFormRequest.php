@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @Author X.Mo<root@imoi.cn>
  * @Link   https://gitee.com/xmo/MineAdmin
  */
-namespace Api\Request;
+namespace Mine;
 
 use Hyperf\Validation\Request\FormRequest;
 
