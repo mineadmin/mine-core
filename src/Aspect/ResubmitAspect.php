@@ -17,6 +17,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\Resubmit;
+use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineRequest;
 use Mine\Redis\MineLockRedis;
@@ -41,26 +42,32 @@ class ResubmitAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var $resubmit Resubmit*/
-        if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
-            $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
-        }
+        try {
+            $result = $proceedingJoinPoint->process();
 
-        $request = container()->get(MineRequest::class);
+            /** @var $resubmit Resubmit */
+            if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
+                $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
+            }
 
-        $key = md5(sprintf('%s-%s-%s', $request->ip(), $request->getPathInfo(), $request->getMethod()));
+            $request = container()->get(MineRequest::class);
 
-        $lockRedis = new MineLockRedis();
-        $lockRedis->setTypeName('resubmit');
+            $key = md5(sprintf('%s-%s-%s', $request->ip(), $request->getPathInfo(), $request->getMethod()));
 
-        if ($lockRedis->check($key)) {
+            $lockRedis = new MineLockRedis();
+            $lockRedis->setTypeName('resubmit');
+
+            if ($lockRedis->check($key)) {
+                $lockRedis = null;
+                throw new NormalStatusException($resubmit->message ?: t('mineadmin.resubmit'), 500);
+            }
+
+            $lockRedis->lock($key, $resubmit->second);
             $lockRedis = null;
-            throw new NormalStatusException($resubmit->message ?: t('mineadmin.resubmit'), 500);
+
+            return $result;
+        } catch (\Throwable $e) {
+            throw new MineException($e->getMessage(), $e->getCode());
         }
-
-        $lockRedis->lock($key, $resubmit->second);
-        $lockRedis = null;
-
-        return $proceedingJoinPoint->process();
     }
 }
