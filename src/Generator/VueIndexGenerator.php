@@ -442,6 +442,7 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
             'upload' => 'upload',
             'selectResource' => 'resource',
             'editor' => 'editor',
+            'wangEditor' => 'wang-editor',
             'codeEditor' => 'code-editor',
         ];
 
