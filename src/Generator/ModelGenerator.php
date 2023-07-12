@@ -80,7 +80,7 @@ class ModelGenerator extends MineGenerator implements CodeGenerator
         $command = [
             'command'  => 'mine:model-gen',
             '--module' => $this->model->module_name,
-            '--table'  => $this->model->table_name
+            '--table'  => str_replace(env('DB_PREFIX'), '', $this->model->table_name)
         ];
 
         if (! Str::contains($this->model->table_name, Str::lower($this->model->module_name))) {

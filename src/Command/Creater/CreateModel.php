@@ -44,7 +44,7 @@ class CreateModel extends MineCommand
 
         $table  = $this->input->getOption('table');
         if ($table) {
-            $table = trim($this->input->getOption('table'));
+            $table = env('DB_PREFIX') + trim($this->input->getOption('table'));
         }
 
         if (empty($module)) {
