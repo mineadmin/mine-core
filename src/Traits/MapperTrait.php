@@ -661,7 +661,13 @@ trait MapperTrait
         return $object->getQuery();
     }
 
-    public function dynamicRelations(\Mine\MineModel &$model, &$config)
+    /**
+     * 动态关联模型
+     * @param MineModel $model
+     * @param $config ['name', 'model', 'type', 'localKey', 'foreignKey', 'middleTable', 'as', 'where', 'whereIn' ]
+     * @return void
+     */
+    public function dynamicRelations(\Mine\MineModel &$model, &$config): void
     {
         $model->resolveRelationUsing($config['name'], function($primaryModel) use($config) {
             $namespace = str_replace('.', "\\", $config['model']);
@@ -681,13 +687,13 @@ trait MapperTrait
                     $config['foreignKey'],
                     $config['localKey']
                 );
-                if ($config['as']) {
+                if (!empty($config['as'])) {
                     $primaryModel->as($config['as']);
                 }
-                if ($config['where'] && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
+                if (!empty($config['where']) && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
                     $primaryModel->wherePivot($field, $value);
                 }
-                if ($config['whereIn'] && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
+                if (!empty($config['whereIn']) && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
                     $primaryModel->wherePivotIn($field, $value);
                 }
             }
