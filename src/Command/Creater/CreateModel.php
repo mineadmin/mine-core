@@ -44,7 +44,7 @@ class CreateModel extends MineCommand
 
         $table  = $this->input->getOption('table');
         if ($table) {
-            $table = env('DB_PREFIX') + trim($this->input->getOption('table'));
+            $table = env('DB_PREFIX') . trim($this->input->getOption('table'));
         }
 
         if (empty($module)) {
@@ -54,7 +54,6 @@ class CreateModel extends MineCommand
         $moduleInfos = $mine->getModuleInfo();
 
         if (isset($moduleInfos[$module])) {
-            $info = $moduleInfos[$module];
             $path = "app/{$module}/Model";
 
             $db = env('DB_DATABASE');
@@ -69,7 +68,7 @@ class CreateModel extends MineCommand
                 if (!empty($prefix) && preg_match(sprintf("/%s_%s[_a-zA-Z0-9]+/i", $prefix, $module), $tmp)) {
                     $tableList[] = $tmp;
                 }
-                if (preg_match(sprintf("/%s[_a-zA-Z0-9]+/i", $module), $tmp)) {
+                if (preg_match(sprintf("/%s(\b|_[a-zA-Z0-9]+)/i", $module), $tmp)) {
                     $tableList[] = $tmp;
                 }
             }
