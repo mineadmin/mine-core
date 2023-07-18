@@ -108,6 +108,22 @@ if (! function_exists('format_size')) {
     }
 }
 
+if (! function_exists('lang')) {
+    /**
+     * 获取当前语言
+     * @param string $key
+     * @param array $replace
+     * @return string
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    function lang(): string
+    {
+        $acceptLanguage = container()->get(\Mine\MineRequest::class)->getHeaderLine('accept-language');
+        return str_replace('-', '_', !empty($acceptLanguage) ? explode(',',$acceptLanguage)[0] : 'zh_CN');
+    }
+}
+
 if (! function_exists('t')) {
     /**
      * 多语言函数
@@ -119,9 +135,7 @@ if (! function_exists('t')) {
      */
     function t(string $key, array $replace = []): string
     {
-        $acceptLanguage = container()->get(\Mine\MineRequest::class)->getHeaderLine('accept-language');
-        $language = !empty($acceptLanguage) ? explode(',',$acceptLanguage)[0] : 'zh_CN';
-        return __($key, $replace, $language);
+        return __($key, $replace, lang());
     }
 }
 
