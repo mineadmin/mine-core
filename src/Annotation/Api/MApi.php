@@ -17,7 +17,7 @@ class MApi extends AbstractAnnotation
         // 描述信息
         public string $description,
         // appId
-        public string $appId,
+        public string|array $appId,
         // 是否启用
         public int $status = 1,
         // 验证模式 1 简单  2 复杂;
