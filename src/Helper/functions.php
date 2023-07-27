@@ -16,6 +16,7 @@ use Hyperf\Utils\ApplicationContext;
 use Mine\Helper\LoginUser;
 use Mine\Helper\AppVerify;
 use Mine\Helper\Id;
+use Mine\Interfaces\ServiceInterface\QueueLogServiceInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -229,7 +230,7 @@ if (! function_exists('push_queue_message')) {
     function push_queue_message(QueueMessageVo $message, array $receiveUsers = []): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->pushMessage($message, $receiveUsers);
     }
 }
@@ -246,7 +247,7 @@ if (! function_exists('add_queue')) {
     function add_queue(\App\System\Vo\AmqpQueueVo $amqpQueueVo): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->addQueue($amqpQueueVo);
     }
 }
