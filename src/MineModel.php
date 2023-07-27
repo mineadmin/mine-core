@@ -31,6 +31,11 @@ class MineModel extends Model
     protected array $hidden = ['deleted_at'];
 
     /**
+     * 数据权限字段，表中需要有此字段
+     */
+    protected string $dataScopeField = 'created_by';
+
+    /**
      * 状态
      */
     public const ENABLE = 1;
@@ -98,5 +103,23 @@ class MineModel extends Model
     public function newCollection(array $models = []): MineCollection
     {
         return new MineCollection($models);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataScopeField(): string
+    {
+        return $this->dataScopeField;
+    }
+
+    /**
+     * @param string $name
+     * @return MineModel
+     */
+    public function setDataScopeField(string $name): self
+    {
+        $this->dataScopeField = $name;
+        return $this;
     }
 }
