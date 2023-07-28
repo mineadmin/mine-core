@@ -101,7 +101,7 @@ class MineUpload
         try {
             $this->filesystem->writeStream($path . '/' . $filename, $uploadedFile->getStream()->detach());
         } catch (\Exception $e) {
-            throw new NormalStatusException((string) $uploadedFile->getError(), 500);
+            throw new NormalStatusException((string) $e->getMessage(), 500);
         }
 
         $fileInfo = [
