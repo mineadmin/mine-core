@@ -15,6 +15,7 @@ namespace Mine;
 
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Response;
+use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -34,6 +35,7 @@ class MineResponse extends Response
     public function success(string $message = null, array|object $data = [], int $code = 200): ResponseInterface
     {
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => true,
             'message' => $message ?: t('mineadmin.response_success'),
             'code'    => $code,
@@ -57,6 +59,7 @@ class MineResponse extends Response
     public function error(string $message = '', int $code = 500, array $data = []): ResponseInterface
     {
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'code'    => $code,
             'message' => $message ?: t('mineadmin.response_error'),

@@ -61,7 +61,8 @@
         "symfony/property-access": "^6.0",
         "tangwei/apidocs": "^2.1",
         "yurunsoft/phpmailer-swoole": "^1.0",
-        "zoujingli/ip2region": "2.0.*"
+        "zoujingli/ip2region": "2.0.*",
+        "ramsey/uuid": "^4.7"
     },
     "suggest": {
         "ext-openssl": "Required to use HTTPS.",
