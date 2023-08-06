@@ -17,6 +17,7 @@ use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Utils\Codec\Json;
 use Mine\Exception\NormalStatusException;
+use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -35,6 +36,7 @@ class NormalStatusExceptionHandler extends ExceptionHandler
     {
         $this->stopPropagation();
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'message' => $throwable->getMessage(),
         ];

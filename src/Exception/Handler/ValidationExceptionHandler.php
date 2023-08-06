@@ -18,6 +18,7 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Utils\Codec\Json;
 use Hyperf\Validation\ValidationException;
 use Mine\Helper\MineCode;
+use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -29,6 +30,7 @@ class ValidationExceptionHandler extends ExceptionHandler
         /** @var \Hyperf\Validation\ValidationException $throwable */
         $body = $throwable->validator->errors()->first();
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'message' => $body,
             'code'    => MineCode::VALIDATE_FAILED,

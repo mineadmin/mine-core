@@ -18,6 +18,7 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Utils\Codec\Json;
 use Mine\Exception\TokenException;
 use Mine\Helper\MineCode;
+use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -31,6 +32,7 @@ class TokenExceptionHandler extends ExceptionHandler
     {
         $this->stopPropagation();
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'message' => $throwable->getMessage(),
             'code'    => MineCode::TOKEN_EXPIRED,

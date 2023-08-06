@@ -16,6 +16,7 @@ use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\Codec\Json;
+use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
 use Hyperf\Logger\Logger;
 use Throwable;
@@ -41,6 +42,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->console->error($throwable->getTraceAsString());
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $format = [
+            'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'code'    => 500,
             'message' => $throwable->getMessage()
