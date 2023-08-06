@@ -25,7 +25,7 @@ class RequestIdHolder
 
     public static function setType(string $type): void
     {
-        if ($type == 'snowflake') {
+        if ($type === 'snowflake') {
             self::$type = 'snowflake';
         }
     }
