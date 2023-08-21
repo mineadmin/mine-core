@@ -103,11 +103,11 @@ trait MapperTrait
             $query->groupBy($name);
         }
 
-        if (isset($params['dataScope']) && $params['dataScope'] === true) {
+        if (isset($params['dataScope']) && $params['dataScope']) {
             $query->userDataScope();
         }
 
-        if (isset($params['openPage']) && $params['openPage'] === true) {
+        if (isset($params['openPage']) && $params['openPage']) {
             $pageName = $params['pageName'] ?? 'page';
             $pageSize = $params['pageSize'] ?? $this->model::PAGE_SIZE;
             return $this->setPaginate($query->paginate($pageSize, $params['select'] ?? ['*'], $pageName, $params[$pageName] ?? 1));
