@@ -344,6 +344,10 @@ class MineUpload
             '2' => 'oss',
             '3' => 'qiniu',
             '4' => 'cos',
+            '5' => 'ftp',
+            '6' => 'memory',
+            '7' => 's3',
+            '8' => 'minio',
             default => 'local',
         };
     }
