@@ -187,6 +187,9 @@ class MineUpload
         $filename = $this->getNewName() . '.jpg';
 
         try {
+            if (preg_match('/^\/\//', $data['url'])) {
+                $data['url'] = 'http:' . $data['url'];
+            }
             if (! preg_match('/^(http|https):\/\//i', $data['url'])) {
                 throw new NormalStatusException('图片地址请以 http 或 https 开头', 500);
             }
