@@ -21,11 +21,4 @@ return [
     'excel_drive' => 'auto',
     // 是否启用 远程通用列表查询 功能
     'remote_api_enabled' => true,
-    // Response 项的配置
-    'response' => [
-        // 是否显示当前请求的 request ID
-        'id_enabled' => true,
-        // request ID 的类型：uuid, snowflake 默认为 uuid
-        'id_type' => 'uuid'
-    ]
 ];
