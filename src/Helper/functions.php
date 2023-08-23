@@ -103,7 +103,7 @@ if (! function_exists('format_size')) {
         $index = 0;
         for ($i = 0; $size >= 1024 && $i < 5; $i++) {
             $size /= 1024;
-            $index = $i;
+            $index = $i + 1;
         }
         return round($size, 2) . $units[$index];
     }
