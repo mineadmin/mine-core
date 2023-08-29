@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 namespace Mine;
 
+use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Validation\Request\FormRequest;
 
 class MineFormRequest extends FormRequest
@@ -24,13 +25,20 @@ class MineFormRequest extends FormRequest
         return true;
     }
 
-    /**
-     * 公共规则
-     * @return array
-     */
-    public function commonRules(): array
+    public function messages(): array
     {
-        return [];
+        return array_merge(
+            $this->callNextFunction('common',__FUNCTION__),
+            $this->callNextFunction($this->getAction(),__FUNCTION__)
+        );
+    }
+
+    public function attributes(): array
+    {
+        return array_merge(
+            $this->callNextFunction('common',__FUNCTION__),
+            $this->callNextFunction($this->getAction(),__FUNCTION__)
+        );
     }
 
     /**
@@ -39,14 +47,47 @@ class MineFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $operation = $this->getOperation();
-        $method = $operation . 'Rules';
-        $rules = ( $operation && method_exists($this, $method) ) ? $this->$method() : [];
-        return array_merge($rules, $this->commonRules());
+        return array_merge(
+            $this->callNextFunction('common',__FUNCTION__),
+            $this->callNextFunction($this->getAction(),__FUNCTION__)
+        );
+    }
+
+
+    protected function callNextFunction(?string $prefix, string $function): array
+    {
+        if (is_null($prefix)){
+            return [];
+        }
+        $callName = $prefix . ucfirst($function);
+        return method_exists($this,$function) ? \Hyperf\Support\call([$this,$callName]) : [];
+    }
+
+    protected function getAction(): ?string
+    {
+        /**
+         * @var Dispatched $dispatch
+         */
+        $dispatch = $this->getAttribute(Dispatched::class);
+        $callback = $dispatch?->handler?->callback;
+        if (is_array($callback) && count($callback) === 2)
+        {
+            return $callback[1];
+        }
+        if (is_string($callback)){
+            if (str_contains($callback,'@')){
+                return explode('@',$callback)[1]??null;
+            }
+            if (str_contains($callback,'::')){
+                return explode('::',$callback)[1]??null;
+            }
+        }
+        return null;
     }
 
     /**
      * @return string|null
+     * @deprecated >v1.5.0
      */
     protected function getOperation(): ?string
     {
