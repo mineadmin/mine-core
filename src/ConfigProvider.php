@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Please view the LICENSE file that was distributed with this source code,
  * For the full copyright and license information.
  * Thank you very much for using MineAdmin.
- * 
+ *
  * @Author X.Mo <root@imoi.cn>
  * @Link   https://www.mineadmin.com/
  * @Github  https://github.com/kanyxmo
@@ -17,6 +17,8 @@ declare(strict_types=1);
  */
 
 namespace Mine;
+
+use Mine\Annotation\DependProxyCollector;
 
 class ConfigProvider
 {
@@ -31,6 +33,9 @@ class ConfigProvider
                     'paths' => [
                         __DIR__,
                     ],
+                    'collectors' => [
+                        DependProxyCollector::class,
+                    ]
                 ],
             ],
             // 默认 Command 的定义，合并到 Hyperf\Contract\ConfigInterface 内，换个方式理解也就是与 config/autoload/commands.php 对应

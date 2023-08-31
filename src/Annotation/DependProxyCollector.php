@@ -8,7 +8,7 @@ declare(strict_types=1);
  * For the full copyright and license information.
  * Thank you very much for using MineAdmin.
  *
- * @Author @小小只^v^ <littlezov@qq.com>, X.Mo<root@imoi.cn> 
+ * @Author @小小只^v^ <littlezov@qq.com>, X.Mo<root@imoi.cn>
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
@@ -26,5 +26,35 @@ class DependProxyCollector extends MetadataCollector
     public static function setAround(string $class, $value): void
     {
         static::$container[$class] = $value;
+    }
+
+    public static function getDependencies(): array
+    {
+        if (empty(self::$container)) {
+            return [];
+        }
+        $dependencies = [];
+        foreach (self::$container as $collector) {
+            $targets = $collector->values;
+            $definition = $collector->provider;
+            foreach ($targets as $target) {
+                $dependencies[$target] = $definition;
+            }
+        }
+        return $dependencies;
+    }
+
+    public static function walk(callable $closure): void
+    {
+        if (empty(self::$container)) {
+            return;
+        }
+        foreach (self::$container as $collector) {
+            $targets = $collector->values;
+            $definition = $collector->provider;
+            foreach ($targets as $target) {
+                $closure($target, $definition);
+            }
+        }
     }
 }
