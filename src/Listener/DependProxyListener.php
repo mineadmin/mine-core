@@ -20,7 +20,7 @@ use Hyperf\Framework\Event\BootApplication;
 use Mine\Annotation\DependProxyCollector;
 use Mine\Factory\DependProxyFactory;
 
-#[Listener]
+// #[Listener]
 class DependProxyListener implements ListenerInterface
 {
     public function listen(): array
