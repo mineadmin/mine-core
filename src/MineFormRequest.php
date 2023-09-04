@@ -60,7 +60,7 @@ class MineFormRequest extends FormRequest
             return [];
         }
         $callName = $prefix . ucfirst($function);
-        return method_exists($this,$function) ? \Hyperf\Support\call([$this,$callName]) : [];
+        return method_exists($this, $callName) ? \Hyperf\Support\call([$this, $callName]) : [];
     }
 
     protected function getAction(): ?string
