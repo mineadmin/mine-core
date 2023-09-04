@@ -149,7 +149,7 @@ trait ModelMacroTrait
                                 $deptIds = array_merge($parentDepts, ...$ids);
 
                                 // 如果是部门单独处理 数据范围
-                                if ('App\System\Model\SystemDept' === get_class($this->model)) {
+                                if ($this->model instanceof SystemDept) {
                                     $this->builder = $this->builder->whereIn('id', $deptIds);
                                     break;
                                 }
