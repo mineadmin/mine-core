@@ -132,6 +132,34 @@ trait ModelMacroTrait
                                 );
                                 $this->userIds[] = $this->userid;
                                 break;
+                            case SystemRole::DEPT_BELOW_SCOPE_BY_TABLE_DEPTID:
+                                $parentDepts = Db::table('system_user_dept')->where('user_id', $userModel->id)->pluck('dept_id')->toArray();
+                                $ids = [];
+                                foreach ($parentDepts as $deptId) {
+                                    $ids[] = SystemDept::query()
+                                        ->where(function ($query) use ($deptId) {
+                                            $query->where('id', '=', $deptId)
+                                                ->orWhere('level', 'like', $deptId . ',%')
+                                                ->orWhere('level', 'like', '%,' . $deptId)
+                                                ->orWhere('level', 'like', '%,' . $deptId . ',%');
+                                        })
+                                        ->pluck('id')
+                                        ->toArray();
+                                }
+                                $deptIds = array_merge($parentDepts, ...$ids);
+
+                                // 如果是部门单独处理 数据范围
+                                if ('App\System\Model\SystemDept' === get_class($this->model)) {
+                                    $this->builder = $this->builder->whereIn('id', $deptIds);
+                                    break;
+                                }
+
+                                // 本部门及子部门数据权限 以 当前表的dept_id作为条件
+                                if (!in_array('dept_id', $this->model->getFillable())) {
+                                    break;
+                                }
+
+                                $this->builder = $this->builder->whereIn('dept_id', $deptIds);
                             case SystemRole::SELF_SCOPE:
                                 $this->userIds[] = $this->userid;
                                 break;
