@@ -180,7 +180,7 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
         $options['rowSelection'] = [ 'showCheckedAll' => true ];
         $options['pk'] = "'".$this->getPk()."'";
         $options['operationColumn'] = false;
-        $options['operationWidth'] = 160;
+        $options['operationColumnWidth'] = 160;
         $options['formOption'] = [
             'viewType' => $this->getComponentType($this->model->component_type),
             'width' => 600,
