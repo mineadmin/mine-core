@@ -159,7 +159,7 @@ class LoginUser
     public function isAdminRole(): bool
     {
         return in_array(
-            container()->get(RoleServiceInterface::class)->read(env('ADMIN_ROLE'), ['code'])->code,
+            container()->get(RoleServiceInterface::class)->read((int)env('ADMIN_ROLE'), ['code'])->code,
             container()->get(UserServiceInterface::class)->getInfo()['roles']
         );
     }
