@@ -35,14 +35,14 @@ trait ControllerTrait
     protected MineResponse $response;
 
     /**
-     * @param string|array|object $msgOrData
-     * @param array $data
+     * @param string|array|object|null $msgOrData
+     * @param array|object $data
      * @param int $code
      * @return ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function success(string|array|object $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
+    public function success(string|array|object|null $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
     {
         if (is_string($msgOrData) || is_null($msgOrData)) {
             return $this->response->success($msgOrData, $data, $code);
