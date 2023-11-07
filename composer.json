@@ -59,6 +59,7 @@
         "overtrue/flysystem-cos": "^5.0",
         "overtrue/flysystem-qiniu": "^3.0",
         "symfony/property-access": "^6.0",
+        "symfony/serializer": "^6.0",
         "tangwei/apidocs": "^2.1",
         "yurunsoft/phpmailer-swoole": "^1.0",
         "zoujingli/ip2region": "2.0.*",
