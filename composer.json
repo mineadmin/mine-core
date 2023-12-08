@@ -20,14 +20,14 @@
         }
     },
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-redis": "*",
-        "ext-swoole": ">=4.5",
+        "ext-swoole": ">=5.0",
         "doctrine/dbal": "^3.1",
         "hyperf/di": "3.0.*",
         "hyperf/amqp": "3.0.*",
