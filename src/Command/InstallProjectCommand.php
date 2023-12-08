@@ -146,12 +146,28 @@ class InstallProjectCommand extends MineCommand
         $dbAnswer = $this->confirm('Do you need to set Database information?', true);
         // 设置数据库
         if ($dbAnswer) {
-            $dbchar = $this->ask('please input database charset, default:', 'utf8mb4');
-            $dbname = $this->ask('please input database name, default:', 'mineadmin');
-            $dbhost = $this->ask('please input database host, default:', '127.0.0.1');
-            $dbport = $this->ask('please input database host port, default:', '3306');
-            $prefix = $this->ask('please input table prefix, default:', 'Null');
-            $dbuser = $this->ask('please input database username, default:', 'root');
+            $dbtype = $this->ask('please input database type pgsql or mysql, default:', 'mysql');
+            while(!in_array($dbtype, ['pgsql', 'mysql'])) {
+                $dbtype = $this->ask('please input database type pgsql or mysql, default:', 'mysql');
+            }
+            switch($dbtype) {
+                case 'mysql':
+                    $dbchar = $this->ask('please input database charset, default:', 'utf8mb4');
+                    $dbname = $this->ask('please input database name, default:', 'mineadmin');
+                    $dbhost = $this->ask('please input database host, default:', '127.0.0.1');
+                    $dbport = $this->ask('please input database host port, default:', '3306');
+                    $prefix = $this->ask('please input table prefix, default:', 'Null');
+                    $dbuser = $this->ask('please input database username, default:', 'root');
+                    break;
+                case 'pgsql':
+                    $dbchar = $this->ask('please input database charset, default:', 'utf8');
+                    $dbname = $this->ask('please input database name, default:', 'mineadmin');
+                    $dbhost = $this->ask('please input database host, default:', '127.0.0.1');
+                    $dbport = $this->ask('please input database host port, default:', '5432');
+                    $prefix = $this->ask('please input table prefix, default:', 'Null');
+                    $dbuser = $this->ask('please input database username, default:', 'postgres');
+            }
+
             $dbpass = '';
 
             $i = 3;
@@ -169,6 +185,7 @@ class InstallProjectCommand extends MineCommand
             }
 
             $this->database = [
+                'dbtype'    => $dbtype,
                 'charset' => $dbchar,
                 'dbname'  => $dbname,
                 'dbhost'  => $dbhost,
@@ -208,7 +225,7 @@ class InstallProjectCommand extends MineCommand
             $env = parse_ini_file(BASE_PATH . '/.env.example', true);
             $env['APP_NAME'] = 'MineAdmin';
             $env['APP_ENV'] = 'dev';
-            $env['DB_DRIVER'] = 'mysql';
+            $env['DB_DRIVER'] = $this->database['dbtype'];
             $env['DB_HOST'] = $this->database['dbhost'];
             $env['DB_PORT'] = $this->database['dbport'];
             $env['DB_DATABASE'] = $this->database['dbname'];
@@ -247,24 +264,30 @@ class InstallProjectCommand extends MineCommand
                     $envContent .= PHP_EOL;
                 }
             }
-            $dsn = sprintf("mysql:host=%s;port=%s", $this->database['dbhost'], $this->database['dbport']);
-            $pdo = new \PDO($dsn, $this->database['dbuser'], $this->database['dbpass']);
-            $isSuccess = $pdo->query(
-                sprintf(
-                    'CREATE DATABASE IF NOT EXISTS `%s` DEFAULT CHARSET %s COLLATE %s_general_ci;',
-                    $this->database['dbname'],
-                    $this->database['charset'],
-                    $this->database['charset']
-                )
-            );
 
-            $pdo = null;
+            if ($this->database['dbtype'] == 'mysql') {
+                $dsn = sprintf("%s:host=%s;port=%s", $this->database['dbtype'], $this->database['dbhost'], $this->database['dbport']);
+                $pdo = new \PDO($dsn, $this->database['dbuser'], $this->database['dbpass']);
+                $isSuccess = $pdo->query(
+                    sprintf(
+                        'CREATE DATABASE IF NOT EXISTS `%s` DEFAULT CHARSET %s COLLATE %s_general_ci;',
+                        $this->database['dbname'],
+                        $this->database['charset'],
+                        $this->database['charset']
+                    )
+                );
 
-            if ($isSuccess) {
-                $this->line($this->getGreenText(sprintf('"%s" database created successfully', $this->database['dbname'])));
-                file_put_contents(BASE_PATH . '/.env', $envContent);
+                $pdo = null;
+
+                if ($isSuccess) {
+                    $this->line($this->getGreenText(sprintf('"%s" database created successfully', $this->database['dbname'])));
+                    file_put_contents(BASE_PATH . '/.env', $envContent);
+                } else {
+                    $this->line($this->getRedText(sprintf('Failed to create database "%s". Please create it manually', $this->database['dbname'])));
+                }
             } else {
-                $this->line($this->getRedText(sprintf('Failed to create database "%s". Please create it manually', $this->database['dbname'])));
+                file_put_contents(BASE_PATH . '/.env', $envContent);
+                $this->line($this->getGreenText(sprintf('Success write .env file')));
             }
         } catch (\RuntimeException $e) {
             $this->line($this->getRedText($e->getMessage()));
@@ -356,6 +379,10 @@ class InstallProjectCommand extends MineCommand
             'updated_at' => date('Y-m-d H:i:s'),
             'remark' => '系统内置角色，不可删除'
         ]);
+        if (env('DB_DRIVER') == 'pgsql') {
+            Db::select("SELECT setval('system_user_id_seq', 1)");
+            Db::select("SELECT setval('system_role_id_seq', 1)");
+        }
         Db::table('system_user_role')->insert([
             'user_id' => env('SUPER_ADMIN', 1),
             'role_id' => env('ADMIN_ROLE', 1)
