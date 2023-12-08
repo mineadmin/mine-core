@@ -256,7 +256,7 @@ if (! function_exists('blank')) {
      * @param  mixed  $value
      * @return bool
      */
-    function blank($value)
+    function blank(mixed $value): bool
     {
         if (is_null($value)) {
             return true;
@@ -285,7 +285,7 @@ if (! function_exists('filled')) {
      * @param  mixed  $value
      * @return bool
      */
-    function filled($value)
+    function filled(mixed $value): bool
     {
         return ! blank($value);
     }
