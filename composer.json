@@ -38,6 +38,7 @@
         "hyperf/config": "3.0.*",
         "hyperf/crontab": "3.0.*",
         "hyperf/database": "3.0.*",
+        "hyperf/database-pgsql": "3.0.*",
         "hyperf/constants": "3.0.*",
         "hyperf/db-connection": "3.0.*",
         "hyperf/filesystem": "^3.0",
