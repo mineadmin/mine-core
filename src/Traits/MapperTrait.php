@@ -110,11 +110,11 @@ trait MapperTrait
         if (isset($params['openPage']) && $params['openPage']) {
             $pageName = $params['pageName'] ?? 'page';
             $pageSize = $params['pageSize'] ?? $this->model::PAGE_SIZE;
-            return $this->setPaginate($query->paginate($pageSize, $params['select'] ?? ['*'], $pageName, $params[$pageName] ?? 1));
+            return $this->setPaginate($query->paginate($pageSize, $params['select'] ?? ['*'], $pageName, $params[$pageName] ?? 1), $params);
         }
 
         return method_exists($this, 'handleItems')
-            ? ( new MineCollection($this->handleItems($query->get($params['select'] ?? ['*']))) )->toArray()
+            ? ( new MineCollection($this->handleItems($query->get($params['select'] ?? ['*']), $params)) )->toArray()
             : $query->get($params['select'] ?? ['*'])->toArray();
     }
 
