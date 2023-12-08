@@ -192,14 +192,11 @@ if (! function_exists('app_verify')) {
 if (! function_exists('snowflake_id')) {
     /**
      * 生成雪花ID
-     * @param int|null $workerId
      * @return String
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    function snowflake_id(?int $workerId = null): String
+    function snowflake_id(): string
     {
-        return container()->get(Id::class)->getId($workerId);
+        return container()->get(\Hyperf\Snowflake\IdGeneratorInterface::class)->generate();
     }
 }
 
