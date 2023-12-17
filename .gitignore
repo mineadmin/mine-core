@@ -4,3 +4,4 @@
 *.log
 .env
 composer.lock
+*.cache
