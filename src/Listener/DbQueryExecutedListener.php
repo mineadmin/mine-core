@@ -21,6 +21,7 @@ use Hyperf\Logger\LoggerFactory;
 use Mine\Helper\Str;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use function Hyperf\Support\env;
 
 #[Listener]
 class DbQueryExecutedListener implements ListenerInterface

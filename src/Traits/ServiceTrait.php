@@ -19,6 +19,7 @@ use Mine\MineCollection;
 use Mine\MineModel;
 use Mine\MineResponse;
 use Psr\Http\Message\ResponseInterface;
+use function Hyperf\Collection\collect;
 
 trait ServiceTrait
 {

@@ -27,6 +27,8 @@ use App\System\Model\SystemUser;
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use Mine\Exception\MineException;
+use function Hyperf\Config\config;
+use function Hyperf\Support\env;
 
 trait ModelMacroTrait
 {
