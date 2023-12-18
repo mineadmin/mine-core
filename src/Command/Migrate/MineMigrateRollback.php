@@ -10,18 +10,26 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Command\Migrate;
 
+use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Concerns\Confirmable;
 use Hyperf\Database\Commands\Migrations\BaseCommand;
 use Hyperf\Database\Migrations\Migrator;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Hyperf\Command\Annotation\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class MineMigrateRollback
- * @package System\Command\Migrate
+ * Class MineMigrateRollback.
  */
 #[Command]
 class MineMigrateRollback extends BaseCommand
@@ -32,8 +40,6 @@ class MineMigrateRollback extends BaseCommand
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected string $description = 'Run rollback the database migrations';
 
@@ -48,7 +54,6 @@ class MineMigrateRollback extends BaseCommand
 
     /**
      * Create a new migration command instance.
-     * @param Migrator $migrator
      */
     public function __construct(Migrator $migrator)
     {
@@ -120,8 +125,6 @@ class MineMigrateRollback extends BaseCommand
 
     /**
      * Get migration path (either specified by '--path' option or default location).
-     *
-     * @return string
      */
     protected function getMigrationPath(): string
     {

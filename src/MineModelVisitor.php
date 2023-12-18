@@ -10,23 +10,26 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine;
 
 use Hyperf\Database\Commands\Ast\ModelUpdateVisitor;
-use Hyperf\Stringable;
 use Mine\Annotation\DependProxy;
 
 /**
- * Class MineModelVisitor
- * @package System
+ * Class MineModelVisitor.
  */
-#[DependProxy(values: [ ModelUpdateVisitor::class ])]
+#[DependProxy(values: [ModelUpdateVisitor::class])]
 class MineModelVisitor extends ModelUpdateVisitor
 {
-    /**
-     * @param string $type
-     * @return string|null
-     */
     protected function formatDatabaseType(string $type): ?string
     {
         return match ($type) {
@@ -39,11 +42,6 @@ class MineModelVisitor extends ModelUpdateVisitor
         };
     }
 
-    /**
-     * @param string $type
-     * @param string|null $cast
-     * @return string|null
-     */
     protected function formatPropertyType(string $type, ?string $cast): ?string
     {
         if (! isset($cast)) {

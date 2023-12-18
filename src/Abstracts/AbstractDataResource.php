@@ -1,12 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Abstracts;
 
+use Hyperf\Constants\ConstantsCollector;
 use Mine\Interfaces\ServiceInterface\Resource\ArrayResource;
 use Mine\Interfaces\ServiceInterface\Resource\ConstResource;
 use Mine\Interfaces\ServiceInterface\Resource\DataResource;
-use Hyperf\Constants\ConstantsCollector;
-
 
 abstract class AbstractDataResource implements DataResource
 {

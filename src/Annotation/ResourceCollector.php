@@ -1,9 +1,18 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Annotation;
 
 use Hyperf\Di\MetadataCollector;
-use RuntimeException;
 
 class ResourceCollector extends MetadataCollector
 {
@@ -18,7 +27,7 @@ class ResourceCollector extends MetadataCollector
     {
         $class = static::$container['resource'][$tag] ?? null;
         if (empty($class)) {
-            throw new RuntimeException(sprintf('没有找到%s,或者类[%s]没有实现ResourceService契约', $tag, $class ?? 'null'));
+            throw new \RuntimeException(sprintf('没有找到%s,或者类[%s]没有实现ResourceService契约', $tag, $class ?? 'null'));
         }
         return container()->get($class);
     }

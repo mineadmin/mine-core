@@ -10,27 +10,29 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Helper;
 
+use Mine\Exception\TokenException;
 use Mine\Interfaces\ServiceInterface\RoleServiceInterface;
 use Mine\Interfaces\ServiceInterface\UserServiceInterface;
-use Mine\Exception\TokenException;
 use Mine\MineRequest;
-use Xmo\JWTAuth\JWT;
 use Psr\SimpleCache\InvalidArgumentException;
+use Xmo\JWTAuth\JWT;
 
 class LoginUser
 {
-    /**
-     * @var JWT
-     */
     protected JWT $jwt;
 
-    /**
-     * @var MineRequest
-     */
     protected MineRequest $request;
-
 
     /**
      * LoginUser constructor.
@@ -43,10 +45,7 @@ class LoginUser
     }
 
     /**
-     * 验证token
-     * @param string|null $token
-     * @param string $scene
-     * @return bool
+     * 验证token.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -67,7 +66,6 @@ class LoginUser
 
     /**
      * 获取JWT对象
-     * @return Jwt
      */
     public function getJwt(): Jwt
     {
@@ -75,9 +73,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户信息
-     * @param string|null $token
-     * @return array
+     * 获取当前登录用户信息.
      */
     public function getUserInfo(?string $token = null): array
     {
@@ -85,8 +81,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户ID
-     * @return int
+     * 获取当前登录用户ID.
      */
     public function getId(): int
     {
@@ -94,8 +89,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户名
-     * @return string
+     * 获取当前登录用户名.
      */
     public function getUsername(): string
     {
@@ -103,9 +97,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户角色
-     * @param array $columns
-     * @return array
+     * 获取当前登录用户角色.
      */
     public function getUserRole(array $columns = ['id', 'name', 'code']): array
     {
@@ -113,9 +105,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户岗位
-     * @param array $columns
-     * @return array
+     * 获取当前登录用户岗位.
      */
     public function getUserPost(array $columns = ['id', 'name', 'code']): array
     {
@@ -123,9 +113,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前登录用户部门
-     * @param array $columns
-     * @return array
+     * 获取当前登录用户部门.
      */
     public function getUserDept(array $columns = ['id', 'name']): array
     {
@@ -133,8 +121,7 @@ class LoginUser
     }
 
     /**
-     * 获取当前token用户类型
-     * @return string
+     * 获取当前token用户类型.
      */
     public function getUserType(): string
     {
@@ -142,8 +129,7 @@ class LoginUser
     }
 
     /**
-     * 是否为超级管理员（创始人），用户禁用对创始人没用
-     * @return bool
+     * 是否为超级管理员（创始人），用户禁用对创始人没用.
      */
     public function isSuperAdmin(): bool
     {
@@ -151,23 +137,20 @@ class LoginUser
     }
 
     /**
-     * 是否为管理员角色
-     * @return bool
+     * 是否为管理员角色.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function isAdminRole(): bool
     {
         return in_array(
-            container()->get(RoleServiceInterface::class)->read((int)env('ADMIN_ROLE'), ['code'])->code,
+            container()->get(RoleServiceInterface::class)->read((int) env('ADMIN_ROLE'), ['code'])->code,
             container()->get(UserServiceInterface::class)->getInfo()['roles']
         );
     }
 
     /**
-     * 获取Token
-     * @param array $user
-     * @return string
+     * 获取Token.
      * @throws InvalidArgumentException
      */
     public function getToken(array $user): string
@@ -176,8 +159,7 @@ class LoginUser
     }
 
     /**
-     * 刷新token
-     * @return string
+     * 刷新token.
      * @throws InvalidArgumentException
      */
     public function refresh(): string

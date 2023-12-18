@@ -2,32 +2,31 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
+
 namespace Mine\Amqp\Event;
 
-use Hyperf\Amqp\Message\ConsumerMessageInterface;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
-use Throwable;
 
 class FailToProduce extends ConsumeEvent
 {
     /**
-     * @var Throwable
+     * @var \Throwable
      */
     public $throwable;
 
-    public function __construct(ProducerMessageInterface $producer, Throwable $throwable)
+    public function __construct(ProducerMessageInterface $producer, \Throwable $throwable)
     {
         $this->throwable = $throwable;
     }
 
-    public function getThrowable(): Throwable
+    public function getThrowable(): \Throwable
     {
         return $this->throwable;
     }

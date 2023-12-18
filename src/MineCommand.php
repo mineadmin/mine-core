@@ -10,21 +10,31 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine;
 
 use Hyperf\Command\Command as HyperfCommand;
 
 /**
- * Class MineCommand
- * @package System
+ * Class MineCommand.
  */
 abstract class MineCommand extends HyperfCommand
 {
-    protected string $module;
+    protected const CONSOLE_GREEN_BEGIN = "\033[32;5;1m";
 
-    protected CONST CONSOLE_GREEN_BEGIN = "\033[32;5;1m";
-    protected CONST CONSOLE_RED_BEGIN = "\033[31;5;1m";
-    protected CONST CONSOLE_END = "\033[0m";
+    protected const CONSOLE_RED_BEGIN = "\033[31;5;1m";
+
+    protected const CONSOLE_END = "\033[0m";
+
+    protected string $module;
 
     protected function getGreenText($text): string
     {

@@ -1,12 +1,13 @@
 <?php
+
+declare(strict_types=1);
 /**
- * MineAdmin is committed to providing solutions for quickly building web applications
- * Please view the LICENSE file that was distributed with this source code,
- * For the full copyright and license information.
- * Thank you very much for using MineAdmin.
+ * This file is part of MineAdmin.
  *
- * @Author X.Mo<root@imoi.cn>
- * @Link   https://gitee.com/xmo/MineAdmin
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 
 namespace Mine\Traits;
@@ -27,10 +28,7 @@ trait ServiceTrait
     public $mapper;
 
     /**
-     * 获取列表数据
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 获取列表数据.
      */
     public function getList(?array $params = null, bool $isScope = true): array
     {
@@ -42,10 +40,7 @@ trait ServiceTrait
     }
 
     /**
-     * 从回收站过去列表数据
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 从回收站过去列表数据.
      */
     public function getListByRecycle(?array $params = null, bool $isScope = true): array
     {
@@ -57,10 +52,7 @@ trait ServiceTrait
     }
 
     /**
-     * 获取列表数据（带分页）
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 获取列表数据（带分页）.
      */
     public function getPageList(?array $params = null, bool $isScope = true): array
     {
@@ -71,10 +63,7 @@ trait ServiceTrait
     }
 
     /**
-     * 从回收站获取列表数据（带分页）
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 从回收站获取列表数据（带分页）.
      */
     public function getPageListByRecycle(?array $params = null, bool $isScope = true): array
     {
@@ -86,10 +75,7 @@ trait ServiceTrait
     }
 
     /**
-     * 获取树列表
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 获取树列表.
      */
     public function getTreeList(?array $params = null, bool $isScope = true): array
     {
@@ -101,10 +87,7 @@ trait ServiceTrait
     }
 
     /**
-     * 从回收站获取树列表
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 从回收站获取树列表.
      */
     public function getTreeListByRecycle(?array $params = null, bool $isScope = true): array
     {
@@ -116,9 +99,7 @@ trait ServiceTrait
     }
 
     /**
-     * 新增数据
-     * @param array $data
-     * @return int
+     * 新增数据.
      */
     public function save(array $data): int
     {
@@ -126,9 +107,7 @@ trait ServiceTrait
     }
 
     /**
-     * 批量新增
-     * @param array $collects
-     * @return bool
+     * 批量新增.
      */
     #[Transaction]
     public function batchSave(array $collects): bool
@@ -140,10 +119,7 @@ trait ServiceTrait
     }
 
     /**
-     * 读取一条数据
-     * @param int $id
-     * @param array $column
-     * @return MineModel|null
+     * 读取一条数据.
      */
     public function read(int $id, array $column = ['*']): ?MineModel
     {
@@ -152,10 +128,8 @@ trait ServiceTrait
 
     /**
      * Description:获取单个值
-     * User:mike
-     * @param array $condition
-     * @param string $columns
-     * @return \Hyperf\Tappable\HigherOrderTapProxy|mixed|void|null
+     * User:mike.
+     * @return null|\Hyperf\Tappable\HigherOrderTapProxy|mixed|void
      */
     public function value(array $condition, string $columns = 'id')
     {
@@ -164,10 +138,8 @@ trait ServiceTrait
 
     /**
      * Description:获取单列值
-     * User:mike
-     * @param array $condition
-     * @param string $columns
-     * @return array|null
+     * User:mike.
+     * @return null|array
      */
     public function pluck(array $condition, string $columns = 'id'): array
     {
@@ -175,9 +147,7 @@ trait ServiceTrait
     }
 
     /**
-     * 从回收站读取一条数据
-     * @param int $id
-     * @return MineModel
+     * 从回收站读取一条数据.
      * @noinspection PhpUnused
      */
     public function readByRecycle(int $id): MineModel
@@ -186,20 +156,15 @@ trait ServiceTrait
     }
 
     /**
-     * 单个或批量软删除数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量软删除数据.
      */
     public function delete(array $ids): bool
     {
-        return !empty($ids) && $this->mapper->delete($ids);
+        return ! empty($ids) && $this->mapper->delete($ids);
     }
 
     /**
-     * 更新一条数据
-     * @param int $id
-     * @param array $data
-     * @return bool
+     * 更新一条数据.
      */
     public function update(int $id, array $data): bool
     {
@@ -207,10 +172,7 @@ trait ServiceTrait
     }
 
     /**
-     * 按条件更新数据
-     * @param array $condition
-     * @param array $data
-     * @return bool
+     * 按条件更新数据.
      */
     public function updateByCondition(array $condition, array $data): bool
     {
@@ -218,65 +180,47 @@ trait ServiceTrait
     }
 
     /**
-     * 单个或批量真实删除数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量真实删除数据.
      */
     public function realDelete(array $ids): bool
     {
-        return !empty($ids) && $this->mapper->realDelete($ids);
+        return ! empty($ids) && $this->mapper->realDelete($ids);
     }
 
     /**
-     * 单个或批量从回收站恢复数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量从回收站恢复数据.
      */
     public function recovery(array $ids): bool
     {
-        return !empty($ids) && $this->mapper->recovery($ids);
+        return ! empty($ids) && $this->mapper->recovery($ids);
     }
 
     /**
-     * 单个或批量禁用数据
-     * @param array $ids
-     * @param string $field
-     * @return bool
+     * 单个或批量禁用数据.
      */
     public function disable(array $ids, string $field = 'status'): bool
     {
-        return !empty($ids) && $this->mapper->disable($ids, $field);
+        return ! empty($ids) && $this->mapper->disable($ids, $field);
     }
 
     /**
-     * 单个或批量启用数据
-     * @param array $ids
-     * @param string $field
-     * @return bool
+     * 单个或批量启用数据.
      */
     public function enable(array $ids, string $field = 'status'): bool
     {
-        return !empty($ids) && $this->mapper->enable($ids, $field);
+        return ! empty($ids) && $this->mapper->enable($ids, $field);
     }
 
     /**
      * 修改数据状态
-     * @param int $id
-     * @param string $value
-     * @param string $filed
-     * @return bool
      */
     public function changeStatus(int $id, string $value, string $filed = 'status'): bool
     {
-        return $value == MineModel::ENABLE ? $this->mapper->enable([ $id ], $filed) : $this->mapper->disable([ $id ], $filed);
+        return $value == MineModel::ENABLE ? $this->mapper->enable([$id], $filed) : $this->mapper->disable([$id], $filed);
     }
 
     /**
-     * 数字更新操作
-     * @param int $id
-     * @param string $field
-     * @param int $value
-     * @return bool
+     * 数字更新操作.
      */
     public function numberOperation(int $id, string $field, int $value): bool
     {
@@ -284,11 +228,7 @@ trait ServiceTrait
     }
 
     /**
-     * 导出数据
-     * @param array $params
-     * @param string|null $dto
-     * @param string|null $filename
-     * @return ResponseInterface
+     * 导出数据.
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -307,10 +247,7 @@ trait ServiceTrait
     }
 
     /**
-     * 数据导入
-     * @param string $dto
-     * @param \Closure|null $closure
-     * @return bool
+     * 数据导入.
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -322,10 +259,7 @@ trait ServiceTrait
     }
 
     /**
-     * 数组数据转分页数据显示
-     * @param array|null $params
-     * @param string $pageName
-     * @return array
+     * 数组数据转分页数据显示.
      */
     public function getArrayToPageList(?array $params = [], string $pageName = 'page'): array
     {
@@ -349,15 +283,23 @@ trait ServiceTrait
             'pageInfo' => [
                 'total' => $collect->count(),
                 'currentPage' => $page,
-                'totalPage' => ceil($collect->count() / $pageSize)
-            ]
+                'totalPage' => ceil($collect->count() / $pageSize),
+            ],
         ];
     }
 
     /**
-     * 数组数据搜索器
-     * @param \Hyperf\Collection\Collection $collect
-     * @param array $params
+     * 远程通用列表查询.
+     */
+    public function getRemoteList(array $params = []): array
+    {
+        $remoteOption = $params['remoteOption'] ?? [];
+        unset($params['remoteOption']);
+        return $this->mapper->getRemoteList(array_merge($params, $remoteOption));
+    }
+
+    /**
+     * 数组数据搜索器.
      * @return Collection
      */
     protected function handleArraySearch(\Hyperf\Collection\Collection $collect, array $params): \Hyperf\Collection\Collection
@@ -366,10 +308,7 @@ trait ServiceTrait
     }
 
     /**
-     * 数组当前页数据返回之前处理器，默认对key重置
-     * @param array $data
-     * @param array $params
-     * @return array
+     * 数组当前页数据返回之前处理器，默认对key重置.
      */
     protected function getCurrentArrayPageBefore(array &$data, array $params = []): array
     {
@@ -378,22 +317,10 @@ trait ServiceTrait
     }
 
     /**
-     * 设置需要分页的数组数据
-     * @param array $params
-     * @return array
+     * 设置需要分页的数组数据.
      */
     protected function getArrayData(array $params = []): array
     {
         return [];
-    }
-
-    /**
-     * 远程通用列表查询
-     */
-    public function getRemoteList(array $params = []): array
-    {
-        $remoteOption = $params['remoteOption'] ?? [];
-        unset($params['remoteOption']);
-        return $this->mapper->getRemoteList(array_merge($params, $remoteOption));
     }
 }

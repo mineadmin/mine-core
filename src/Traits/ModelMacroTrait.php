@@ -10,8 +10,16 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
-namespace  Mine\Traits;
+namespace Mine\Traits;
 
 use App\System\Model\SystemDept;
 use App\System\Model\SystemRole;
@@ -23,14 +31,13 @@ use Mine\Exception\MineException;
 trait ModelMacroTrait
 {
     /**
-     * 注册自定义方法
+     * 注册自定义方法.
      */
     private function registerUserDataScope()
     {
         // 数据权限方法
         $model = $this;
-        Builder::macro('userDataScope', function(?int $userid = null) use($model)
-        {
+        Builder::macro('userDataScope', function (?int $userid = null) use ($model) {
             if (! config('mineadmin.data_scope_enabled')) {
                 return $this;
             }
@@ -46,12 +53,11 @@ trait ModelMacroTrait
                 return $this;
             }
 
-            if (!in_array($model->getDataScopeField(), $model->getFillable())) {
+            if (! in_array($model->getDataScopeField(), $model->getFillable())) {
                 return $this;
             }
 
-            $dataScope = new class($userid, $this, $model)
-            {
+            $dataScope = new class($userid, $this, $model) {
                 // 用户ID
                 protected int $userid;
 
@@ -66,14 +72,11 @@ trait ModelMacroTrait
 
                 public function __construct(int $userid, Builder $builder, mixed $model)
                 {
-                    $this->userid  = $userid;
+                    $this->userid = $userid;
                     $this->builder = $builder;
                     $this->model = $model;
                 }
 
-                /**
-                 * @return Builder
-                 */
                 public function execute(): Builder
                 {
                     $this->getUserDataScope();
@@ -155,11 +158,12 @@ trait ModelMacroTrait
                                 }
 
                                 // 本部门及子部门数据权限 以 当前表的dept_id作为条件
-                                if (!in_array('dept_id', $this->model->getFillable())) {
+                                if (! in_array('dept_id', $this->model->getFillable())) {
                                     break;
                                 }
 
                                 $this->builder = $this->builder->whereIn('dept_id', $deptIds);
+                                // no break
                             case SystemRole::SELF_SCOPE:
                                 $this->userIds[] = $this->userid;
                                 break;
@@ -176,38 +180,36 @@ trait ModelMacroTrait
 
     /**
      * Description:注册常用自定义方法
-     * User:mike
+     * User:mike.
      */
     private function registerBase()
     {
-        //添加andFilterWhere()方法
-        Builder::macro('andFilterWhere', function ($key, $operator, $value = NULL) {
+        // 添加andFilterWhere()方法
+        Builder::macro('andFilterWhere', function ($key, $operator, $value = null) {
             if ($value === '' || $value === '%%' || $value === '%') {
                 return $this;
             }
             if ($operator === '' || $operator === '%%' || $operator === '%') {
                 return $this;
             }
-            if($value === NULL){
+            if ($value === null) {
                 return $this->where($key, $operator);
-            }else{
-                return $this->where($key, $operator, $value);
             }
+            return $this->where($key, $operator, $value);
         });
 
-        //添加orFilterWhere()方法
-        Builder::macro('orFilterWhere', function ($key, $operator, $value = NULL) {
+        // 添加orFilterWhere()方法
+        Builder::macro('orFilterWhere', function ($key, $operator, $value = null) {
             if ($value === '' || $value === '%%' || $value === '%') {
                 return $this;
             }
             if ($operator === '' || $operator === '%%' || $operator === '%') {
                 return $this;
             }
-            if($value === NULL){
+            if ($value === null) {
                 return $this->orWhere($key, $operator);
-            }else{
-                return $this->orWhere($key, $operator, $value);
             }
+            return $this->orWhere($key, $operator, $value);
         });
     }
 }

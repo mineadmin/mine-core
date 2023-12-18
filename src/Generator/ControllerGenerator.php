@@ -2,7 +2,7 @@
 
 /** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
 
-/**
+/*
  * MineAdmin is committed to providing solutions for quickly building web applications
  * Please view the LICENSE file that was distributed with this source code,
  * For the full copyright and license information.
@@ -13,6 +13,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
@@ -23,30 +32,18 @@ use Mine\Helper\Str;
 
 /**
  * 控制器生成
- * Class ControllerGenerator
- * @package Mine\Generator
+ * Class ControllerGenerator.
  */
 class ControllerGenerator extends MineGenerator implements CodeGenerator
 {
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return ControllerGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -72,7 +69,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
         } else {
             $path = BASE_PATH . "/app/{$module}/Controller/";
         }
-        if (!empty($this->model->package_name)) {
+        if (! empty($this->model->package_name)) {
             $path .= Str::title($this->model->package_name) . '/';
         }
         $this->filesystem->exists($path) || $this->filesystem->makeDirectory($path, 0755, true, true);
@@ -88,8 +85,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取生成控制器的类型
-     * @return string
+     * 获取生成控制器的类型.
      */
     public function getType(): string
     {
@@ -97,8 +93,43 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
+     * 获取业务名称.
+     */
+    public function getBusinessName(): string
+    {
+        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
+    }
+
+    /**
+     * 获取短业务名称.
+     */
+    public function getShortBusinessName(): string
+    {
+        return Str::camel(str_replace(
+            Str::lower($this->model->module_name),
+            '',
+            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
+        ));
+    }
+
+    /**
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
      * 获取控制器模板地址
-     * @return string
      */
     protected function getTemplatePath(): string
     {
@@ -106,8 +137,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -115,7 +145,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): ControllerGenerator
     {
@@ -129,7 +159,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -160,12 +190,10 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
             '{NUMBER_TYPE}',
             '{NUMBER_VALUE}',
         ];
-
-
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      */
     protected function getReplaceContent(): array
     {
@@ -178,7 +206,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
             $this->getControllerRoute(),
             $this->getFunctions(),
             $this->getRequestName(),
-            sprintf('%s, %s', Str::lower($this->model->module_name).':'.$this->getShortBusinessName(), $this->getMethodRoute('index')),
+            sprintf('%s, %s', Str::lower($this->model->module_name) . ':' . $this->getShortBusinessName(), $this->getMethodRoute('index')),
             $this->getMethodRoute('recycle'),
             $this->getMethodRoute('save'),
             $this->getMethodRoute('read'),
@@ -199,21 +227,19 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 初始化控制器命名空间
-     * @return string
+     * 初始化控制器命名空间.
      */
     protected function initNamespace(): string
     {
-        $namespace = $this->getNamespace() . "\\Controller";
-        if (!empty($this->model->package_name)) {
-            return $namespace . "\\" . Str::title($this->model->package_name);
+        $namespace = $this->getNamespace() . '\\Controller';
+        if (! empty($this->model->package_name)) {
+            return $namespace . '\\' . Str::title($this->model->package_name);
         }
         return $namespace;
     }
 
     /**
-     * 获取控制器注释
-     * @return string
+     * 获取控制器注释.
      */
     protected function getComment(): string
     {
@@ -221,8 +247,7 @@ class ControllerGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取使用的类命名空间
-     * @return string
+     * 获取使用的类命名空间.
      */
     protected function getUse(): string
     {
@@ -233,8 +258,7 @@ UseNamespace;
     }
 
     /**
-     * 获取控制器类名称
-     * @return string
+     * 获取控制器类名称.
      */
     protected function getClassName(): string
     {
@@ -242,8 +266,7 @@ UseNamespace;
     }
 
     /**
-     * 获取服务类名称
-     * @return string
+     * 获取服务类名称.
      */
     protected function getServiceName(): string
     {
@@ -251,8 +274,7 @@ UseNamespace;
     }
 
     /**
-     * 获取控制器路由
-     * @return string
+     * 获取控制器路由.
      */
     protected function getControllerRoute(): string
     {
@@ -263,9 +285,6 @@ UseNamespace;
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getFunctions(): string
     {
         $menus = $this->model->generate_menus ? explode(',', $this->model->generate_menus) : [];
@@ -286,9 +305,7 @@ UseNamespace;
     }
 
     /**
-     * 获取方法路由
-     * @param string $route
-     * @return string
+     * 获取方法路由.
      */
     protected function getMethodRoute(string $route): string
     {
@@ -300,21 +317,15 @@ UseNamespace;
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getDtoClass(): string
     {
         return sprintf(
-            "\%s\Dto\%s::class",
+            '\\%s\\Dto\\%s::class',
             $this->model->namespace,
             $this->getBusinessName() . 'Dto'
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getPk(): string
     {
         return SettingGenerateColumns::query()
@@ -323,94 +334,36 @@ UseNamespace;
             ->value('column_name');
     }
 
-    /**
-     * @return string
-     */
     protected function getStatusValue(): string
     {
         return 'statusValue';
     }
 
-    /**
-     * @return string
-     */
     protected function getStatusField(): string
     {
         return 'statusName';
     }
 
-    /**
-     * @return string
-     */
     protected function getNumberField(): string
     {
         return 'numberName';
     }
 
-    /**
-     * @return string
-     */
     protected function getNumberType(): string
     {
         return 'numberType';
     }
 
-    /**
-     * @return string
-     */
     protected function getNumberValue(): string
     {
         return 'numberValue';
     }
 
     /**
-     * 获取验证器
-     * @return string
+     * 获取验证器.
      */
     protected function getRequestName(): string
     {
-        return $this->getBusinessName(). 'Request';
+        return $this->getBusinessName() . 'Request';
     }
-
-    /**
-     * 获取业务名称
-     * @return string
-     */
-    public function getBusinessName(): string
-    {
-        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
-    }
-
-    /**
-     * 获取短业务名称
-     * @return string
-     */
-    public function getShortBusinessName(): string
-    {
-        return Str::camel(str_replace(
-            Str::lower($this->model->module_name),
-            '',
-            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
-        ));
-    }
-
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
-    }
-
 }

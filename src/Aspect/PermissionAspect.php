@@ -10,9 +10,17 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
-use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -20,53 +28,48 @@ use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\Permission;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\LoginUser;
+use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\MineRequest;
 
 /**
- * Class PermissionAspect
- * @package Mine\Aspect
+ * Class PermissionAspect.
  */
 #[Aspect]
 class PermissionAspect extends AbstractAspect
 {
     public array $annotations = [
-        Permission::class
+        Permission::class,
     ];
 
     /**
-     * UserServiceInterface
+     * UserServiceInterface.
      */
     protected UserServiceInterface $service;
 
     /**
-     * MineRequest
+     * MineRequest.
      */
     protected MineRequest $request;
 
     /**
-     * LoginUser
+     * LoginUser.
      */
     protected LoginUser $loginUser;
 
     /**
      * PermissionAspect constructor.
-     * @param UserServiceInterface $service
-     * @param MineRequest $request
-     * @param LoginUser $loginUser
      */
     public function __construct(
         UserServiceInterface $service,
         MineRequest $request,
         LoginUser $loginUser
-    )
-    {
+    ) {
         $this->service = $service;
         $this->request = $request;
         $this->loginUser = $loginUser;
     }
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -78,7 +81,7 @@ class PermissionAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        /** @var Permission $permission */
+        /* @var Permission $permission */
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
             $permission = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class];
         }
@@ -94,10 +97,7 @@ class PermissionAspect extends AbstractAspect
     }
 
     /**
-     * 检查权限
-     * @param string $codeString
-     * @param string $where
-     * @return bool
+     * 检查权限.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

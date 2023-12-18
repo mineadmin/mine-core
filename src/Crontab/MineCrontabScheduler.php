@@ -10,24 +10,31 @@
  */
 
 declare(strict_types=1);
-namespace Mine\Crontab;
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
+namespace Mine\Crontab;
 
 class MineCrontabScheduler
 {
     /**
-     * MineCrontabManage
+     * MineCrontabManage.
      */
     protected MineCrontabManage $crontabManager;
 
     /**
-     * \SplQueue
+     * \SplQueue.
      */
     protected \SplQueue $schedules;
 
     /**
      * MineCrontabScheduler constructor.
-     * @param MineCrontabManage $crontabManager
      */
     public function __construct(MineCrontabManage $crontabManager)
     {

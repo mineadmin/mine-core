@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Context\Context;
@@ -24,18 +33,16 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class UpdateAspect
- * @package Mine\Aspect
+ * Class UpdateAspect.
  */
 #[Aspect]
 class UpdateAspect extends AbstractAspect
 {
     public array $classes = [
-        'Mine\MineModel::update'
+        'Mine\MineModel::update',
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws ContainerExceptionInterface
@@ -45,15 +52,16 @@ class UpdateAspect extends AbstractAspect
     {
         $instance = $proceedingJoinPoint->getInstance();
         // 更新更改人
-        if ($instance instanceof MineModel &&
-            in_array('updated_by', $instance->getFillable()) &&
-            config('mineadmin.data_scope_enabled') &&
-            Context::has(ServerRequestInterface::class) &&
-            container()->get(MineRequest::class)->getHeaderLine('authorization')
+        if ($instance instanceof MineModel
+            && in_array('updated_by', $instance->getFillable())
+            && config('mineadmin.data_scope_enabled')
+            && Context::has(ServerRequestInterface::class)
+            && container()->get(MineRequest::class)->getHeaderLine('authorization')
         ) {
             try {
                 $instance->updated_by = user()->getId();
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
         return $proceedingJoinPoint->process();
     }

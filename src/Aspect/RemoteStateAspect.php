@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -19,19 +28,16 @@ use Mine\Annotation\RemoteState;
 use Mine\Exception\MineException;
 
 /**
- * Class RemoteStateAspect
- * @package Mine\Aspect
+ * Class RemoteStateAspect.
  */
 #[Aspect]
 class RemoteStateAspect extends AbstractAspect
 {
-
     public array $annotations = [
-        RemoteState::class
+        RemoteState::class,
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws MineException
      */

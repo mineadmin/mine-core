@@ -10,21 +10,28 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Crontab;
 
-use Mine\Interfaces\ServiceInterface\CrontabLogServiceInterface;
 use Carbon\Carbon;
-use Closure;
 use Hyperf\Contract\ApplicationInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Crontab\LoggerInterface;
-use Hyperf\Logger\Logger;
+use Hyperf\Guzzle\ClientFactory;
 use Mine\Crontab\Mutex\RedisServerMutex;
 use Mine\Crontab\Mutex\RedisTaskMutex;
 use Mine\Crontab\Mutex\ServerMutex;
 use Mine\Crontab\Mutex\TaskMutex;
-use Hyperf\Guzzle\ClientFactory;
-use Hyperf\Coroutine\Coroutine;
+use Mine\Interfaces\ServiceInterface\CrontabLogServiceInterface;
 use Mine\MineModel;
 use Psr\Container\ContainerInterface;
 use Swoole\Timer;
@@ -36,35 +43,25 @@ use function Hyperf\Support\make;
 class MineExecutor
 {
     public const COMMAND_CRONTAB = 1;
+
     // 类任务
     public const CLASS_CRONTAB = 2;
+
     // URL任务
     public const URL_CRONTAB = 3;
+
     // EVAL 任务
     public const EVAL_CRONTAB = 4;
 
-    /**
-     * @var ContainerInterface
-     */
     protected ContainerInterface $container;
 
-    /**
-     * @var Object
-     */
-    protected Object $logger;
+    protected object $logger;
 
-    /**
-     * @var TaskMutex
-     */
     protected TaskMutex $taskMutex;
 
-    /**
-     * @var ServerMutex
-     */
     protected ServerMutex $serverMutex;
 
     /**
-     * @param ContainerInterface $container
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -80,19 +77,16 @@ class MineExecutor
 
     /**
      * 执行定时任务
-     * @param MineCrontab $crontab
-     * @param bool $run
-     * @return bool|null
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function execute(MineCrontab $crontab, bool $run = false): ?bool
     {
-        if ((! $crontab instanceof MineCrontab || ! $crontab->getExecuteTime()) && !$run) {
+        if ((! $crontab instanceof MineCrontab || ! $crontab->getExecuteTime()) && ! $run) {
             return null;
         }
         $diff = 0;
-        !$run && $diff = $crontab->getExecuteTime()->diffInRealSeconds(new Carbon());
+        ! $run && $diff = $crontab->getExecuteTime()->diffInRealSeconds(new Carbon());
         $callback = null;
         switch ($crontab->getType()) {
             case self::CLASS_CRONTAB:
@@ -106,7 +100,7 @@ class MineExecutor
                                 $result = true;
                                 $res = null;
                                 $instance = make($class);
-                                if (!empty($parameters)) {
+                                if (! empty($parameters)) {
                                     $res = $instance->{$method}($parameters);
                                 } else {
                                     $res = $instance->{$method}();
@@ -151,7 +145,7 @@ class MineExecutor
                         $this->logResult(
                             $crontab,
                             $result,
-                            (!$result && isset($response)) ? $response->getBody() : ''
+                            (! $result && isset($response)) ? $response->getBody() : ''
                         );
                     };
                     $this->decorateRunnable($crontab, $runnable)();
@@ -177,7 +171,7 @@ class MineExecutor
         return true;
     }
 
-    protected function runInSingleton(MineCrontab $crontab, Closure $runnable): Closure
+    protected function runInSingleton(MineCrontab $crontab, \Closure $runnable): \Closure
     {
         return function () use ($crontab, $runnable) {
             $taskMutex = $this->getTaskMutex();
@@ -205,7 +199,7 @@ class MineExecutor
         return $this->taskMutex;
     }
 
-    protected function runOnOneServer(MineCrontab $crontab, Closure $runnable): Closure
+    protected function runOnOneServer(MineCrontab $crontab, \Closure $runnable): \Closure
     {
         return function () use ($crontab, $runnable) {
             $taskMutex = $this->getServerMutex();
@@ -229,12 +223,7 @@ class MineExecutor
         return $this->serverMutex;
     }
 
-    /**
-     * @param MineCrontab $crontab
-     * @param Closure $runnable
-     * @return Closure
-     */
-    protected function decorateRunnable(MineCrontab $crontab, Closure $runnable): Closure
+    protected function decorateRunnable(MineCrontab $crontab, \Closure $runnable): \Closure
     {
         if ($crontab->isSingleton()) {
             $runnable = $this->runInSingleton($crontab, $runnable);
@@ -264,7 +253,7 @@ class MineExecutor
             'parameter' => $crontab->getParameter(),
             'exception_info' => $result,
             'status' => $isSuccess ? MineModel::ENABLE : MineModel::DISABLE,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         $logService->save($data);
     }

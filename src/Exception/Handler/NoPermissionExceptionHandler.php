@@ -10,43 +10,49 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
 namespace Mine\Exception\Handler;
 
+use Hyperf\Codec\Json;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
-use Hyperf\Codec\Json;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\MineCode;
 use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 /**
- * Class TokenExceptionHandler
- * @package Mine\Exception\Handler
+ * Class TokenExceptionHandler.
  */
 class NoPermissionExceptionHandler extends ExceptionHandler
 {
-    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
+    public function handle(\Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         $this->stopPropagation();
         $format = [
             'requestId' => RequestIdHolder::getId(),
             'success' => false,
             'message' => $throwable->getMessage(),
-            'code'    => MineCode::NO_PERMISSION,
+            'code' => MineCode::NO_PERMISSION,
         ];
         return $response->withHeader('Server', 'MineAdmin')
             ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,OPTIONS')
+            ->withHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Access-Control-Allow-Headers', 'accept-language,authorization,lang,uid,token,Keep-Alive,User-Agent,Cache-Control,Content-Type')
             ->withAddedHeader('content-type', 'application/json; charset=utf-8')
             ->withStatus(403)->withBody(new SwooleStream(Json::encode($format)));
     }
 
-    public function isValid(Throwable $throwable): bool
+    public function isValid(\Throwable $throwable): bool
     {
         return $throwable instanceof NoPermissionException;
     }

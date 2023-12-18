@@ -1,7 +1,8 @@
 <?php
+
 /** @noinspection PhpExpressionResultUnusedInspection */
-/** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
-/**
+/* @noinspection PhpSignatureMismatchDuringInheritanceInspection */
+/*
  * MineAdmin is committed to providing solutions for quickly building web applications
  * Please view the LICENSE file that was distributed with this source code,
  * For the full copyright and license information.
@@ -12,6 +13,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateTables;
@@ -21,30 +31,18 @@ use Mine\Helper\Str;
 
 /**
  * JS API文件生成
- * Class ApiGenerator
- * @package Mine\Generator
+ * Class ApiGenerator.
  */
 class ApiGenerator extends MineGenerator implements CodeGenerator
 {
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return ApiGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -79,17 +77,43 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取模板地址
-     * @return string
+     * 获取短业务名称.
      */
-    protected function getTemplatePath(): string
+    public function getShortBusinessName(): string
     {
-        return $this->getStubDir().'/Api/main.stub';
+        return Str::camel(str_replace(
+            Str::lower($this->model->module_name),
+            '',
+            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
+        ));
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
+     * 获取模板地址
+     */
+    protected function getTemplatePath(): string
+    {
+        return $this->getStubDir() . '/Api/main.stub';
+    }
+
+    /**
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -97,7 +121,7 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): ApiGenerator
     {
@@ -111,7 +135,7 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -124,7 +148,7 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      */
     protected function getReplaceContent(): array
     {
@@ -160,17 +184,15 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取控制器注释
-     * @return string
+     * 获取控制器注释.
      */
     protected function getComment(): string
     {
-        return $this->getBusinessName(). ' API JS';
+        return $this->getBusinessName() . ' API JS';
     }
 
     /**
-     * 获取请求路由
-     * @return string
+     * 获取请求路由.
      */
     protected function getRequestRoute(): string
     {
@@ -178,43 +200,10 @@ class ApiGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取业务名称
-     * @return string
+     * 获取业务名称.
      */
     protected function getBusinessName(): string
     {
         return $this->model->menu_name;
     }
-
-    /**
-     * 获取短业务名称
-     * @return string
-     */
-    public function getShortBusinessName(): string
-    {
-        return Str::camel(str_replace(
-            Str::lower($this->model->module_name),
-            '',
-            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
-        ));
-    }
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
-    }
-
 }

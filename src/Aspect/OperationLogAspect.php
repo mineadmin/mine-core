@@ -10,9 +10,17 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
-use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -21,24 +29,24 @@ use Mine\Annotation\Permission;
 use Mine\Event\Operation;
 use Mine\Helper\Ip2region;
 use Mine\Helper\LoginUser;
+use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Mine\MineRequest;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class OperationLogAspect
- * @package Mine\Aspect
+ * Class OperationLogAspect.
  */
 #[Aspect]
 class OperationLogAspect extends AbstractAspect
 {
     public array $annotations = [
-        OperationLog::class
+        OperationLog::class,
     ];
 
     /**
-     * 容器
+     * 容器.
      */
     protected ContainerInterface $container;
 
@@ -51,7 +59,6 @@ class OperationLogAspect extends AbstractAspect
     }
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed|void
      * @throws \Hyperf\Di\Exception\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -64,23 +71,21 @@ class OperationLogAspect extends AbstractAspect
         $result = $proceedingJoinPoint->process();
         $isDownload = false;
         if (! empty($annotation->menuName) || ($annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
-            if (!empty($result->getHeader('content-description')) && !empty($result->getHeader('content-transfer-encoding'))) {
+            if (! empty($result->getHeader('content-description')) && ! empty($result->getHeader('content-transfer-encoding'))) {
                 $isDownload = true;
             }
             $evDispatcher = $this->container->get(EventDispatcherInterface::class);
             $evDispatcher->dispatch(new Operation($this->getRequestInfo([
-                'code' => !empty($annotation->code) ? explode(',', $annotation->code)[0] : '',
+                'code' => ! empty($annotation->code) ? explode(',', $annotation->code)[0] : '',
                 'name' => $annotation->menuName ?? '',
                 'response_code' => $result->getStatusCode(),
-                'response_data' => $isDownload ? '文件下载' : $result->getBody()->getContents()
+                'response_data' => $isDownload ? '文件下载' : $result->getBody()->getContents(),
             ])));
         }
         return $result;
     }
 
     /**
-     * @param array $data
-     * @return array
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -111,9 +116,7 @@ class OperationLogAspect extends AbstractAspect
     }
 
     /**
-     * 获取菜单名称
-     * @param string $code
-     * @return string
+     * 获取菜单名称.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

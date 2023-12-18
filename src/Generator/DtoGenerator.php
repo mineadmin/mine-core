@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
@@ -21,30 +30,16 @@ use Mine\Helper\Str;
 
 class DtoGenerator extends MineGenerator implements CodeGenerator
 {
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
-    /**
-     * @var Collection
-     */
     protected Collection $columns;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return DtoGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -59,7 +54,7 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
 
         $this->columns = SettingGenerateColumns::query()
             ->where('table_id', $model->id)->orderByDesc('sort')
-            ->get([ 'column_name', 'column_comment' ]);
+            ->get(['column_name', 'column_comment']);
 
         return $this->placeholderReplace();
     }
@@ -79,27 +74,45 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
         $this->filesystem->put($path . "{$this->getClassName()}.php", $this->replace()->getCodeContent());
     }
 
-    /**
-     * @return string
-     */
     public function preview(): string
     {
         return $this->replace()->getCodeContent();
     }
 
-
     /**
-     * 获取模板地址
-     * @return string
+     * 获取业务名称.
      */
-    protected function getTemplatePath(): string
+    public function getBusinessName(): string
     {
-        return $this->getStubDir().'/dto.stub';
+        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
+     * 获取模板地址
+     */
+    protected function getTemplatePath(): string
+    {
+        return $this->getStubDir() . '/dto.stub';
+    }
+
+    /**
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -107,7 +120,7 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): DtoGenerator
     {
@@ -121,7 +134,7 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -134,7 +147,7 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      */
     protected function getReplaceContent(): array
     {
@@ -147,35 +160,29 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 初始化命名空间
-     * @return string
+     * 初始化命名空间.
      */
     protected function initNamespace(): string
     {
-        return $this->getNamespace() . "\\Dto";
+        return $this->getNamespace() . '\\Dto';
     }
 
     /**
-     * 获取控制器注释
-     * @return string
+     * 获取控制器注释.
      */
     protected function getComment(): string
     {
-        return $this->model->menu_name. 'Dto （导入导出）';
+        return $this->model->menu_name . 'Dto （导入导出）';
     }
 
     /**
-     * 获取类名称
-     * @return string
+     * 获取类名称.
      */
     protected function getClassName(): string
     {
-        return $this->getBusinessName().'Dto';
+        return $this->getBusinessName() . 'Dto';
     }
 
-    /**
-     * @return string
-     */
     protected function getList(): string
     {
         $phpCode = '';
@@ -196,32 +203,5 @@ class DtoGenerator extends MineGenerator implements CodeGenerator
             '#[ExcelProperty(value: "NAME", index: INDEX)]',
             'public string $FIELD;'
         );
-    }
-
-    /**
-     * 获取业务名称
-     * @return string
-     */
-    public function getBusinessName(): string
-    {
-        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
-    }
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
     }
 }

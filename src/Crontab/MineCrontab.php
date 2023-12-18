@@ -1,12 +1,13 @@
 <?php
+
+declare(strict_types=1);
 /**
- * MineAdmin is committed to providing solutions for quickly building web applications
- * Please view the LICENSE file that was distributed with this source code,
- * For the full copyright and license information.
- * Thank you very much for using MineAdmin.
+ * This file is part of MineAdmin.
  *
- * @Author X.Mo<root@imoi.cn>
- * @Link   https://gitee.com/xmo/MineAdmin
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 
 namespace Mine\Crontab;
@@ -16,66 +17,45 @@ use Hyperf\Crontab\Crontab;
 class MineCrontab extends Crontab
 {
     /**
-     * 失败策略
-     * @var string
+     * 失败策略.
      */
     protected string $failPolicy = '3';
 
     /**
-     * 调用参数
-     * @var string
+     * 调用参数.
      */
     protected string $parameter;
 
     /**
-     * 任务ID
-     * @var integer
+     * 任务ID.
      */
     protected int $crontab_id;
 
-    /**
-     * @return string
-     */
     public function getFailPolicy(): string
     {
         return $this->failPolicy;
     }
 
-    /**
-     * @param string $failPolicy
-     */
     public function setFailPolicy(string $failPolicy): void
     {
         $this->failPolicy = $failPolicy;
     }
 
-    /**
-     * @return string
-     */
     public function getParameter(): string
     {
         return $this->parameter;
     }
 
-    /**
-     * @param string $parameter
-     */
     public function setParameter(string $parameter): void
     {
         $this->parameter = $parameter;
     }
 
-    /**
-     * @return int
-     */
     public function getCrontabId(): int
     {
         return $this->crontab_id;
     }
 
-    /**
-     * @param int $crontab_id
-     */
     public function setCrontabId(int $crontab_id): void
     {
         $this->crontab_id = $crontab_id;

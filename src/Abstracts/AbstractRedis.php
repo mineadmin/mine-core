@@ -9,30 +9,38 @@
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-declare (strict_types = 1);
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Abstracts;
 
 use Hyperf\Config\Annotation\Value;
 
 /**
- * Class AbstractRedis
- * @package Mine\Abstracts
+ * Class AbstractRedis.
  */
 abstract class AbstractRedis
 {
     /**
      * 缓存前缀
      */
-    #[Value("cache.default.prefix")]
+    #[Value('cache.default.prefix')]
     protected string $prefix;
 
     /**
-     * key 类型名
+     * key 类型名.
      */
     protected string $typeName;
 
     /**
-     * 获取实例
+     * 获取实例.
      * @return mixed
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -43,8 +51,7 @@ abstract class AbstractRedis
     }
 
     /**
-     * 获取redis实例
-     * @return \Hyperf\Redis\Redis
+     * 获取redis实例.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -54,13 +61,10 @@ abstract class AbstractRedis
     }
 
     /**
-     * 获取key
-     * @param string $key
-     * @return string|null
+     * 获取key.
      */
     public function getKey(string $key): ?string
     {
         return empty($key) ? null : ($this->prefix . trim($this->typeName, ':') . ':' . $key);
     }
-
 }

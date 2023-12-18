@@ -1,26 +1,27 @@
 <?php
+
+declare(strict_types=1);
 /**
- * MineAdmin is committed to providing solutions for quickly building web applications
- * Please view the LICENSE file that was distributed with this source code,
- * For the full copyright and license information.
- * Thank you very much for using MineAdmin.
+ * This file is part of MineAdmin.
  *
- * @Author X.Mo<root@imoi.cn>
- * @Link   https://gitee.com/xmo/MineAdmin
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 
 namespace Mine\Traits;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
+use Hyperf\ModelCache\Manager;
 use Mine\Annotation\Transaction;
 use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineCollection;
 use Mine\MineModel;
-use Hyperf\ModelCache\Manager;
-use Hyperf\Context\ApplicationContext;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -32,10 +33,7 @@ trait MapperTrait
     public $model;
 
     /**
-     * 获取列表数据
-     * @param array|null $params
-     * @param bool $isScope
-     * @return array
+     * 获取列表数据.
      */
     public function getList(?array $params, bool $isScope = true): array
     {
@@ -43,16 +41,15 @@ trait MapperTrait
     }
 
     /**
-     * 获取列表数据（带分页）
-     * @param array|null $params
-     * @param bool $isScope
-     * @param string $pageName
-     * @return array
+     * 获取列表数据（带分页）.
      */
     public function getPageList(?array $params, bool $isScope = true, string $pageName = 'page'): array
     {
         $paginate = $this->listQuerySetting($params, $isScope)->paginate(
-            $params['pageSize'] ?? $this->model::PAGE_SIZE, ['*'], $pageName, $params[$pageName] ?? 1
+            $params['pageSize'] ?? $this->model::PAGE_SIZE,
+            ['*'],
+            $pageName,
+            $params[$pageName] ?? 1
         );
         return $this->setPaginate($paginate, $params);
     }
@@ -60,7 +57,7 @@ trait MapperTrait
     /**
      * 远程通用列表查询
      * 主要服务于远程下拉菜单使用，其功能也支持单选、复选、级联选择等组件的使用，但下拉菜单组件适配最好。
-     * 接口支持分页、不分页、模型关联、条件过滤、排序、分组，数据权限等一系列功能
+     * 接口支持分页、不分页、模型关联、条件过滤、排序、分组，数据权限等一系列功能.
      *
      * 声明提示：该接口虽然方便快捷，但由于参数是前端传入，后端对接口仅在控制器做了登录检查，有一定的安全性影响，需谨慎使用。
      */
@@ -72,14 +69,16 @@ trait MapperTrait
         /* @var $model MineModel */
         $model = $this->getModel();
         $query = null;
-        if (!empty($params['relations']) && is_array($params['relations'])) {
+        if (! empty($params['relations']) && is_array($params['relations'])) {
             foreach ($params['relations'] as $item) {
                 $this->dynamicRelations($model, $item);
                 /* @var $query Builder */
-                $query = $model->with([ $item['name'] => function($query) use ($item) {
+                $query = $model->with([$item['name'] => function ($query) use ($item) {
                     $paramsWhere = [];
-                    if (!empty($item['filter']) && is_array($item['filter'])) foreach ($item['filter'] as $name => $where) {
-                        $paramsWhere[$name] = $where;
+                    if (! empty($item['filter']) && is_array($item['filter'])) {
+                        foreach ($item['filter'] as $name => $where) {
+                            $paramsWhere[$name] = $where;
+                        }
                     }
                     return $this->emptyBuildQuery($paramsWhere, $query);
                 }]);
@@ -87,20 +86,28 @@ trait MapperTrait
         }
 
         /* @var $query Builder */
-        if (is_null($query)) $query = $model::query();
+        if (is_null($query)) {
+            $query = $model::query();
+        }
 
         $paramsWhere = [];
-        if (!empty($params['filter']) && is_array($params['filter'])) foreach ($params['filter'] as $name => $where) {
-            $paramsWhere[$name] = $where;
+        if (! empty($params['filter']) && is_array($params['filter'])) {
+            foreach ($params['filter'] as $name => $where) {
+                $paramsWhere[$name] = $where;
+            }
         }
         $query = $this->emptyBuildQuery($paramsWhere, $query);
 
-        if (!empty($params['sort']) && is_array($params['sort'])) foreach($params['sort'] as $name => $sortType) {
-            $query->orderBy($name, $sortType);
+        if (! empty($params['sort']) && is_array($params['sort'])) {
+            foreach ($params['sort'] as $name => $sortType) {
+                $query->orderBy($name, $sortType);
+            }
         }
 
-        if (!empty($params['group']) && is_array($params['group'])) foreach($params['group'] as $name) {
-            $query->groupBy($name);
+        if (! empty($params['group']) && is_array($params['group'])) {
+            foreach ($params['group'] as $name) {
+                $query->groupBy($name);
+            }
         }
 
         if (isset($params['dataScope']) && $params['dataScope']) {
@@ -114,15 +121,12 @@ trait MapperTrait
         }
 
         return method_exists($this, 'handleItems')
-            ? ( new MineCollection($this->handleItems($query->get($params['select'] ?? ['*']), $params)) )->toArray()
+            ? (new MineCollection($this->handleItems($query->get($params['select'] ?? ['*']), $params)))->toArray()
             : $query->get($params['select'] ?? ['*'])->toArray();
     }
 
     /**
-     * 设置数据库分页
-     * @param LengthAwarePaginatorInterface $paginate
-     * @param array $params
-     * @return array
+     * 设置数据库分页.
      */
     public function setPaginate(LengthAwarePaginatorInterface $paginate, array $params = []): array
     {
@@ -131,28 +135,21 @@ trait MapperTrait
             'pageInfo' => [
                 'total' => $paginate->total(),
                 'currentPage' => $paginate->currentPage(),
-                'totalPage' => $paginate->lastPage()
-            ]
+                'totalPage' => $paginate->lastPage(),
+            ],
         ];
     }
 
     /**
-     * 获取树列表
-     * @param array|null $params
-     * @param bool $isScope
-     * @param string $id
-     * @param string $parentField
-     * @param string $children
-     * @return array
+     * 获取树列表.
      */
     public function getTreeList(
         ?array $params = null,
         bool $isScope = true,
         string $id = 'id',
         string $parentField = 'parent_id',
-        string $children='children'
-    ): array
-    {
+        string $children = 'children'
+    ): array {
         $params['_mineadmin_tree'] = true;
         $params['_mineadmin_tree_pid'] = $parentField;
         $data = $this->listQuerySetting($params, $isScope)->get();
@@ -160,10 +157,7 @@ trait MapperTrait
     }
 
     /**
-     * 返回模型查询构造器
-     * @param array|null $params
-     * @param bool $isScope
-     * @return Builder
+     * 返回模型查询构造器.
      */
     public function listQuerySetting(?array $params, bool $isScope): Builder
     {
@@ -181,10 +175,7 @@ trait MapperTrait
     }
 
     /**
-     * 排序处理器
-     * @param Builder $query
-     * @param array|null $params
-     * @return Builder
+     * 排序处理器.
      */
     public function handleOrder(Builder $query, ?array &$params = null): Builder
     {
@@ -207,10 +198,7 @@ trait MapperTrait
     }
 
     /**
-     * 搜索处理器
-     * @param Builder $query
-     * @param array $params
-     * @return Builder
+     * 搜索处理器.
      */
     public function handleSearch(Builder $query, array $params): Builder
     {
@@ -218,17 +206,14 @@ trait MapperTrait
     }
 
     /**
-     * 过滤查询字段不存在的属性
-     * @param array $fields
-     * @param bool $removePk
-     * @return array
+     * 过滤查询字段不存在的属性.
      */
     public function filterQueryAttributes(array $fields, bool $removePk = false): array
     {
-        $model = new $this->model;
+        $model = new $this->model();
         $attrs = $model->getFillable();
         foreach ($fields as $key => $field) {
-            if (!in_array(trim($field), $attrs) && mb_strpos(str_replace('AS', 'as', $field), 'as') === false) {
+            if (! in_array(trim($field), $attrs) && mb_strpos(str_replace('AS', 'as', $field), 'as') === false) {
                 unset($fields[$key]);
             } else {
                 $fields[$key] = trim($field);
@@ -238,20 +223,18 @@ trait MapperTrait
             unset($fields[array_search($model->getKeyName(), $fields)]);
         }
         $model = null;
-        return ( count($fields) < 1 ) ? ['*'] : $fields;
+        return (count($fields) < 1) ? ['*'] : $fields;
     }
 
     /**
-     * 过滤新增或写入不存在的字段
-     * @param array $data
-     * @param bool $removePk
+     * 过滤新增或写入不存在的字段.
      */
     public function filterExecuteAttributes(array &$data, bool $removePk = false): void
     {
-        $model = new $this->model;
+        $model = new $this->model();
         $attrs = $model->getFillable();
         foreach ($data as $name => $val) {
-            if (!in_array($name, $attrs)) {
+            if (! in_array($name, $attrs)) {
                 unset($data[$name]);
             }
         }
@@ -262,9 +245,7 @@ trait MapperTrait
     }
 
     /**
-     * 新增数据
-     * @param array $data
-     * @return int
+     * 新增数据.
      */
     public function save(array $data): int
     {
@@ -274,10 +255,7 @@ trait MapperTrait
     }
 
     /**
-     * 读取一条数据
-     * @param int $id
-     * @param array $column
-     * @return MineModel|null
+     * 读取一条数据.
      */
     public function read(int $id, array $column = ['*']): ?MineModel
     {
@@ -285,9 +263,7 @@ trait MapperTrait
     }
 
     /**
-     * 按条件读取一行数据
-     * @param array $condition
-     * @param array $column
+     * 按条件读取一行数据.
      * @return mixed
      */
     public function first(array $condition, array $column = ['*']): ?MineModel
@@ -297,9 +273,7 @@ trait MapperTrait
 
     /**
      * 获取单个值
-     * @param array $condition
-     * @param string $columns
-     * @return \Hyperf\Tappable\HigherOrderTapProxy|mixed|void|null
+     * @return null|\Hyperf\Tappable\HigherOrderTapProxy|mixed|void
      */
     public function value(array $condition, string $columns = 'id')
     {
@@ -308,10 +282,6 @@ trait MapperTrait
 
     /**
      * 获取单列值
-     * @param array $condition
-     * @param string $columns
-     * @param string|null $key
-     * @return array
      */
     public function pluck(array $condition, string $columns = 'id', ?string $key = null): array
     {
@@ -319,9 +289,7 @@ trait MapperTrait
     }
 
     /**
-     * 从回收站读取一条数据
-     * @param int $id
-     * @return MineModel|null
+     * 从回收站读取一条数据.
      * @noinspection PhpUnused
      */
     public function readByRecycle(int $id): ?MineModel
@@ -330,9 +298,7 @@ trait MapperTrait
     }
 
     /**
-     * 单个或批量软删除数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量软删除数据.
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -341,16 +307,13 @@ trait MapperTrait
         $this->model::destroy($ids);
 
         $manager = ApplicationContext::getContainer()->get(Manager::class);
-        $manager->destroy($ids,$this->model);
+        $manager->destroy($ids, $this->model);
 
         return true;
     }
 
     /**
-     * 更新一条数据
-     * @param int $id
-     * @param array $data
-     * @return bool
+     * 更新一条数据.
      */
     public function update(int $id, array $data): bool
     {
@@ -359,10 +322,7 @@ trait MapperTrait
     }
 
     /**
-     * 按条件更新数据
-     * @param array $condition
-     * @param array $data
-     * @return bool
+     * 按条件更新数据.
      */
     public function updateByCondition(array $condition, array $data): bool
     {
@@ -371,9 +331,7 @@ trait MapperTrait
     }
 
     /**
-     * 单个或批量真实删除数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量真实删除数据.
      */
     public function realDelete(array $ids): bool
     {
@@ -385,53 +343,39 @@ trait MapperTrait
     }
 
     /**
-     * 单个或批量从回收站恢复数据
-     * @param array $ids
-     * @return bool
+     * 单个或批量从回收站恢复数据.
      */
     public function recovery(array $ids): bool
     {
-        $this->model::withTrashed()->whereIn((new $this->model)->getKeyName(), $ids)->restore();
+        $this->model::withTrashed()->whereIn((new $this->model())->getKeyName(), $ids)->restore();
         return true;
     }
 
     /**
-     * 单个或批量禁用数据
-     * @param array $ids
-     * @param string $field
-     * @return bool
+     * 单个或批量禁用数据.
      */
     public function disable(array $ids, string $field = 'status'): bool
     {
-        $this->model::query()->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::DISABLE]);
+        $this->model::query()->whereIn((new $this->model())->getKeyName(), $ids)->update([$field => $this->model::DISABLE]);
         return true;
     }
 
     /**
-     * 单个或批量启用数据
-     * @param array $ids
-     * @param string $field
-     * @return bool
+     * 单个或批量启用数据.
      */
     public function enable(array $ids, string $field = 'status'): bool
     {
-        $this->model::query()->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::ENABLE]);
+        $this->model::query()->whereIn((new $this->model())->getKeyName(), $ids)->update([$field => $this->model::ENABLE]);
         return true;
     }
 
-    /**
-     * @return MineModel
-     */
     public function getModel(): MineModel
     {
-        return new $this->model;
+        return new $this->model();
     }
 
     /**
-     * 数据导入
-     * @param string $dto
-     * @param \Closure|null $closure
-     * @return bool
+     * 数据导入.
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -443,13 +387,12 @@ trait MapperTrait
     }
 
     /**
-     * 闭包通用查询设置
-     * @param \Closure|null $closure 传入的闭包查询
-     * @return Builder
+     * 闭包通用查询设置.
+     * @param null|\Closure $closure 传入的闭包查询
      */
     public function settingClosure(?\Closure $closure = null): Builder
     {
-        return $this->model::where(function($query) use($closure) {
+        return $this->model::where(function ($query) use ($closure) {
             if ($closure instanceof \Closure) {
                 $closure($query);
             }
@@ -457,10 +400,9 @@ trait MapperTrait
     }
 
     /**
-     * 闭包通用方式查询一条数据
-     * @param \Closure|null $closure
+     * 闭包通用方式查询一条数据.
      * @param array|string[] $column
-     * @return Builder|Model|null
+     * @return null|Builder|Model
      */
     public function one(?\Closure $closure = null, array $column = ['*'])
     {
@@ -468,10 +410,8 @@ trait MapperTrait
     }
 
     /**
-     * 闭包通用方式查询数据集合
-     * @param \Closure|null $closure
+     * 闭包通用方式查询数据集合.
      * @param array|string[] $column
-     * @return array
      */
     public function get(?\Closure $closure = null, array $column = ['*']): array
     {
@@ -480,9 +420,6 @@ trait MapperTrait
 
     /**
      * 闭包通用方式统计
-     * @param \Closure|null $closure
-     * @param string $column
-     * @return int
      */
     public function count(?\Closure $closure = null, string $column = '*'): int
     {
@@ -491,8 +428,6 @@ trait MapperTrait
 
     /**
      * 闭包通用方式查询最大值
-     * @param \Closure|null $closure
-     * @param string $column
      * @return mixed|string|void
      */
     public function max(?\Closure $closure = null, string $column = '*')
@@ -502,8 +437,6 @@ trait MapperTrait
 
     /**
      * 闭包通用方式查询最小值
-     * @param \Closure|null $closure
-     * @param string $column
      * @return mixed|string|void
      */
     public function min(?\Closure $closure = null, string $column = '*')
@@ -512,27 +445,19 @@ trait MapperTrait
     }
 
     /**
-     * 数字更新操作
-     * @param int $id
-     * @param string $field
-     * @param int $value
-     * @return bool
+     * 数字更新操作.
      */
     public function numberOperation(int $id, string $field, int $value): bool
     {
-        return $this->update($id, [ $field => $value]);
+        return $this->update($id, [$field => $value]);
     }
 
     /**
-     * 搜索参数注入
-     * @param $params
-     * @param array $where
-     * @param mixed|null $query
-     * @return mixed
+     * 搜索参数注入.
      */
     public function paramsEmptyQuery($params, array $where = [], mixed $query = null): mixed
     {
-        if (!$query) {
+        if (! $query) {
             $query = $this->model::query();
         }
 
@@ -552,20 +477,16 @@ trait MapperTrait
             {
                 if (is_scalar($operator)) {
                     $res = $this->scalarOptionHandle($field, $operator, $value);
-                } else if (is_array($operator)) {
+                } elseif (is_array($operator)) {
                     $res = $this->arrayOptionHandle($field, $operator, $value);
                 } else {
                     $res = $this->scalarOptionHandle($field, $operator, $value);
                 }
-                $this->paramsWhere[ $res[0]] = [$res[1], $res[2] ];
+                $this->paramsWhere[$res[0]] = [$res[1], $res[2]];
             }
 
             /**
-             * 标量类型获取
-             * @param $field
-             * @param $operator
-             * @param $value
-             * @return array
+             * 标量类型获取.
              */
             public function scalarOptionHandle($field, $operator, $value): array
             {
@@ -573,11 +494,7 @@ trait MapperTrait
             }
 
             /**
-             * 数组类型处理
-             * @param $field
-             * @param $operator
-             * @param $value
-             * @return array
+             * 数组类型处理.
              */
             public function arrayOptionHandle($field, $operator, $value): array
             {
@@ -598,18 +515,14 @@ trait MapperTrait
      * [
      *  'field' => 1,
      *  'field' => ['=', 'index']
-     * ]
-     * @param array $paramsWhere
-     * @param mixed $query
-     * @return mixed
+     * ].
      */
     public function emptyBuildQuery(array $paramsWhere = [], mixed $query = null): mixed
     {
-        if (!$query) {
+        if (! $query) {
             $query = $this->model::query();
         }
-        $object = new class($paramsWhere, $query){
-
+        $object = new class($paramsWhere, $query) {
             public mixed $query;
 
             public function __construct($paramsWhere, mixed $query)
@@ -619,7 +532,7 @@ trait MapperTrait
                     if ($value) {
                         if (is_scalar($value)) {
                             $this->scalarWhere($field, '=', $value);
-                        } else if (is_array($value)) {
+                        } elseif (is_array($value)) {
                             $this->arrayWhere($field, $value);
                         }
                     }
@@ -628,13 +541,13 @@ trait MapperTrait
 
             public function scalarWhere($field, $operator, $value): void
             {
-                [ $operator, $value ] = $this->optionHandler($field, $operator, $value);
+                [$operator, $value] = $this->optionHandler($field, $operator, $value);
                 $this->query->where($field, $operator, $value);
             }
 
             private function arrayWhere($field, $value): void
             {
-                [ $value[0], $value[1] ] = $this->optionHandler($field, $value[0], $value[1]);
+                [$value[0], $value[1]] = $this->optionHandler($field, $value[0], $value[1]);
                 $this->query->where($field, $value[0], $value[1]);
             }
 
@@ -647,8 +560,8 @@ trait MapperTrait
                             throw new NormalStatusException("{$field} type error:The expectation is a string");
                         }
                         $likeMap = ['like' => '%#{val}%', 'like%' => '#{val}%'];
-                        $value = str_replace("#{val}", $value, $likeMap[$operator]);
-                    break;
+                        $value = str_replace('#{val}', $value, $likeMap[$operator]);
+                        break;
                 }
                 return [$operator, $value];
             }
@@ -662,39 +575,41 @@ trait MapperTrait
     }
 
     /**
-     * 动态关联模型
-     * @param MineModel $model
+     * 动态关联模型.
      * @param $config ['name', 'model', 'type', 'localKey', 'foreignKey', 'middleTable', 'as', 'where', 'whereIn' ]
-     * @return void
      */
-    public function dynamicRelations(\Mine\MineModel &$model, &$config): void
+    public function dynamicRelations(MineModel &$model, &$config): void
     {
-        $model->resolveRelationUsing($config['name'], function($primaryModel) use($config) {
-            $namespace = str_replace('.', "\\", $config['model']);
+        $model->resolveRelationUsing($config['name'], function ($primaryModel) use ($config) {
+            $namespace = str_replace('.', '\\', $config['model']);
             if ($config['type'] === 'hasOne') {
-                return $primaryModel->hasOne(new $namespace, $config['foreignKey'], $config['localKey']);
+                return $primaryModel->hasOne(new $namespace(), $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'hasMany') {
-                return $primaryModel->hasMany(new $namespace, $config['foreignKey'], $config['localKey']);
+                return $primaryModel->hasMany(new $namespace(), $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'belongsTo') {
-                return $primaryModel->belongsTo(new $namespace, $config['foreignKey'], $config['localKey']);
+                return $primaryModel->belongsTo(new $namespace(), $config['foreignKey'], $config['localKey']);
             }
             if ($config['type'] === 'belongsToMany') {
                 $primaryModel->belongsToMany(
-                    new $namespace,
+                    new $namespace(),
                     $config['middleTable'],
                     $config['foreignKey'],
                     $config['localKey']
                 );
-                if (!empty($config['as'])) {
+                if (! empty($config['as'])) {
                     $primaryModel->as($config['as']);
                 }
-                if (!empty($config['where']) && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
-                    $primaryModel->wherePivot($field, $value);
+                if (! empty($config['where']) && is_array($config['where'])) {
+                    foreach ($config['where'] as $field => $value) {
+                        $primaryModel->wherePivot($field, $value);
+                    }
                 }
-                if (!empty($config['whereIn']) && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
-                    $primaryModel->wherePivotIn($field, $value);
+                if (! empty($config['whereIn']) && is_array($config['whereIn'])) {
+                    foreach ($config['whereIn'] as $field => $value) {
+                        $primaryModel->wherePivotIn($field, $value);
+                    }
                 }
             }
         });

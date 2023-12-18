@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -23,19 +32,16 @@ use Mine\MineRequest;
 use Mine\Redis\MineLockRedis;
 
 /**
- * Class ResubmitAspect
- * @package Mine\Aspect
+ * Class ResubmitAspect.
  */
 #[Aspect]
 class ResubmitAspect extends AbstractAspect
 {
-
     public array $annotations = [
-        Resubmit::class
+        Resubmit::class,
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws \Throwable
@@ -45,7 +51,7 @@ class ResubmitAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            /** @var $resubmit Resubmit */
+            /* @var $resubmit Resubmit */
             if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
                 $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
             }

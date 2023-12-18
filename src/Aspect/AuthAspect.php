@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -20,19 +29,16 @@ use Mine\Annotation\Auth;
 use Mine\Exception\TokenException;
 
 /**
- * Class AuthAspect
- * @package Mine\Aspect
+ * Class AuthAspect.
  */
 #[Aspect]
 class AuthAspect extends AbstractAspect
 {
-
     public array $annotations = [
-        Auth::class
+        Auth::class,
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -42,7 +48,7 @@ class AuthAspect extends AbstractAspect
     {
         $scene = 'default';
 
-        /** @var $auth Auth */
+        /* @var $auth Auth */
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->class[Auth::class])) {
             $auth = $proceedingJoinPoint->getAnnotationMetadata()->class[Auth::class];
             $scene = $auth->scene ?? 'default';

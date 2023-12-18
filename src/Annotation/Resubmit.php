@@ -9,21 +9,29 @@
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Annotation;
 
-use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 /**
- * 禁止重复提交
+ * 禁止重复提交.
  */
-#[Attribute(Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class Resubmit extends AbstractAnnotation
 {
     /**
-     * @var int $second 限制时间（秒）
-     * @var string|null $message 提示信息
+     * @var int 限制时间（秒）
+     * @var null|string 提示信息
      */
     public function __construct(public int $second = 3, public ?string $message = null) {}
 }

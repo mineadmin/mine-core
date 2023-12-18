@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Command\Seeder;
 
 use Hyperf\Command\Annotation\Command;
@@ -20,16 +29,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class MineSeeder
- * @package System\Command\Seeder
+ * Class MineSeeder.
  */
 #[Command]
 class MineSeeder extends BaseCommand
 {
     /**
      * The seeder creator instance.
-     *
-     * @var SeederCreator
      */
     protected SeederCreator $creator;
 
@@ -37,7 +43,6 @@ class MineSeeder extends BaseCommand
 
     /**
      * Create a new seeder generator command instance.
-     * @param SeederCreator $creator
      */
     public function __construct(SeederCreator $creator)
     {
@@ -60,7 +65,6 @@ class MineSeeder extends BaseCommand
 
     /**
      * Write the seeder file to disk.
-     * @param string $name
      */
     protected function writeMigration(string $name)
     {
@@ -108,5 +112,4 @@ class MineSeeder extends BaseCommand
 
         return BASE_PATH . '/app/' . ucfirst($this->module) . '/Database/Seeders';
     }
-
 }

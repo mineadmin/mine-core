@@ -4,9 +4,18 @@
  * Created by phpStorm.
  * User: mike
  * Date: 2021/11/19
- * Time: 下午2:14
+ * Time: 下午2:14.
  */
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -17,18 +26,16 @@ use Mine\Amqp\Event\BeforeConsume;
 use Mine\Amqp\Event\FailToConsume;
 
 /**
- * Class ConsumeAspect
- * @package Mine\Aspect
+ * Class ConsumeAspect.
  */
 #[Aspect]
 class ConsumeAspect extends AbstractAspect
 {
     public array $classes = [
-        'Hyperf\Amqp\Message\ConsumerMessage::consumeMessage'
+        'Hyperf\Amqp\Message\ConsumerMessage::consumeMessage',
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -37,7 +44,7 @@ class ConsumeAspect extends AbstractAspect
     {
         $data = $proceedingJoinPoint->getArguments()[0];
         $message = $proceedingJoinPoint->getArguments()[1];
-        try{
+        try {
             event(new BeforeConsume($message, $data));
             $result = $proceedingJoinPoint->process();
             event(new AfterConsume($message, $data, $result));

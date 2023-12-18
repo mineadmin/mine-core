@@ -11,15 +11,25 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Amqp;
+
+use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Hyperf\Amqp\Producer;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Di\Annotation\AnnotationCollector;
 use Mine\Amqp\Event\AfterProduce;
 use Mine\Amqp\Event\BeforeProduce;
 use Mine\Amqp\Event\FailToProduce;
 use Mine\Amqp\Event\ProduceEvent;
-use Hyperf\Amqp\Message\ProducerMessageInterface;
-use Hyperf\Amqp\Producer;
-use Hyperf\Di\Annotation\AnnotationCollector;
-use Hyperf\Context\ApplicationContext;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -27,17 +37,12 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class DelayProducer extends Producer
 {
     /**
-     * Db
+     * Db.
      * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
 
     /**
-     * @param ProducerMessageInterface $producerMessage
-     * @param bool $confirm
-     * @param int $timeout
-     * @param int $delayTime
-     * @return bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Throwable
@@ -45,18 +50,13 @@ class DelayProducer extends Producer
     public function produce(ProducerMessageInterface $producerMessage, bool $confirm = false, int $timeout = 5, int $delayTime = 0): bool
     {
         $this->eventDispatcher = ApplicationContext::getContainer()->get(EventDispatcherInterface::class);
-        return retry(1, function () use ($producerMessage, $confirm, $timeout,$delayTime) {
-            return $this->produceMessage($producerMessage, $confirm, $timeout,$delayTime);
+        return retry(1, function () use ($producerMessage, $confirm, $timeout, $delayTime) {
+            return $this->produceMessage($producerMessage, $confirm, $timeout, $delayTime);
         });
     }
 
     /**
-     * 生产消息
-     * @param ProducerMessageInterface $producerMessage
-     * @param bool $confirm
-     * @param int $timeout
-     * @param int $delayTime
-     * @return bool
+     * 生产消息.
      * @throws \Throwable
      */
     private function produceMessage(ProducerMessageInterface $producerMessage, bool $confirm = false, int $timeout = 5, int $delayTime = 0): bool
@@ -68,16 +68,16 @@ class DelayProducer extends Producer
 
         $this->injectMessageProperty($producerMessage);
 
-        //触发队列发送之前事件
-        $this->eventDispatcher->dispatch(new BeforeProduce($producerMessage,$delayTime));
+        // 触发队列发送之前事件
+        $this->eventDispatcher->dispatch(new BeforeProduce($producerMessage, $delayTime));
 
-        //如果过期时间为0,默认过期时间1毫秒,否则为设置的过期时间
+        // 如果过期时间为0,默认过期时间1毫秒,否则为设置的过期时间
         $expiration = $delayTime == 0 ? 500 : $delayTime * 1000;
         $message = new AMQPMessage($producerMessage->payload(), array_merge($producerMessage->getProperties(), [
             'expiration' => $expiration,
         ]));
 
-        //触发队列发送之中事件
+        // 触发队列发送之中事件
         $this->eventDispatcher->dispatch(new ProduceEvent($producerMessage));
 
         try {
@@ -90,27 +90,27 @@ class DelayProducer extends Producer
             $channel->set_ack_handler(function () use (&$result) {
                 $result = true;
             });
-            //延迟配置
-            $queuePrefix = strchr($producerMessage->getRoutingKey(),'.',true).'.';
-            $exchangePrefix = strchr($producerMessage->getExchange(),'.',true).'.';
-            $delayExchange   = $exchangePrefix.'delay.exchange';
-            $delayQueue      = $queuePrefix.'delay.queue';
-            $delayRoutingKey = $queuePrefix.'delay.routing';
-            //定义延迟交换器
+            // 延迟配置
+            $queuePrefix = strchr($producerMessage->getRoutingKey(), '.', true) . '.';
+            $exchangePrefix = strchr($producerMessage->getExchange(), '.', true) . '.';
+            $delayExchange = $exchangePrefix . 'delay.exchange';
+            $delayQueue = $queuePrefix . 'delay.queue';
+            $delayRoutingKey = $queuePrefix . 'delay.routing';
+            // 定义延迟交换器
             $channel->exchange_declare($delayExchange, 'topic', false, true, false);
-            //定义延迟队列
-            $channel->queue_declare($delayQueue, false, true, false, false, false, new AMQPTable(array(
-                "x-dead-letter-exchange"    => $producerMessage->getExchange(),
-                "x-dead-letter-routing-key" => $producerMessage->getRoutingKey()
-            )));
-            //绑定延迟队列到交换器上
+            // 定义延迟队列
+            $channel->queue_declare($delayQueue, false, true, false, false, false, new AMQPTable([
+                'x-dead-letter-exchange' => $producerMessage->getExchange(),
+                'x-dead-letter-routing-key' => $producerMessage->getRoutingKey(),
+            ]));
+            // 绑定延迟队列到交换器上
             $channel->queue_bind($delayQueue, $delayExchange, $delayRoutingKey);
-            //发送消息到延迟交换器上
+            // 发送消息到延迟交换器上
             $channel->basic_publish($message, $delayExchange, $delayRoutingKey);
             $channel->wait_for_pending_acks_returns($timeout);
         } catch (\Throwable $exception) {
-            //触发队列发送失败事件
-            $this->eventDispatcher->dispatch(new FailToProduce($producerMessage,$exception));
+            // 触发队列发送失败事件
+            $this->eventDispatcher->dispatch(new FailToProduce($producerMessage, $exception));
 
             isset($channel) && $channel->close();
             throw $exception;
@@ -122,7 +122,7 @@ class DelayProducer extends Producer
             $result = true;
             $connection->releaseChannel($channel);
         }
-        //触发队列发送之后事件
+        // 触发队列发送之后事件
         $this->eventDispatcher->dispatch(new AfterProduce($producerMessage));
 
         return $result;

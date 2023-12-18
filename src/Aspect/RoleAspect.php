@@ -10,9 +10,17 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
-use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -20,53 +28,48 @@ use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\Role;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\LoginUser;
+use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\MineRequest;
 
 /**
- * Class RoleAspect
- * @package Mine\Aspect
+ * Class RoleAspect.
  */
 #[Aspect]
 class RoleAspect extends AbstractAspect
 {
     public array $annotations = [
-        Role::class
+        Role::class,
     ];
 
     /**
-     * UserServiceInterface
+     * UserServiceInterface.
      */
     protected UserServiceInterface $service;
 
     /**
-     * MineRequest
+     * MineRequest.
      */
     protected MineRequest $request;
 
     /**
-     * LoginUser
+     * LoginUser.
      */
     protected LoginUser $loginUser;
 
     /**
      * RoleAspect constructor.
-     * @param UserServiceInterface $service
-     * @param MineRequest $request
-     * @param LoginUser $loginUser
      */
     public function __construct(
         UserServiceInterface $service,
         MineRequest $request,
         LoginUser $loginUser
-    )
-    {
+    ) {
         $this->service = $service;
         $this->request = $request;
         $this->loginUser = $loginUser;
     }
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -79,7 +82,7 @@ class RoleAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        /** @var Role $role */
+        /* @var Role $role */
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Role::class])) {
             $role = $proceedingJoinPoint->getAnnotationMetadata()->method[Role::class];
         }
@@ -95,10 +98,7 @@ class RoleAspect extends AbstractAspect
     }
 
     /**
-     * 检查角色
-     * @param string $codeString
-     * @param string $where
-     * @return bool
+     * 检查角色.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

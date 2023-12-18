@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
+
 namespace Mine\Exception\Handler;
 
+use Hyperf\Codec\Json;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
+use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Codec\Json;
 use Mine\Log\RequestIdHolder;
 use Psr\Http\Message\ResponseInterface;
-use Hyperf\Logger\Logger;
-use Throwable;
 
 class AppExceptionHandler extends ExceptionHandler
 {
     protected Logger $logger;
 
-    /**
-     * @var StdoutLoggerInterface
-     */
     protected StdoutLoggerInterface $console;
 
     public function __construct()
@@ -36,7 +33,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger = container()->get(LoggerFactory::class)->get('mineAdmin');
     }
 
-    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
+    public function handle(\Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         $this->console->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->console->error($throwable->getTraceAsString());
@@ -44,19 +41,19 @@ class AppExceptionHandler extends ExceptionHandler
         $format = [
             'requestId' => RequestIdHolder::getId(),
             'success' => false,
-            'code'    => 500,
-            'message' => $throwable->getMessage()
+            'code' => 500,
+            'message' => $throwable->getMessage(),
         ];
         return $response->withHeader('Server', 'MineAdmin')
             ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,OPTIONS')
+            ->withHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Access-Control-Allow-Headers', 'accept-language,authorization,lang,uid,token,Keep-Alive,User-Agent,Cache-Control,Content-Type')
             ->withAddedHeader('content-type', 'application/json; charset=utf-8')
             ->withStatus(500)->withBody(new SwooleStream(Json::encode($format)));
     }
 
-    public function isValid(Throwable $throwable): bool
+    public function isValid(\Throwable $throwable): bool
     {
         return true;
     }

@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Event;
 
 use App\System\Model\SystemUploadfile;
@@ -30,8 +39,7 @@ class RealDeleteUploadFile
     }
 
     /**
-     * 获取当前模型实例
-     * @return SystemUploadfile
+     * 获取当前模型实例.
      */
     public function getModel(): SystemUploadfile
     {
@@ -40,7 +48,6 @@ class RealDeleteUploadFile
 
     /**
      * 获取文件处理系统
-     * @return Filesystem
      */
     public function getFilesystem(): Filesystem
     {
@@ -48,8 +55,7 @@ class RealDeleteUploadFile
     }
 
     /**
-     * 是否删除
-     * @return bool
+     * 是否删除.
      */
     public function getConfirm(): bool
     {

@@ -10,33 +10,33 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use Psr\Container\ContainerInterface;
 
 abstract class MineGenerator
 {
-    /**
-     * @var string
-     */
+    public const NO = 1;
+
+    public const YES = 2;
+
     protected string $stubDir;
 
-    /**
-     * @var string
-     */
     protected string $namespace;
 
-    /**
-     * @var ContainerInterface
-     */
     protected ContainerInterface $container;
-
-    public const NO  = 1;
-    public const YES = 2;
 
     /**
      * MineGenerator constructor.
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -54,9 +54,6 @@ abstract class MineGenerator
         $this->stubDir = $stubDir;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespace(): string
     {
         return $this->namespace;

@@ -9,7 +9,15 @@
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
 namespace Mine\Traits;
 
@@ -22,42 +30,34 @@ trait ControllerTrait
 {
     /**
      * Mine 请求处理
-     * MineRequest
+     * MineRequest.
      */
     #[Inject]
     protected MineRequest $request;
 
     /**
      * Mine 响应处理
-     * MineResponse
+     * MineResponse.
      */
     #[Inject]
     protected MineResponse $response;
 
     /**
-     * @param string|array|object|null $msgOrData
-     * @param array|object $data
-     * @param int $code
-     * @return ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function success(string|array|object|null $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
+    public function success(null|array|object|string $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
     {
         if (is_string($msgOrData) || is_null($msgOrData)) {
             return $this->response->success($msgOrData, $data, $code);
-        } else if (is_array($msgOrData) || is_object($msgOrData)) {
-            return $this->response->success(null, $msgOrData, $code);
-        } else {
-            return $this->response->success(null, $data, $code);
         }
+        if (is_array($msgOrData) || is_object($msgOrData)) {
+            return $this->response->success(null, $msgOrData, $code);
+        }
+        return $this->response->success(null, $data, $code);
     }
 
     /**
-     * @param string $message
-     * @param int $code
-     * @param array $data
-     * @return ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -67,11 +67,7 @@ trait ControllerTrait
     }
 
     /**
-     * 跳转
-     * @param string $toUrl
-     * @param int $status
-     * @param string $schema
-     * @return ResponseInterface
+     * 跳转.
      */
     public function redirect(string $toUrl, int $status = 302, string $schema = 'http'): ResponseInterface
     {
@@ -79,10 +75,7 @@ trait ControllerTrait
     }
 
     /**
-     * 下载文件
-     * @param string $filePath
-     * @param string $name
-     * @return ResponseInterface
+     * 下载文件.
      */
     public function _download(string $filePath, string $name = ''): ResponseInterface
     {

@@ -1,12 +1,13 @@
 <?php
+
+declare(strict_types=1);
 /**
- * MineAdmin is committed to providing solutions for quickly building web applications
- * Please view the LICENSE file that was distributed with this source code,
- * For the full copyright and license information.
- * Thank you very much for using MineAdmin.
+ * This file is part of MineAdmin.
  *
- * @Author X.Mo<root@imoi.cn>
- * @Link   https://gitee.com/xmo/MineAdmin
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 
 namespace Mine\Redis;
@@ -19,8 +20,7 @@ use Mine\Interfaces\MineRedisInterface;
 class MineLockRedis extends AbstractRedis implements MineRedisInterface
 {
     /**
-     * 设置 key 类型名
-     * @param string $typeName
+     * 设置 key 类型名.
      */
     public function setTypeName(string $typeName): void
     {
@@ -28,8 +28,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
     }
 
     /**
-     * 获取key 类型名
-     * @return string
+     * 获取key 类型名.
      */
     public function getTypeName(): string
     {
@@ -37,13 +36,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
     }
 
     /**
-     * 运行锁，简单封装
-     * @param \Closure $closure
-     * @param string $key
-     * @param int $expired
-     * @param int $timeout
-     * @param float $sleep
-     * @return bool
+     * 运行锁，简单封装.
      * @throws \Throwable
      */
     public function run(\Closure $closure, string $key, int $expired, int $timeout = 0, float $sleep = 0.1): bool
@@ -66,8 +59,6 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 检查锁
-     * @param string $key
-     * @return bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -78,11 +69,6 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 添加锁
-     * @param string $key
-     * @param int $expired
-     * @param int $timeout
-     * @param float $sleep
-     * @return bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -93,14 +79,13 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
         $name = $this->getKey($key);
 
         while ($retry > 0) {
-
             $lock = redis()->set($name, 1, ['nx', 'ex' => $expired]);
             if ($lock || $timeout === 0) {
                 break;
             }
             Coroutine::id() ? Coroutine::sleep($sleep) : usleep(9999999);
 
-            $retry--;
+            --$retry;
         }
 
         return true;
@@ -108,14 +93,12 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 释放锁
-     * @param string $key
-     * @return bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function freed(string $key): bool
     {
-        $luaScript = <<<Lua
+        $luaScript = <<<'Lua'
             if redis.call("GET", KEYS[1]) == ARGV[1] then
                 return redis.call("DEL", KEYS[1])
             else
@@ -125,5 +108,4 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
         return redis()->eval($luaScript, [$this->getKey($key), 1], 1) > 0;
     }
-
 }

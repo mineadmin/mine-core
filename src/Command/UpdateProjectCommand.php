@@ -11,25 +11,31 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
 namespace Mine\Command;
 
 use Hyperf\Command\Annotation\Command;
-use Hyperf\Database\Seeders\Seed;
 use Hyperf\Database\Migrations\Migrator;
-use Mine\MineCommand;
+use Hyperf\Database\Seeders\Seed;
 use Mine\Mine;
+use Mine\MineCommand;
 
 /**
- * Class UpdateProjectCommand
- * @package System\Command
+ * Class UpdateProjectCommand.
  */
 #[Command]
 class UpdateProjectCommand extends MineCommand
 {
     /**
-     * 更新项目命令
-     * @var string|null
+     * 更新项目命令.
      */
     protected ?string $name = 'mine:update';
 
@@ -41,8 +47,6 @@ class UpdateProjectCommand extends MineCommand
 
     /**
      * UpdateProjectCommand constructor.
-     * @param Migrator $migrator
-     * @param Seed $seed
      */
     public function __construct(Migrator $migrator, Seed $seed)
     {

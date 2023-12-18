@@ -1,30 +1,37 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Abstracts;
 
-use Hyperf\Database\Model\Builder;
 use Hyperf\Collection\Collection;
+use Hyperf\Database\Model\Builder;
 use Mine\Interfaces\ServiceInterface\QueryResourceServiceInterface;
-use Mine\Interfaces\ServiceInterface\Resource\DataResource;
 
 abstract class AbstractQueryResource implements QueryResourceServiceInterface
 {
     /**
-     * query 字段名 名称
-     * @var string
+     * query 字段名 名称.
      */
     protected string $field = 'field';
 
     /**
-     * query 字段值 名称
-     * @var string
+     * query 字段值 名称.
      */
     protected string $value = 'value';
 
     /**
      * @var string 传入的搜索字段
      */
-    protected string  $keyword = 'keywords';
+    protected string $keyword = 'keywords';
 
     /**
      * @var string 搜索字段

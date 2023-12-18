@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Command\Creater;
 
 use Hyperf\Command\Annotation\Command;
@@ -19,8 +28,7 @@ use Mine\MineCommand;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
- * Class CreateFormRequest
- * @package System\Command\Creater
+ * Class CreateFormRequest.
  */
 #[Command]
 class CreateFormRequest extends MineCommand
@@ -35,12 +43,14 @@ class CreateFormRequest extends MineCommand
         $this->setHelp('run "php bin/hyperf.php mine:module <module_name> <name>"');
         $this->setDescription('Generate validate form request class file');
         $this->addArgument(
-            'module_name', InputArgument::REQUIRED,
+            'module_name',
+            InputArgument::REQUIRED,
             'input module name'
         );
 
         $this->addArgument(
-            'name', InputArgument::REQUIRED,
+            'name',
+            InputArgument::REQUIRED,
             'input FormRequest class file name'
         );
     }
@@ -65,6 +75,6 @@ class CreateFormRequest extends MineCommand
 
         $fs->put($this->getModulePath() . $this->name . 'FormRequest.php', $content);
 
-        $this->info("<info>[INFO] Created request:</info> ". $this->name . 'FormRequest.php');
+        $this->info('<info>[INFO] Created request:</info> ' . $this->name . 'FormRequest.php');
     }
 }

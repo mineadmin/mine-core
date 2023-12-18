@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Config\Annotation\Value;
@@ -21,24 +30,22 @@ use Mine\Annotation\DeleteCache;
 use Mine\Helper\Str;
 
 /**
- * Class DeleteCacheAspect
- * @package Mine\Aspect
+ * Class DeleteCacheAspect.
  */
 #[Aspect]
 class DeleteCacheAspect extends AbstractAspect
 {
     public array $annotations = [
-        DeleteCache::class
+        DeleteCache::class,
     ];
 
     /**
      * 缓存前缀
      */
-    #[Value("cache.default.prefix")]
+    #[Value('cache.default.prefix')]
     protected string $prefix;
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      * @throws Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -53,7 +60,7 @@ class DeleteCacheAspect extends AbstractAspect
 
         $result = $proceedingJoinPoint->process();
 
-        if ( !empty($deleteCache->keys)) {
+        if (! empty($deleteCache->keys)) {
             $keys = explode(',', $deleteCache->keys);
             $iterator = null;
             $n = [];

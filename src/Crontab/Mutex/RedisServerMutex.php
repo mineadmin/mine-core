@@ -10,13 +10,22 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Crontab\Mutex;
 
-use Hyperf\Redis\RedisFactory;
 use Hyperf\Collection\Arr;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\Redis\RedisFactory;
 use Mine\Crontab\MineCrontab;
 
 class RedisServerMutex implements ServerMutex
@@ -40,8 +49,6 @@ class RedisServerMutex implements ServerMutex
 
     /**
      * Attempt to obtain a server mutex for the given crontab.
-     * @param MineCrontab $crontab
-     * @return bool
      */
     public function attempt(MineCrontab $crontab): bool
     {
@@ -67,8 +74,6 @@ class RedisServerMutex implements ServerMutex
 
     /**
      * Get the server mutex for the given crontab.
-     * @param MineCrontab $crontab
-     * @return string
      */
     public function get(MineCrontab $crontab): string
     {

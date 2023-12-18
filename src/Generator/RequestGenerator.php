@@ -1,7 +1,8 @@
 <?php
+
 /** @noinspection PhpExpressionResultUnusedInspection */
-/** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
-/**
+/* @noinspection PhpSignatureMismatchDuringInheritanceInspection */
+/*
  * MineAdmin is committed to providing solutions for quickly building web applications
  * Please view the LICENSE file that was distributed with this source code,
  * For the full copyright and license information.
@@ -12,6 +13,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
@@ -22,35 +32,20 @@ use Mine\Helper\Str;
 
 /**
  * 验证器生成
- * Class RequestGenerator
- * @package Mine\Generator
+ * Class RequestGenerator.
  */
 class RequestGenerator extends MineGenerator implements CodeGenerator
 {
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
-    /**
-     * @var array
-     */
     protected array $columns;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return RequestGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -65,11 +60,11 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
 
         $this->columns = SettingGenerateColumns::query()
             ->where('table_id', $model->id)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_required', self::YES);
             })
             ->orderByDesc('sort')
-            ->get([ 'column_name', 'column_comment', 'is_insert', 'is_edit' ])->toArray();
+            ->get(['column_name', 'column_comment', 'is_insert', 'is_edit'])->toArray();
 
         return $this->placeholderReplace();
     }
@@ -98,8 +93,31 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
+     * 获取业务名称.
+     */
+    public function getBusinessName(): string
+    {
+        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
+    }
+
+    /**
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
      * 获取模板地址
-     * @return string
      */
     protected function getTemplatePath(): string
     {
@@ -107,8 +125,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -116,7 +133,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): RequestGenerator
     {
@@ -130,7 +147,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -144,7 +161,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      */
     protected function getReplaceContent(): array
     {
@@ -158,17 +175,15 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 初始化命名空间
-     * @return string
+     * 初始化命名空间.
      */
     protected function initNamespace(): string
     {
-        return $this->getNamespace() . "\\Request";
+        return $this->getNamespace() . '\\Request';
     }
 
     /**
-     * 获取注释
-     * @return string
+     * 获取注释.
      */
     protected function getComment(): string
     {
@@ -176,8 +191,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取类名称
-     * @return string
+     * 获取类名称.
      */
     protected function getClassName(): string
     {
@@ -185,8 +199,7 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取验证数据规则
-     * @return string
+     * 获取验证数据规则.
      */
     protected function getRules(): string
     {
@@ -218,23 +231,18 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
         return $phpContent;
     }
 
-    /**
-     * @param array $column
-     * @return string
-     */
     protected function getRuleCode(array &$column): string
     {
         $space = '            ';
         return sprintf(
             "%s//%s 验证\n%s'%s' => 'required',\n",
-            $space,  $column['column_comment'],
-            $space, $column['column_name']
+            $space,
+            $column['column_comment'],
+            $space,
+            $column['column_name']
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getAttributes(): string
     {
         $phpCode = '';
@@ -245,43 +253,14 @@ class RequestGenerator extends MineGenerator implements CodeGenerator
         return str_replace('{LIST}', $phpCode, $this->filesystem->sharedGet($path));
     }
 
-    /**
-     * @param array $column
-     * @return string
-     */
     protected function getAttributeCode(array &$column): string
     {
         $space = '            ';
         return sprintf(
-            "%s'%s' => '%s',\n", $space, $column['column_name'], $column['column_comment']
+            "%s'%s' => '%s',\n",
+            $space,
+            $column['column_name'],
+            $column['column_comment']
         );
     }
-
-    /**
-     * 获取业务名称
-     * @return string
-     */
-    public function getBusinessName(): string
-    {
-        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
-    }
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
-    }
-
 }

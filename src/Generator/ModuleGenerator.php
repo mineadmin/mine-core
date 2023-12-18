@@ -10,6 +10,14 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
 namespace Mine\Generator;
 
@@ -18,14 +26,10 @@ use Mine\Mine;
 
 class ModuleGenerator extends MineGenerator
 {
-    /**
-     * @var array
-     */
     protected array $moduleInfo;
 
     /**
-     * 设置模块信息
-     * @param array $moduleInfo
+     * 设置模块信息.
      * @return $this
      */
     public function setModuleInfo(array $moduleInfo): ModuleGenerator
@@ -35,7 +39,7 @@ class ModuleGenerator extends MineGenerator
     }
 
     /**
-     * 生成模块基础架构
+     * 生成模块基础架构.
      */
     public function createModule(): bool
     {
@@ -45,7 +49,7 @@ class ModuleGenerator extends MineGenerator
 
         $this->moduleInfo['name'] = ucfirst($this->moduleInfo['name']);
 
-        $mine = new Mine;
+        $mine = new Mine();
         $mine->scanModule();
 
         if (! empty($mine->getModuleInfo($this->moduleInfo['name']))) {
@@ -69,28 +73,28 @@ class ModuleGenerator extends MineGenerator
     }
 
     /**
-     * 创建模块JSON文件
+     * 创建模块JSON文件.
      */
     protected function createConfigJson(Filesystem $filesystem)
     {
         $json = $filesystem->sharedGet($this->getStubDir() . 'config.stub');
 
         $content = str_replace(
-            ['{NAME}','{LABEL}','{DESCRIPTION}', '{VERSION}'],
+            ['{NAME}', '{LABEL}', '{DESCRIPTION}', '{VERSION}'],
             [
                 $this->moduleInfo['name'],
                 $this->moduleInfo['label'],
                 $this->moduleInfo['description'],
-                $this->moduleInfo['version']
+                $this->moduleInfo['version'],
             ],
             $json
         );
 
-        $filesystem->put(BASE_PATH . '/app/' .$this->moduleInfo['name'] . '/config.json', $content);
+        $filesystem->put(BASE_PATH . '/app/' . $this->moduleInfo['name'] . '/config.json', $content);
     }
 
     /**
-     * 生成的目录列表
+     * 生成的目录列表.
      */
     protected function getGeneratorDirs(): array
     {

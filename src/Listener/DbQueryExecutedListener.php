@@ -1,22 +1,23 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
+
 namespace Mine\Listener;
 
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Collection\Arr;
 use Mine\Helper\Str;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -24,25 +25,21 @@ use Psr\Log\LoggerInterface;
 #[Listener]
 class DbQueryExecutedListener implements ListenerInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $logger;
-    /**
-     * @var StdoutLoggerInterface
-     */
     protected StdoutLoggerInterface $console;
-    
+
+    private LoggerInterface $logger;
+
     public function __construct(StdoutLoggerInterface $console, ContainerInterface $container)
     {
         $this->logger = $container->get(LoggerFactory::class)->get('sql', 'sql');
         $this->console = $console;
     }
-    
-    public function listen() : array
+
+    public function listen(): array
     {
         return [QueryExecuted::class];
     }
+
     /**
      * @param QueryExecuted $event
      */

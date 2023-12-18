@@ -9,18 +9,26 @@
  * @Link   https://gitee.com/xmo/MineAdmin
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Command\Creater;
 
+use Hyperf\Command\Annotation\Command;
 use Hyperf\DbConnection\Db;
 use Mine\Mine;
 use Mine\MineCommand;
-use Hyperf\Command\Annotation\Command;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class CreateModel
- * @package System\Command\Creater
+ * Class CreateModel.
  */
 #[Command]
 class CreateModel extends MineCommand
@@ -42,7 +50,7 @@ class CreateModel extends MineCommand
             $module = ucfirst(trim($this->input->getOption('module')));
         }
 
-        $table  = $this->input->getOption('table');
+        $table = $this->input->getOption('table');
         if ($table) {
             $table = env('DB_PREFIX') . trim($this->input->getOption('table'));
         }
@@ -64,20 +72,19 @@ class CreateModel extends MineCommand
 
             $tableList = [];
             foreach ($tables as $k) {
-                $tmp = $k->$key;
-                if (!empty($prefix) && preg_match(sprintf("/%s_%s[_a-zA-Z0-9]+/i", $prefix, $module), $tmp)) {
+                $tmp = $k->{$key};
+                if (! empty($prefix) && preg_match(sprintf('/%s_%s[_a-zA-Z0-9]+/i', $prefix, $module), $tmp)) {
                     $tableList[] = $tmp;
                 }
-                if (preg_match(sprintf("/%s(\b|_[a-zA-Z0-9]+)/i", $module), $tmp)) {
+                if (preg_match(sprintf('/%s(\\b|_[a-zA-Z0-9]+)/i', $module), $tmp)) {
                     $tableList[] = $tmp;
                 }
             }
 
-            if (!empty($table)) {
-                if (!in_array($table, $tableList)) {
+            if (! empty($table)) {
+                if (! in_array($table, $tableList)) {
                     $this->confirm("Table \"{$table}\" does not exist or not belong to the \"{$module}\" module. Are you sure to generate the model?", false)
-                    &&
-                    $this->call('gen:model', ['table' => $table, '--path' => $path]);
+                    && $this->call('gen:model', ['table' => $table, '--path' => $path]);
                 } else {
                     $this->call('gen:model', ['table' => $table, '--path' => $path]);
                 }
@@ -93,7 +100,7 @@ class CreateModel extends MineCommand
     {
         return [
             ['module', '-M', InputOption::VALUE_REQUIRED, 'Please enter the module to be generated'],
-            ['table', '-T', InputOption::VALUE_OPTIONAL, 'Which table you want to associated with the Model.']
+            ['table', '-T', InputOption::VALUE_OPTIONAL, 'Which table you want to associated with the Model.'],
         ];
     }
 }

@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Annotation\Api;
 
 use Hyperf\Di\Annotation\AnnotationCollector;
@@ -35,8 +45,6 @@ class MApiCollector extends MetadataCollector
         return self::$apiDataByAppId[$id] ?? [];
     }
 
-
-
     public static function parse(): void
     {
         if (count(self::$apiData) == 0) {
@@ -46,11 +54,11 @@ class MApiCollector extends MetadataCollector
             foreach ($metadata as $data) {
                 $api_column = [];
 
-                if (isset($requestParams[$data['class']]) && isset($requestParams[$data['class']][$data['method']])) {
+                if (isset($requestParams[$data['class']], $requestParams[$data['class']][$data['method']])) {
                     $api_column = $requestParams[$data['class']][$data['method']];
                 }
 
-                if (isset($responseParams[$data['class']]) && isset($responseParams[$data['class']][$data['method']])) {
+                if (isset($responseParams[$data['class']], $responseParams[$data['class']][$data['method']])) {
                     $api_column = array_merge($api_column, $responseParams[$data['class']][$data['method']]);
                 }
 
@@ -68,7 +76,7 @@ class MApiCollector extends MetadataCollector
                     'api_column' => $api_column,
                     'group_id' => $data['annotation']->groupId,
                     'response' => $data['annotation']->response,
-                    'updated_at' => date('Y-m-d H:i:s', START_TIME)
+                    'updated_at' => date('Y-m-d H:i:s', START_TIME),
                 ];
                 self::$apiDataByAppId[$data['annotation']->appId][] = self::$apiData[$data['annotation']->accessName];
             }

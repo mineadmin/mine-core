@@ -10,6 +10,14 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
 
 namespace Mine\Generator\Traits;
 
@@ -17,31 +25,23 @@ trait MapperGeneratorTraits
 {
     /**
      * 获取搜索代码
-     * @param $column
-     * @return string
      */
     protected function getSearchCode($column): string
     {
         return match ($column['query_type']) {
-            'neq'     => $this->getSearchPHPString($column['column_name'], '!=', $column['column_comment']),
-            'gt'      => $this->getSearchPHPString($column['column_name'], '<', $column['column_comment']),
-            'gte'     => $this->getSearchPHPString($column['column_name'], '<=', $column['column_comment']),
-            'lt'      => $this->getSearchPHPString($column['column_name'], '>', $column['column_comment']),
-            'lte'     => $this->getSearchPHPString($column['column_name'], '>=', $column['column_comment']),
-            'like'    => $this->getSearchPHPString($column['column_name'], 'like', $column['column_comment']),
+            'neq' => $this->getSearchPHPString($column['column_name'], '!=', $column['column_comment']),
+            'gt' => $this->getSearchPHPString($column['column_name'], '<', $column['column_comment']),
+            'gte' => $this->getSearchPHPString($column['column_name'], '<=', $column['column_comment']),
+            'lt' => $this->getSearchPHPString($column['column_name'], '>', $column['column_comment']),
+            'lte' => $this->getSearchPHPString($column['column_name'], '>=', $column['column_comment']),
+            'like' => $this->getSearchPHPString($column['column_name'], 'like', $column['column_comment']),
             'between' => $this->getSearchPHPString($column['column_name'], 'between', $column['column_comment']),
-            'in'      => $this->getSearchPHPString($column['column_name'], 'in', $column['column_comment']),
-            'notin'   => $this->getSearchPHPString($column['column_name'], 'notin', $column['column_comment']),
-            default   => $this->getSearchPHPString($column['column_name'], '=', $column['column_comment']),
+            'in' => $this->getSearchPHPString($column['column_name'], 'in', $column['column_comment']),
+            'notin' => $this->getSearchPHPString($column['column_name'], 'notin', $column['column_comment']),
+            default => $this->getSearchPHPString($column['column_name'], '=', $column['column_comment']),
         };
     }
 
-    /**
-     * @param $name
-     * @param $mark
-     * @param $comment
-     * @return string
-     */
     protected function getSearchPHPString($name, $mark, $comment): string
     {
         if ($mark == 'like') {
@@ -53,7 +53,6 @@ trait MapperGeneratorTraits
         }
 
 php;
-
         }
 
         if ($mark == 'between') {
@@ -79,7 +78,6 @@ php;
         }
 
 php;
-
         }
 
         if ($mark == 'notin') {
@@ -91,7 +89,6 @@ php;
         }
 
 php;
-
         }
 
         return <<<php

@@ -1,7 +1,8 @@
 <?php
+
 /** @noinspection PhpIllegalStringOffsetInspection */
-/** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
-/**
+/* @noinspection PhpSignatureMismatchDuringInheritanceInspection */
+/*
  * MineAdmin is committed to providing solutions for quickly building web applications
  * Please view the LICENSE file that was distributed with this source code,
  * For the full copyright and license information.
@@ -12,44 +13,41 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
 use App\Setting\Model\SettingGenerateTables;
-use Mine\Interfaces\ServiceInterface\GenerateColumnServiceInterface;
 use Hyperf\Support\Filesystem\Filesystem;
 use Mine\Exception\NormalStatusException;
 use Mine\Generator\Traits\MapperGeneratorTraits;
 use Mine\Helper\Str;
+use Mine\Interfaces\ServiceInterface\GenerateColumnServiceInterface;
 
 /**
  * Mapper类生成
- * Class MapperGenerator
- * @package Mine\Generator
+ * Class MapperGenerator.
  */
 class MapperGenerator extends MineGenerator implements CodeGenerator
 {
     use MapperGeneratorTraits;
 
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return MapperGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -88,8 +86,7 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取生成的类型
-     * @return string
+     * 获取生成的类型.
      */
     public function getType(): string
     {
@@ -97,17 +94,39 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取模板地址
-     * @return string
+     * 获取业务名称.
      */
-    protected function getTemplatePath(): string
+    public function getBusinessName(): string
     {
-        return $this->getStubDir().$this->getType().'/mapper.stub';
+        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
+     * 获取模板地址
+     */
+    protected function getTemplatePath(): string
+    {
+        return $this->getStubDir() . $this->getType() . '/mapper.stub';
+    }
+
+    /**
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -115,7 +134,7 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): MapperGenerator
     {
@@ -129,7 +148,7 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -142,12 +161,12 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
             '{FIELD_ID}',
             '{FIELD_PID}',
             '{FIELD_NAME}',
-            '{SEARCH}'
+            '{SEARCH}',
         ];
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      */
     protected function getReplaceContent(): array
     {
@@ -160,31 +179,28 @@ class MapperGenerator extends MineGenerator implements CodeGenerator
             $this->getFieldIdName(),
             $this->getFieldPidName(),
             $this->getFieldName(),
-            $this->getSearch()
+            $this->getSearch(),
         ];
     }
 
     /**
-     * 初始化服务类命名空间
-     * @return string
+     * 初始化服务类命名空间.
      */
     protected function initNamespace(): string
     {
-        return $this->getNamespace() . "\\Mapper";
+        return $this->getNamespace() . '\\Mapper';
     }
 
     /**
-     * 获取控制器注释
-     * @return string
+     * 获取控制器注释.
      */
     protected function getComment(): string
     {
-        return $this->model->menu_name. 'Mapper类';
+        return $this->model->menu_name . 'Mapper类';
     }
 
     /**
-     * 获取使用的类命名空间
-     * @return string
+     * 获取使用的类命名空间.
      */
     protected function getUse(): string
     {
@@ -194,17 +210,15 @@ UseNamespace;
     }
 
     /**
-     * 获取类名称
-     * @return string
+     * 获取类名称.
      */
     protected function getClassName(): string
     {
-        return $this->getBusinessName().'Mapper';
+        return $this->getBusinessName() . 'Mapper';
     }
 
     /**
-     * 获取Model类名称
-     * @return string
+     * 获取Model类名称.
      */
     protected function getModelName(): string
     {
@@ -212,56 +226,49 @@ UseNamespace;
     }
 
     /**
-     * 获取树表ID
-     * @return string
+     * 获取树表ID.
      */
     protected function getFieldIdName(): string
     {
         if ($this->getType() == 'Tree') {
-            if ( $this->model->options['tree_id'] ?? false ) {
+            if ($this->model->options['tree_id'] ?? false) {
                 return $this->model->options['tree_id'];
-            } else {
-                return 'id';
             }
+            return 'id';
         }
         return '';
     }
 
     /**
-     * 获取树表父ID
-     * @return string
+     * 获取树表父ID.
      */
     protected function getFieldPidName(): string
     {
         if ($this->getType() == 'Tree') {
-            if ( $this->model->options['tree_pid'] ?? false ) {
+            if ($this->model->options['tree_pid'] ?? false) {
                 return $this->model->options['tree_pid'];
-            } else {
-                return 'parent_id';
             }
+            return 'parent_id';
         }
         return '';
     }
 
     /**
-     * 获取树表显示名称
-     * @return string
+     * 获取树表显示名称.
      */
     protected function getFieldName(): string
     {
         if ($this->getType() == 'Tree') {
-            if ( $this->model->options['tree_name'] ?? false ) {
+            if ($this->model->options['tree_name'] ?? false) {
                 return $this->model->options['tree_name'];
-            } else {
-                return 'name';
             }
+            return 'name';
         }
         return '';
     }
 
     /**
-     * 获取搜索内容
-     * @return string
+     * 获取搜索内容.
      */
     protected function getSearch(): string
     {
@@ -279,33 +286,4 @@ UseNamespace;
 
         return $phpContent;
     }
-
-    /**
-     * 获取业务名称
-     * @return string
-     */
-    public function getBusinessName(): string
-    {
-        return Str::studly(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
-    }
-
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
-    }
-
 }

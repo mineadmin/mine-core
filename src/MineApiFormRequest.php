@@ -1,15 +1,15 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
 /**
- * MineAdmin is committed to providing solutions for quickly building web applications
- * Please view the LICENSE file that was distributed with this source code,
- * For the full copyright and license information.
- * Thank you very much for using MineAdmin.
+ * This file is part of MineAdmin.
  *
- * @Author X.Mo<root@imoi.cn>
- * @Link   https://gitee.com/xmo/MineAdmin
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
+
 namespace Mine;
 
 use Hyperf\Validation\Request\FormRequest;
@@ -25,8 +25,7 @@ class MineApiFormRequest extends FormRequest
     }
 
     /**
-     * 公共规则
-     * @return array
+     * 公共规则.
      */
     public function commonRules(): array
     {
@@ -35,20 +34,16 @@ class MineApiFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     * @return array
      */
     public function rules(): array
     {
         $operation = $this->getOperation();
         $operation = explode('.', $operation);
         $method = end($operation) . 'Rules';
-        $rules = ( $operation && method_exists($this, $method) ) ? $this->$method() : [];
+        $rules = ($operation && method_exists($this, $method)) ? $this->{$method}() : [];
         return array_merge($rules, $this->commonRules());
     }
 
-    /**
-     * @return string|null
-     */
     protected function getOperation(): ?string
     {
         $path = explode('/', $this->getFixPath());
@@ -61,13 +56,11 @@ class MineApiFormRequest extends FormRequest
 
     /**
      * request->path在单元测试中拿不到，导致MineFormRequest验证失败
-     * 取uri中的path, fix
-     * @return string|null
+     * 取uri中的path, fix.
+     * @return null|string
      */
     protected function getFixPath(): string
     {
         return ltrim($this->getUri()->getPath(), '/');
     }
-
-
 }

@@ -1,12 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Annotation\Api;
 
 use App\System\Model\SystemApi;
-use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class MApi extends AbstractAnnotation
 {
     public function __construct(
@@ -17,7 +26,7 @@ class MApi extends AbstractAnnotation
         // 描述信息
         public string $description,
         // appId
-        public string|array $appId,
+        public array|string $appId,
         // 是否启用
         public int $status = 1,
         // 验证模式 1 简单  2 复杂;
@@ -30,6 +39,5 @@ class MApi extends AbstractAnnotation
         public string $remark = '',
         // 响应示例
         public string $response = "{\n  code: 200,\n  success: true,\n  message: '请求成功',\n  data: []\n}"
-    ) {
-    }
+    ) {}
 }

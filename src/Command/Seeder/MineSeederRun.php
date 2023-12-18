@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Command\Seeder;
 
 use Hyperf\Command\Annotation\Command;
@@ -20,8 +29,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class MineSeederRun
- * @package System\Command\Seeder
+ * Class MineSeederRun.
  */
 #[Command]
 class MineSeederRun extends BaseCommand
@@ -30,22 +38,16 @@ class MineSeederRun extends BaseCommand
 
     /**
      * The console command name.
-     *
-     * @var string|null
      */
     protected ?string $name = 'mine:seeder-run';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected string $description = 'Seed the database with records';
 
     /**
      * The seed instance.
-     *
-     * @var Seed
      */
     protected Seed $seed;
 
@@ -53,7 +55,6 @@ class MineSeederRun extends BaseCommand
 
     /**
      * Create a new seed command instance.
-     * @param Seed $seed
      */
     public function __construct(Seed $seed)
     {
@@ -93,8 +94,6 @@ class MineSeederRun extends BaseCommand
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions(): array
     {
@@ -105,7 +104,6 @@ class MineSeederRun extends BaseCommand
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production'],
         ];
     }
-
 
     protected function getSeederPath(): string
     {

@@ -1,11 +1,20 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Annotation\Api;
 
-use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
-#[Attribute(Attribute::TARGET_METHOD|Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MApiResponseParam extends AbstractAnnotation
 {
     public function __construct(
@@ -21,12 +30,10 @@ class MApiResponseParam extends AbstractAnnotation
         public int $isRequired = 1,
         // 是否启用 1 启用 2 不启用
         public int $status = 1,
-    ) {
-    }
+    ) {}
 
     public function collectMethod(string $className, ?string $target): void
     {
         MApiResponseParamCollector::collectMethod($className, $target, static::class, $this);
     }
-
 }

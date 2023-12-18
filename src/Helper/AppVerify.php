@@ -10,20 +10,26 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Helper;
 
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Xmo\JWTAuth\JWT;
 use Psr\SimpleCache\InvalidArgumentException;
+use Xmo\JWTAuth\JWT;
 
 class AppVerify
 {
-    /**
-     * @var JWT
-     */
-    protected JWT $jwt;
-
     public RequestInterface $request;
+
+    protected JWT $jwt;
 
     /**
      * AppVerify constructor.
@@ -37,13 +43,10 @@ class AppVerify
     }
 
     /**
-     * 验证token
-     * @param String|null $token
-     * @param string $scene
-     * @return bool
+     * 验证token.
      * @throws InvalidArgumentException
      */
-    public function check(?String $token = null, string $scene = 'api'): bool
+    public function check(?string $token = null, string $scene = 'api'): bool
     {
         try {
             if ($this->jwt->checkToken($token, $scene, true, true, true)) {
@@ -58,7 +61,6 @@ class AppVerify
 
     /**
      * 获取JWT对象
-     * @return Jwt
      */
     public function getJwt(): Jwt
     {
@@ -66,8 +68,7 @@ class AppVerify
     }
 
     /**
-     * 获取当前APP的信息
-     * @return array
+     * 获取当前APP的信息.
      */
     public function getAppInfo(): array
     {
@@ -76,8 +77,7 @@ class AppVerify
     }
 
     /**
-     * 获取apiID
-     * @return string
+     * 获取apiID.
      */
     public function getApiId(): string
     {
@@ -86,8 +86,7 @@ class AppVerify
     }
 
     /**
-     * 获取当前APP_ID
-     * @return string
+     * 获取当前APP_ID.
      */
     public function getAppId(): string
     {
@@ -96,9 +95,7 @@ class AppVerify
     }
 
     /**
-     * 获取Token
-     * @param array $apiInfo
-     * @return string
+     * 获取Token.
      * @throws InvalidArgumentException
      */
     public function getToken(array $apiInfo): string
@@ -107,8 +104,7 @@ class AppVerify
     }
 
     /**
-     * 刷新token
-     * @return string
+     * 刷新token.
      * @throws InvalidArgumentException
      */
     public function refresh(): string

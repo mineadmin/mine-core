@@ -10,46 +10,40 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
 use App\Setting\Model\SettingGenerateTables;
+use Hyperf\Database\Model\Collection;
 use Hyperf\Support\Filesystem\Filesystem;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
-use Hyperf\Database\Model\Collection;
 
 /**
  * Vue index文件生成
- * Class VueIndexGenerator
- * @package Mine\Generator
+ * Class VueIndexGenerator.
  */
 class VueIndexGenerator extends MineGenerator implements CodeGenerator
 {
-    /**
-     * @var SettingGenerateTables
-     */
     protected SettingGenerateTables $model;
 
-    /**
-     * @var string
-     */
     protected string $codeContent;
 
-    /**
-     * @var Filesystem
-     */
     protected Filesystem $filesystem;
 
-    /**
-     * @var Collection
-     */
     protected Collection $columns;
 
     /**
-     * 设置生成信息
-     * @param SettingGenerateTables $model
-     * @return VueIndexGenerator
+     * 设置生成信息.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -79,7 +73,9 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
         $path = BASE_PATH . "/runtime/generate/vue/src/views/{$module}/{$this->getShortBusinessName()}/index.vue";
         $this->filesystem->makeDirectory(
             BASE_PATH . "/runtime/generate/vue/src/views/{$module}/{$this->getShortBusinessName()}",
-            0755, true, true
+            0755,
+            true,
+            true
         );
         $this->filesystem->put($path, $this->replace()->getCodeContent());
     }
@@ -93,17 +89,56 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取模板地址
-     * @return string
+     * 获取短业务名称.
      */
-    protected function getTemplatePath(): string
+    public function getShortBusinessName(): string
     {
-        return $this->getStubDir().'/Vue/index.stub';
+        return Str::camel(str_replace(
+            Str::lower($this->model->module_name),
+            '',
+            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
+        ));
     }
 
     /**
-     * 读取模板内容
-     * @return string
+     * 获取组件类型.
+     */
+    public function getComponentType(int $type): string
+    {
+        return match ($type) {
+            1 => "'modal'",
+            2 => "'drawer'",
+            3 => "'tag'",
+            default => "'modal'"
+        };
+    }
+
+    /**
+     * 设置代码内容.
+     */
+    public function setCodeContent(string $content)
+    {
+        $this->codeContent = $content;
+    }
+
+    /**
+     * 获取代码内容.
+     */
+    public function getCodeContent(): string
+    {
+        return $this->codeContent;
+    }
+
+    /**
+     * 获取模板地址
+     */
+    protected function getTemplatePath(): string
+    {
+        return $this->getStubDir() . '/Vue/index.stub';
+    }
+
+    /**
+     * 读取模板内容.
      */
     protected function readTemplate(): string
     {
@@ -111,7 +146,7 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 占位符替换
+     * 占位符替换.
      */
     protected function placeholderReplace(): VueIndexGenerator
     {
@@ -125,7 +160,7 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换的占位符
+     * 获取要替换的占位符.
      */
     protected function getPlaceHolderContent(): array
     {
@@ -142,7 +177,7 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 获取要替换占位符的内容
+     * 获取要替换占位符的内容.
      * @return string[]
      */
     protected function getReplaceContent(): array
@@ -161,7 +196,6 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
 
     /**
      * 获取标识代码
-     * @return string
      */
     protected function getCode(): string
     {
@@ -170,15 +204,14 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
 
     /**
      * 获取CRUD配置代码
-     * @return string
      */
     protected function getOptions(): string
     {
         // 配置项
         $options = [];
-        $options['id'] = "'".$this->model->table_name."'";
-        $options['rowSelection'] = [ 'showCheckedAll' => true ];
-        $options['pk'] = "'".$this->getPk()."'";
+        $options['id'] = "'" . $this->model->table_name . "'";
+        $options['rowSelection'] = ['showCheckedAll' => true];
+        $options['pk'] = "'" . $this->getPk() . "'";
         $options['operationColumn'] = false;
         $options['operationColumnWidth'] = 160;
         $options['formOption'] = [
@@ -197,14 +230,14 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
         if (Str::contains($this->model->generate_menus, 'save')) {
             $options['add'] = [
                 'show' => true, 'api' => $this->getBusinessEnName() . '.save',
-                'auth' => "['".$this->getCode().":save']"
+                'auth' => "['" . $this->getCode() . ":save']",
             ];
         }
         if (Str::contains($this->model->generate_menus, 'update')) {
             $options['operationColumn'] = true;
             $options['edit'] = [
                 'show' => true, 'api' => $this->getBusinessEnName() . '.update',
-                'auth' => "['".$this->getCode().":update']"
+                'auth' => "['" . $this->getCode() . ":update']",
             ];
         }
         if (Str::contains($this->model->generate_menus, 'delete')) {
@@ -212,15 +245,15 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
             $options['delete'] = [
                 'show' => true,
                 'api' => $this->getBusinessEnName() . '.deletes',
-                'auth' => "['".$this->getCode().":delete']"
+                'auth' => "['" . $this->getCode() . ":delete']",
             ];
             if (Str::contains($this->model->generate_menus, 'recycle')) {
                 $options['delete']['realApi'] = $this->getBusinessEnName() . '.realDeletes';
-                $options['delete']['realAuth'] = "['".$this->getCode().":realDeletes']";
+                $options['delete']['realAuth'] = "['" . $this->getCode() . ":realDeletes']";
                 $options['recovery'] = [
                     'show' => true,
                     'api' => $this->getBusinessEnName() . '.recoverys',
-                    'auth' => "['".$this->getCode().":recovery']"
+                    'auth' => "['" . $this->getCode() . ":recovery']",
                 ];
             }
         }
@@ -229,17 +262,17 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
         if (Str::contains($this->model->generate_menus, 'import')) {
             $options['import'] = [
                 'show' => true,
-                'url' => "'".$requestRoute . '/import'."'",
-                'templateUrl' => "'".$requestRoute . '/downloadTemplate'."'",
-                'auth' => "['".$this->getCode().":import']"
+                'url' => "'" . $requestRoute . '/import' . "'",
+                'templateUrl' => "'" . $requestRoute . '/downloadTemplate' . "'",
+                'auth' => "['" . $this->getCode() . ":import']",
             ];
         }
         // 导出
         if (Str::contains($this->model->generate_menus, 'export')) {
             $options['export'] = [
                 'show' => true,
-                'url' => "'".$requestRoute . '/export'."'",
-                'auth' => "['".$this->getCode().":export']"
+                'url' => "'" . $requestRoute . '/export' . "'",
+                'auth' => "['" . $this->getCode() . ":export']",
             ];
         }
         return 'const options = reactive(' . $this->jsonFormat($options, true) . ')';
@@ -247,7 +280,6 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
 
     /**
      * 获取列配置代码
-     * @return string
      */
     protected function getColumns(): string
     {
@@ -275,23 +307,23 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
             if ($column->is_required == self::YES) {
                 $tmp['commonRules'] = [
                     'required' => true,
-                    'message' => '请输入' . $column->column_comment
+                    'message' => '请输入' . $column->column_comment,
                 ];
             }
             if ($column->is_sort == self::YES) {
                 $tmp['sortable'] = [
-                    'sortDirections' => [ 'ascend', 'descend' ],
-                    'sorter' => true
+                    'sortDirections' => ['ascend', 'descend'],
+                    'sorter' => true,
                 ];
             }
             // 扩展项
-            if (!empty($column->options)) {
+            if (! empty($column->options)) {
                 $collection = $column->options['collection'] ?? [];
                 // 合并
                 $tmp = array_merge($tmp, $column->options);
                 // 自定义数据
-                if (in_array($column->view_type, ['checkbox', 'radio', 'select', 'transfer']) && !empty($collection)) {
-                    $tmp['dict'] = [ 'data' => $collection, 'translation' => true ];
+                if (in_array($column->view_type, ['checkbox', 'radio', 'select', 'transfer']) && ! empty($collection)) {
+                    $tmp['dict'] = ['data' => $collection, 'translation' => true];
                 }
                 // 对日期时间处理
                 if ($column->view_type == 'date' && $column->options['mode'] == 'date') {
@@ -304,11 +336,11 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
                 unset($tmp['collection']);
             }
             // 字典
-            if (!empty($column->dict_type)) {
+            if (! empty($column->dict_type)) {
                 $tmp['dict'] = [
                     'name' => $column->dict_type,
-                    'props' => [ 'label' => 'title', 'value' => 'key' ],
-                    'translation' => true
+                    'props' => ['label' => 'title', 'value' => 'key'],
+                    'translation' => true,
                 ];
             }
             // 密码处理
@@ -322,34 +354,26 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
         return 'const columns = reactive(' . $this->jsonFormat($options) . ')';
     }
 
-    /**
-     * @return string
-     */
     protected function getShowRecycle(): string
     {
-        return ( strpos($this->model->generate_menus, 'recycle') > 0 ) ? 'true' : 'false';
+        return (strpos($this->model->generate_menus, 'recycle') > 0) ? 'true' : 'false';
     }
 
     /**
-     * 获取业务英文名
-     * @return string
+     * 获取业务英文名.
      */
     protected function getBusinessEnName(): string
     {
         return Str::camel(str_replace(env('DB_PREFIX'), '', $this->model->table_name));
     }
 
-    /**
-     * @return string
-     */
     protected function getModuleName(): string
     {
         return Str::lower($this->model->module_name);
     }
 
     /**
-     * 返回主键
-     * @return string
+     * 返回主键.
      */
     protected function getPk(): string
     {
@@ -362,57 +386,36 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * 计数器组件方法
-     * @return string
+     * 计数器组件方法.
      * @noinspection BadExpressionStatementJS
      */
     protected function getInputNumber(): string
     {
-        if (in_array('numberOperation' , explode(',', $this->model->generate_menus))) {
+        if (in_array('numberOperation', explode(',', $this->model->generate_menus))) {
             return str_replace('{BUSINESS_EN_NAME}', $this->getBusinessEnName(), $this->getOtherTemplate('numberOperation'));
         }
         return '';
     }
 
     /**
-     * 计数器组件方法
-     * @return string
+     * 计数器组件方法.
      * @noinspection BadExpressionStatementJS
      */
     protected function getSwitchStatus(): string
     {
-        if (in_array('changeStatus' , explode(',', $this->model->generate_menus))) {
+        if (in_array('changeStatus', explode(',', $this->model->generate_menus))) {
             return str_replace('{BUSINESS_EN_NAME}', $this->getBusinessEnName(), $this->getOtherTemplate('switchStatus'));
         }
         return '';
     }
 
-    /**
-     * @param string $tpl
-     * @return string
-     */
     protected function getOtherTemplate(string $tpl): string
     {
         return $this->filesystem->sharedGet($this->getStubDir() . "/Vue/{$tpl}.stub");
     }
 
     /**
-     * 获取短业务名称
-     * @return string
-     */
-    public function getShortBusinessName(): string
-    {
-        return Str::camel(str_replace(
-            Str::lower($this->model->module_name),
-            '',
-            str_replace(env('DB_PREFIX'), '', $this->model->table_name)
-        ));
-    }
-
-    /**
-     * 视图组件
-     * @param string $viewType
-     * @return string
+     * 视图组件.
      */
     protected function getViewType(string $viewType): string
     {
@@ -450,53 +453,16 @@ class VueIndexGenerator extends MineGenerator implements CodeGenerator
     }
 
     /**
-     * array 到 json 数据格式化
-     * @param array $data
-     * @param bool $removeValueQuotes
-     * @return string
+     * array 到 json 数据格式化.
      */
     protected function jsonFormat(array $data, bool $removeValueQuotes = false): string
     {
-        $data = str_replace('    ', '  ', json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
-        $data = str_replace(['"true"', '"false"', "\\"], [ true, false, ''], $data);
-        $data = preg_replace('/(\s+)\"(.+)\":/', "\\1\\2:", $data);
+        $data = str_replace('    ', '  ', json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        $data = str_replace(['"true"', '"false"', '\\'], [true, false, ''], $data);
+        $data = preg_replace('/(\s+)\"(.+)\":/', '\\1\\2:', $data);
         if ($removeValueQuotes) {
-            $data = preg_replace('/(:\s)\"(.+)\"/', "\\1\\2", $data);
+            $data = preg_replace('/(:\s)\"(.+)\"/', '\\1\\2', $data);
         }
         return $data;
     }
-
-    /**
-     * 获取组件类型
-     * @param int $type
-     * @return string
-     */
-    public function getComponentType(int $type): string
-    {
-        return match($type) {
-            1 => "'modal'",
-            2 => "'drawer'",
-            3 => "'tag'",
-            default => "'modal'"
-        };
-    }
-
-    /**
-     * 设置代码内容
-     * @param string $content
-     */
-    public function setCodeContent(string $content)
-    {
-        $this->codeContent = $content;
-    }
-
-    /**
-     * 获取代码内容
-     * @return string
-     */
-    public function getCodeContent(): string
-    {
-        return $this->codeContent;
-    }
-
 }

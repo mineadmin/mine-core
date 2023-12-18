@@ -10,14 +10,22 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine;
 
 use Mine\Traits\ControllerTrait;
 
 /**
  * API接口控制器基类
- * Class MineApi
- * @package Mine
+ * Class MineApi.
  */
 abstract class MineApi
 {

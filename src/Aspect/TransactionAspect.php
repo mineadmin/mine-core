@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\DbConnection\Db;
@@ -20,30 +29,28 @@ use Mine\Annotation\Transaction;
 use Mine\Exception\MineException;
 
 /**
- * Class TransactionAspect
- * @package Mine\Aspect
+ * Class TransactionAspect.
  */
 #[Aspect]
 class TransactionAspect extends AbstractAspect
 {
     public array $annotations = [
-        Transaction::class
+        Transaction::class,
     ];
 
     /**
-     * @param ProceedingJoinPoint $proceedingJoinPoint
      * @return mixed
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var Transaction $transaction */
+        /* @var Transaction $transaction */
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Transaction::class])) {
             $transaction = $proceedingJoinPoint->getAnnotationMetadata()->method[Transaction::class];
         }
         try {
             Db::beginTransaction();
             $number = 0;
-            $retry  = intval($transaction->retry);
+            $retry = intval($transaction->retry);
             do {
                 $result = $proceedingJoinPoint->process();
                 if (! is_null($result)) {

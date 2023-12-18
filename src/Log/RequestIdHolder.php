@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
+
 namespace Mine\Log;
 
 use Hyperf\Context\ApplicationContext;
@@ -30,16 +31,6 @@ class RequestIdHolder
         }
     }
 
-    protected static function getUniqueId(): string
-    {
-        if (self::$type == 'uuid') {
-            $uniqueId = Context::set(self::REQUEST_ID, Uuid::uuid4()->toString());
-        } else {
-            $uniqueId = strval(Context::set(self::REQUEST_ID, ApplicationContext::getContainer()->get(IdGeneratorInterface::class)->generate()));
-        }
-        return $uniqueId;
-    }
-
     public static function getId(): string
     {
         if (Coroutine::inCoroutine()) { // 在协程内
@@ -48,7 +39,7 @@ class RequestIdHolder
             if (is_null($request_id)) {
                 // 没有去父协程 获取
                 $request_id = Context::get(self::REQUEST_ID, null, Coroutine::parentId());
-                if (!is_null($request_id)) {
+                if (! is_null($request_id)) {
                     // 写入本协程，以便本协程或本协程下的子协程获取
                     Context::set(self::REQUEST_ID, $request_id);
                 }
@@ -61,5 +52,15 @@ class RequestIdHolder
             $request_id = self::getUniqueId();
         }
         return $request_id;
+    }
+
+    protected static function getUniqueId(): string
+    {
+        if (self::$type == 'uuid') {
+            $uniqueId = Context::set(self::REQUEST_ID, Uuid::uuid4()->toString());
+        } else {
+            $uniqueId = strval(Context::set(self::REQUEST_ID, ApplicationContext::getContainer()->get(IdGeneratorInterface::class)->generate()));
+        }
+        return $uniqueId;
     }
 }

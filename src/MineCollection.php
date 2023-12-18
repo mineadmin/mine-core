@@ -10,6 +10,15 @@
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine;
 
 use Hyperf\Database\Model\Collection;
@@ -19,13 +28,14 @@ use Mine\Office\Excel\XlsWriter;
 class MineCollection extends Collection
 {
     /**
-     * 系统菜单转前端路由树
-     * @return array
+     * 系统菜单转前端路由树.
      */
     public function sysMenuToRouterTree(): array
     {
         $data = $this->toArray();
-        if (empty($data)) return [];
+        if (empty($data)) {
+            return [];
+        }
 
         $routers = [];
         foreach ($data as $menu) {
@@ -34,10 +44,6 @@ class MineCollection extends Collection
         return $this->toTree($routers);
     }
 
-    /**
-     * @param $menu
-     * @return array
-     */
     public function setRouter(&$menu): array
     {
         $route = ($menu['type'] == 'L' || $menu['type'] == 'I') ? $menu['route'] : '/' . $menu['route'];
@@ -49,35 +55,29 @@ class MineCollection extends Collection
             'path' => $route,
             'redirect' => $menu['redirect'],
             'meta' => [
-                'type'   => $menu['type'],
-                'icon'   => $menu['icon'],
-                'title'  => $menu['name'],
+                'type' => $menu['type'],
+                'icon' => $menu['icon'],
+                'title' => $menu['name'],
                 'hidden' => ($menu['is_hidden'] === 1),
-                'hiddenBreadcrumb' => false
-            ]
+                'hiddenBreadcrumb' => false,
+            ],
         ];
     }
 
-    /**
-     * @param array $data
-     * @param int $parentId
-     * @param string $id
-     * @param string $parentField
-     * @param string $children
-     * @return array
-     */
-    public function toTree(array $data = [], int $parentId = 0, string $id = 'id', string $parentField = 'parent_id', string $children='children'): array
+    public function toTree(array $data = [], int $parentId = 0, string $id = 'id', string $parentField = 'parent_id', string $children = 'children'): array
     {
         $data = $data ?: $this->toArray();
 
-        if (empty($data)) return [];
+        if (empty($data)) {
+            return [];
+        }
 
         $tree = [];
 
         foreach ($data as $value) {
             if ($value[$parentField] == $parentId) {
                 $child = $this->toTree($data, $value[$id], $id, $parentField, $children);
-                if (!empty($child)) {
+                if (! empty($child)) {
                     $value[$children] = $child;
                 }
                 array_push($tree, $value);
@@ -89,11 +89,7 @@ class MineCollection extends Collection
     }
 
     /**
-     * 导出数据
-     * @param string $dto
-     * @param string $filename
-     * @param array|\Closure|null $closure
-     * @return \Psr\Http\Message\ResponseInterface
+     * 导出数据.
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -110,11 +106,7 @@ class MineCollection extends Collection
     }
 
     /**
-     * 数据导入
-     * @param string $dto
-     * @param MineModel $model
-     * @param \Closure|null $closure
-     * @return bool
+     * 数据导入.
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -129,5 +121,4 @@ class MineCollection extends Collection
         }
         return $excel->import($model, $closure);
     }
-
 }
