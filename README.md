@@ -2,5 +2,5 @@
 
 ### 安装
 ``` shell
-composer require xmo/mine-core
+composer require xmo/mine-core:^1.x
 ```
