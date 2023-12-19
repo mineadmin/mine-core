@@ -207,10 +207,11 @@ class Str
      * 获取IP的区域地址
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Exception
      */
     public static function ipToRegion(string $ip): string
     {
-        return make(Ip2Region::class)->search($ip);
+        return (new Ip2region(logger()))->search($ip);
     }
 
     /**
@@ -221,7 +222,8 @@ class Str
     {
         $value = [
             'years' => 0, 'days' => 0, 'hours' => 0,
-            'minutes' => 0, 'seconds' => 0,
+            'minutes' => 0,
+            'seconds' => 0,
         ];
 
         if ($time >= 31556926) {

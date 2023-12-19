@@ -24,6 +24,7 @@ use Mine\MineCollection;
 use Mine\MineModel;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use function Hyperf\Config\config;
 
 trait MapperTrait
 {
@@ -46,10 +47,10 @@ trait MapperTrait
     public function getPageList(?array $params, bool $isScope = true, string $pageName = 'page'): array
     {
         $paginate = $this->listQuerySetting($params, $isScope)->paginate(
-            $params['pageSize'] ?? $this->model::PAGE_SIZE,
+            (int)($params['pageSize'] ?? $this->model::PAGE_SIZE),
             ['*'],
             $pageName,
-            $params[$pageName] ?? 1
+                (int)($params[$pageName] ?? 1)
         );
         return $this->setPaginate($paginate, $params);
     }
@@ -307,7 +308,7 @@ trait MapperTrait
         $this->model::destroy($ids);
 
         $manager = ApplicationContext::getContainer()->get(Manager::class);
-        $manager->destroy($ids, $this->model);
+        $manager->destroy($ids, $this->model::class);
 
         return true;
     }
@@ -613,5 +614,6 @@ trait MapperTrait
                 }
             }
         });
+        return;
     }
 }
