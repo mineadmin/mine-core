@@ -34,7 +34,7 @@ abstract class AbstractService
      * 魔术方法，从类属性里获取数据.
      * @return mixed|string
      */
-    public function __get(string $name)
+    public function __get($name)
     {
         return $this->getAttributes()[$name] ?? '';
     }
