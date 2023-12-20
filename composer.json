@@ -10,10 +10,7 @@
     "autoload": {
         "psr-4": {
             "Mine\\": "src/"
-        },
-        "files": [
-            "./src/Helper/functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
