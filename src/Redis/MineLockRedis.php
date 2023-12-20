@@ -16,6 +16,7 @@ use Hyperf\Coroutine\Coroutine;
 use Mine\Abstracts\AbstractRedis;
 use Mine\Exception\NormalStatusException;
 use Mine\Interfaces\MineRedisInterface;
+use Throwable;
 
 class MineLockRedis extends AbstractRedis implements MineRedisInterface
 {
@@ -37,7 +38,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 运行锁，简单封装.
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function run(\Closure $closure, string $key, int $expired, int $timeout = 0, float $sleep = 0.1): bool
     {
@@ -45,10 +46,13 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
             return false;
         }
 
+        /**
+         * @phpstan-ignore-next-line
+         */
         try {
-            call_user_func($closure);
-        } catch (\Throwable $e) {
-            logger('Redis Lock')->error(t('mineadmin.redis_lock_error'));
+            \Hyperf\Support\call($closure);
+        } catch (Throwable $e) {
+            $this->getLogger()->error(t('mineadmin.redis_lock_error'),[$e->getMessage(),$e->getTrace()]);
             throw new NormalStatusException(t('mineadmin.redis_lock_error'), 500);
         } finally {
             $this->freed($key);
@@ -64,7 +68,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
      */
     public function check(string $key): bool
     {
-        return redis()->exists($this->getKey($key));
+        return $this->getRedis()->exists($this->getKey($key));
     }
 
     /**
@@ -79,7 +83,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
         $name = $this->getKey($key);
 
         while ($retry > 0) {
-            $lock = redis()->set($name, 1, ['nx', 'ex' => $expired]);
+            $lock = $this->getRedis()->set($name, 1, ['nx', 'ex' => $expired]);
             if ($lock || $timeout === 0) {
                 break;
             }
@@ -106,6 +110,6 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
             end
         Lua;
 
-        return redis()->eval($luaScript, [$this->getKey($key), 1], 1) > 0;
+        return $this->getRedis()->eval($luaScript, [$this->getKey($key), 1], 1) > 0;
     }
 }

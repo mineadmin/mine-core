@@ -21,17 +21,16 @@ declare(strict_types=1);
 
 namespace Mine\Abstracts;
 
-use Hyperf\Config\Annotation\Value;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Redis\Redis;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class AbstractRedis.
  */
 abstract class AbstractRedis
 {
-    /**
-     * 缓存前缀
-     */
-    #[Value('cache.default.prefix')]
+
     protected string $prefix;
 
     /**
@@ -40,24 +39,56 @@ abstract class AbstractRedis
     protected string $typeName;
 
     /**
-     * 获取实例.
-     * @return mixed
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * redis实例
+     * @var Redis
      */
-    public static function getInstance()
+    protected Redis $redis;
+
+    /**
+     * 日志实例
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * @param Redis $redis
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        Redis $redis,
+        LoggerInterface $logger
+    )
     {
-        return container()->get(static::class);
+        $this->redis = $redis;
+        $this->logger = $logger;
+        $this->prefix = \Hyperf\Config\config('cache.default.prefix');
     }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return Redis
+     */
+    public function getRedis(): Redis
+    {
+        return $this->redis;
+    }
+
 
     /**
      * 获取redis实例.
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function redis(): \Hyperf\Redis\Redis
+    public function redis(): Redis
     {
-        return redis();
+        return $this->getRedis();
     }
 
     /**

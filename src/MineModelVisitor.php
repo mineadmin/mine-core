@@ -23,6 +23,7 @@ namespace Mine;
 
 use Hyperf\Database\Commands\Ast\ModelUpdateVisitor;
 use Mine\Annotation\DependProxy;
+use Mine\Helper\Str;
 
 /**
  * Class MineModelVisitor.

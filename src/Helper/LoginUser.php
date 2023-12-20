@@ -27,6 +27,7 @@ use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\MineRequest;
 use Psr\SimpleCache\InvalidArgumentException;
 use Xmo\JWTAuth\JWT;
+use function Hyperf\Support\make;
 
 class LoginUser
 {

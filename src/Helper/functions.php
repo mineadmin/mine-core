@@ -16,6 +16,8 @@ use Hyperf\Logger\LoggerFactory;
 use Mine\Helper\AppVerify;
 use Mine\Helper\LoginUser;
 use Mine\Interfaces\ServiceInterface\QueueLogServiceInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -32,8 +34,8 @@ if (! function_exists('container')) {
 if (! function_exists('redis')) {
     /**
      * 获取Redis实例.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function redis(): Hyperf\Redis\Redis
     {
@@ -44,8 +46,8 @@ if (! function_exists('redis')) {
 if (! function_exists('console')) {
     /**
      * 获取控制台输出实例.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function console(): StdoutLoggerInterface
     {
@@ -56,8 +58,8 @@ if (! function_exists('console')) {
 if (! function_exists('logger')) {
     /**
      * 获取日志实例.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function logger(string $name = 'Log'): LoggerInterface
     {
@@ -105,8 +107,8 @@ if (! function_exists('lang')) {
 if (! function_exists('t')) {
     /**
      * 多语言函数.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function t(string $key, array $replace = []): string
     {
@@ -169,8 +171,8 @@ if (! function_exists('snowflake_id')) {
 if (! function_exists('event')) {
     /**
      * 事件调度快捷方法.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function event(object $dispatch): object
     {
@@ -182,8 +184,8 @@ if (! function_exists('push_queue_message')) {
     /**
      * 推送消息到队列.
      * @throws Throwable
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function push_queue_message(QueueMessageVo $message, array $receiveUsers = []): bool
     {
@@ -197,8 +199,8 @@ if (! function_exists('add_queue')) {
     /**
      * 添加任务到队列.
      * @throws Throwable
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     function add_queue(App\System\Vo\AmqpQueueVo $amqpQueueVo): bool
     {

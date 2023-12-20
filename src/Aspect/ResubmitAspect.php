@@ -25,11 +25,14 @@ use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Di\Exception\Exception;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Redis\Redis;
 use Mine\Annotation\Resubmit;
 use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineRequest;
 use Mine\Redis\MineLockRedis;
+use function Hyperf\Support\make;
 
 /**
  * Class ResubmitAspect.
@@ -60,7 +63,10 @@ class ResubmitAspect extends AbstractAspect
 
             $key = md5(sprintf('%s-%s-%s', $request->ip(), $request->getPathInfo(), $request->getMethod()));
 
-            $lockRedis = new MineLockRedis();
+            $lockRedis = new MineLockRedis(
+                make(Redis::class),
+                make(LoggerFactory::class)->get('Mine Redis Lock')
+            );
             $lockRedis->setTypeName('resubmit');
 
             if ($lockRedis->check($key)) {

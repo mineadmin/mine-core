@@ -87,8 +87,15 @@ trait ModelMacroTrait
                         : $this->builder->whereIn($this->model->getDataScopeField(), array_unique($this->userIds));
                 }
 
+                /**
+                 * @TODO 这里权限分离回头作为其他组件再加载
+                 * @return void
+                 */
                 protected function getUserDataScope(): void
                 {
+                    /**
+                     * @phpstan-ignore-next-line
+                     */
                     $userModel = SystemUser::find($this->userid, ['id']);
                     $roles = $userModel->roles()->get(['id', 'data_scope']);
 

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Mine\Helper;
 
+use function Hyperf\Config\config;
+
 class SensitiveWordFilter
 {
     protected array $dict = [];

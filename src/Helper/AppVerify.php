@@ -24,6 +24,7 @@ namespace Mine\Helper;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Xmo\JWTAuth\JWT;
+use function Hyperf\Support\make;
 
 class AppVerify
 {

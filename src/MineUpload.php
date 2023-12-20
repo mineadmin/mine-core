@@ -24,34 +24,54 @@ namespace Mine;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\HttpMessage\Upload\UploadedFile;
+use Hyperf\Snowflake\IdGeneratorInterface;
 use League\Flysystem\Filesystem;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
 use Mine\Interfaces\ServiceInterface\ConfigServiceInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function Hyperf\Support\env;
 
 class MineUpload
 {
-    #[Inject]
     protected FilesystemFactory $factory;
 
     protected Filesystem $filesystem;
 
-    #[Inject]
     protected EventDispatcherInterface $evDispatcher;
 
-    protected ContainerInterface $container;
+    protected MineRequest $mineRequest;
+
+    protected IdGeneratorInterface $idGenerator;
+
+    private ConfigServiceInterface $configService;
 
     /**
-     * MineUpload constructor.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param FilesystemFactory $factory
+     * @param EventDispatcherInterface $evDispatcher
+     * @param ConfigServiceInterface $configService
+     * @param MineRequest $mineRequest
+     * @param IdGeneratorInterface $idGenerator
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(
+        FilesystemFactory $factory,
+        EventDispatcherInterface $evDispatcher,
+        ConfigServiceInterface $configService,
+        MineRequest $mineRequest,
+        IdGeneratorInterface $idGenerator
+    )
     {
-        $this->container = $container;
-        $this->filesystem = $this->factory->get($this->getMappingMode());
+        $this->factory = $factory;
+        $this->evDispatcher = $evDispatcher;
+        $this->configService = $configService;
+        $this->mineRequest = $mineRequest;
+        $this->filesystem = $factory->get($this->getStorageMode());
+        $this->idGenerator = $idGenerator;
     }
 
     /**
@@ -65,8 +85,8 @@ class MineUpload
     /**
      * 上传文件.
      * @throws \League\Flysystem\FileExistsException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function upload(UploadedFile $uploadedFile, array $config = []): array
     {
@@ -124,8 +144,8 @@ class MineUpload
 
     /**
      * 保存网络图片.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function handleSaveNetworkImage(array $data): array
@@ -168,6 +188,10 @@ class MineUpload
                 throw new \Exception(t('network_image_save_fail'));
             }
 
+            /**
+             * TODO 这里回头做优化，单独拆出来一个upload组件
+             * @phpstan-ignore-next-line
+             */
             if ($model = (new \App\System\Mapper\SystemUploadFileMapper())->getFileInfoByHash($hash)) {
                 return $model->toArray();
             }
@@ -240,29 +264,29 @@ class MineUpload
 
     /**
      * 获取存储方式.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getStorageMode(): int|string
     {
-        return $this->container->get(ConfigServiceInterface::class)->getConfigByKey('upload_mode')['value'] ?? 1;
+        return $this->configService->getConfigByKey('upload_mode')['value'] ?? 1;
     }
 
     /**
      * 获取编码后的文件名.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getNewName(): string
     {
-        return (string) container()->get(\Hyperf\Snowflake\IdGeneratorInterface::class)->generate();
+        return (string) $this->idGenerator->generate();
     }
 
     /**
      * 处理上传.
      * @throws \League\Flysystem\FileExistsException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     protected function handleUpload(UploadedFile $uploadedFile, array $config): array
@@ -305,8 +329,8 @@ class MineUpload
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getMappingMode(): string
     {
@@ -324,11 +348,11 @@ class MineUpload
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getProtocol(): string
     {
-        return $this->container->get(MineRequest::class)->getScheme();
+        return $this->mineRequest->getScheme();
     }
 }
