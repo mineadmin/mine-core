@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Mine\Abstracts;
 
-use Hyperf\Logger\LoggerFactory;
 use Hyperf\Redis\Redis;
 use Psr\Log\LoggerInterface;
 
@@ -30,7 +29,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractRedis
 {
-
     protected string $prefix;
 
     /**
@@ -39,47 +37,33 @@ abstract class AbstractRedis
     protected string $typeName;
 
     /**
-     * redis实例
-     * @var Redis
+     * redis实例.
      */
     protected Redis $redis;
 
     /**
-     * 日志实例
-     * @var LoggerInterface
+     * 日志实例.
      */
     protected LoggerInterface $logger;
 
-    /**
-     * @param Redis $redis
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         Redis $redis,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->redis = $redis;
         $this->logger = $logger;
         $this->prefix = \Hyperf\Config\config('cache.default.prefix');
     }
 
-    /**
-     * @return LoggerInterface
-     */
     public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
 
-    /**
-     * @return Redis
-     */
     public function getRedis(): Redis
     {
         return $this->redis;
     }
-
 
     /**
      * 获取redis实例.

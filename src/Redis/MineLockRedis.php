@@ -16,7 +16,6 @@ use Hyperf\Coroutine\Coroutine;
 use Mine\Abstracts\AbstractRedis;
 use Mine\Exception\NormalStatusException;
 use Mine\Interfaces\MineRedisInterface;
-use Throwable;
 
 class MineLockRedis extends AbstractRedis implements MineRedisInterface
 {
@@ -38,7 +37,7 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 运行锁，简单封装.
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function run(\Closure $closure, string $key, int $expired, int $timeout = 0, float $sleep = 0.1): bool
     {
@@ -46,13 +45,13 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
             return false;
         }
 
-        /**
+        /*
          * @phpstan-ignore-next-line
          */
         try {
             \Hyperf\Support\call($closure);
-        } catch (Throwable $e) {
-            $this->getLogger()->error(t('mineadmin.redis_lock_error'),[$e->getMessage(),$e->getTrace()]);
+        } catch (\Throwable $e) {
+            $this->getLogger()->error(t('mineadmin.redis_lock_error'), [$e->getMessage(), $e->getTrace()]);
             throw new NormalStatusException(t('mineadmin.redis_lock_error'), 500);
         } finally {
             $this->freed($key);

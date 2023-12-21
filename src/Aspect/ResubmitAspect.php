@@ -32,6 +32,7 @@ use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineRequest;
 use Mine\Redis\MineLockRedis;
+
 use function Hyperf\Support\make;
 
 /**

@@ -33,6 +33,7 @@ use Mine\Amqp\Event\ProduceEvent;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Psr\EventDispatcher\EventDispatcherInterface;
+
 use function Hyperf\Support\retry;
 
 class DelayProducer extends Producer

@@ -27,6 +27,7 @@ use App\System\Model\SystemUser;
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use Mine\Exception\MineException;
+
 use function Hyperf\Config\config;
 use function Hyperf\Support\env;
 
@@ -89,7 +90,6 @@ trait ModelMacroTrait
 
                 /**
                  * @TODO 这里权限分离回头作为其他组件再加载
-                 * @return void
                  */
                 protected function getUserDataScope(): void
                 {

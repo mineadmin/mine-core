@@ -24,6 +24,7 @@ namespace Mine;
 use Hyperf\Database\Model\Collection;
 use Mine\Office\Excel\PhpOffice;
 use Mine\Office\Excel\XlsWriter;
+
 use function Hyperf\Config\config;
 
 class MineCollection extends Collection

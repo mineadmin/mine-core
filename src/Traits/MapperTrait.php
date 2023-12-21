@@ -24,6 +24,7 @@ use Mine\MineCollection;
 use Mine\MineModel;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+
 use function Hyperf\Config\config;
 
 trait MapperTrait
@@ -47,10 +48,10 @@ trait MapperTrait
     public function getPageList(?array $params, bool $isScope = true, string $pageName = 'page'): array
     {
         $paginate = $this->listQuerySetting($params, $isScope)->paginate(
-            (int)($params['pageSize'] ?? $this->model::PAGE_SIZE),
+            (int) ($params['pageSize'] ?? $this->model::PAGE_SIZE),
             ['*'],
             $pageName,
-                (int)($params[$pageName] ?? 1)
+            (int) ($params[$pageName] ?? 1)
         );
         return $this->setPaginate($paginate, $params);
     }
@@ -455,6 +456,7 @@ trait MapperTrait
 
     /**
      * 搜索参数注入.
+     * @param mixed $params
      */
     public function paramsEmptyQuery($params, array $where = [], mixed $query = null): mixed
     {
@@ -488,6 +490,9 @@ trait MapperTrait
 
             /**
              * 标量类型获取.
+             * @param mixed $field
+             * @param mixed $operator
+             * @param mixed $value
              */
             public function scalarOptionHandle($field, $operator, $value): array
             {
@@ -496,6 +501,9 @@ trait MapperTrait
 
             /**
              * 数组类型处理.
+             * @param mixed $field
+             * @param mixed $operator
+             * @param mixed $value
              */
             public function arrayOptionHandle($field, $operator, $value): array
             {
@@ -614,6 +622,5 @@ trait MapperTrait
                 }
             }
         });
-        return;
     }
 }

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Mine;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Snowflake\IdGeneratorInterface;
@@ -30,9 +29,9 @@ use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
 use Mine\Interfaces\ServiceInterface\ConfigServiceInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+
 use function Hyperf\Support\env;
 
 class MineUpload
@@ -50,11 +49,6 @@ class MineUpload
     private ConfigServiceInterface $configService;
 
     /**
-     * @param FilesystemFactory $factory
-     * @param EventDispatcherInterface $evDispatcher
-     * @param ConfigServiceInterface $configService
-     * @param MineRequest $mineRequest
-     * @param IdGeneratorInterface $idGenerator
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -64,8 +58,7 @@ class MineUpload
         ConfigServiceInterface $configService,
         MineRequest $mineRequest,
         IdGeneratorInterface $idGenerator
-    )
-    {
+    ) {
         $this->factory = $factory;
         $this->evDispatcher = $evDispatcher;
         $this->configService = $configService;
@@ -188,7 +181,7 @@ class MineUpload
                 throw new \Exception(t('network_image_save_fail'));
             }
 
-            /**
+            /*
              * TODO 这里回头做优化，单独拆出来一个upload组件
              * @phpstan-ignore-next-line
              */
