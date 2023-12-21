@@ -259,6 +259,7 @@ class MineUpload
      * 获取存储方式.
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws \RedisException
      */
     public function getStorageMode(): int|string
     {

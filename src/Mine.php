@@ -27,7 +27,7 @@ class Mine
 {
     private static string $mineName = 'MineAdmin';
 
-    private static string $version = '1.5.1';
+    private static string $version = '2.0.0-dev';
 
     private string $appPath = '';
 
