@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Mine\Annotation;
 
 use Hyperf\Di\Annotation\AbstractAnnotation;
+
 use function Hyperf\Support\make;
 
 /**

@@ -26,6 +26,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Di\Exception\Exception;
 use Mine\MineModel;
+
 use function Hyperf\Config\config;
 
 /**

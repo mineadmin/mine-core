@@ -12,13 +12,11 @@ declare(strict_types=1);
 
 namespace Mine\Annotation\Api;
 
-use App\System\Model\SystemApi;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class MApi extends AbstractAnnotation
 {
-
     public const AUTH_MODE_EASY = 1;
 
     public const AUTH_MODE_NORMAL = 2;
@@ -26,8 +24,11 @@ class MApi extends AbstractAnnotation
     public const METHOD_ALL = 'A';
 
     public const METHOD_POST = 'P';
+
     public const METHOD_GET = 'G';
+
     public const METHOD_PUT = 'U';
+
     public const METHOD_DELETE = 'D';
 
     public function __construct(

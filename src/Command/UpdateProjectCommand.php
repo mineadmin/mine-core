@@ -27,6 +27,7 @@ use Hyperf\Database\Migrations\Migrator;
 use Hyperf\Database\Seeders\Seed;
 use Mine\Mine;
 use Mine\MineCommand;
+
 use function Hyperf\Support\make;
 
 /**
