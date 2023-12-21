@@ -27,6 +27,8 @@ use Hyperf\DbConnection\Db;
 use Mine\Mine;
 use Mine\MineCommand;
 use Symfony\Component\Console\Input\InputOption;
+use function Hyperf\Support\env;
+use function Hyperf\Support\make;
 
 /**
  * Class InstallProjectCommand.

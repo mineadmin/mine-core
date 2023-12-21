@@ -21,18 +21,18 @@ declare(strict_types=1);
 
 namespace Mine\Event;
 
-use App\System\Model\SystemUploadfile;
+use Hyperf\DbConnection\Model\Model;
 use League\Flysystem\Filesystem;
 
 class RealDeleteUploadFile
 {
-    protected SystemUploadfile $model;
+    protected Model $model;
 
     protected bool $confirm = true;
 
     protected Filesystem $filesystem;
 
-    public function __construct(SystemUploadfile $model, Filesystem $filesystem)
+    public function __construct(Model $model, Filesystem $filesystem)
     {
         $this->model = $model;
         $this->filesystem = $filesystem;
@@ -41,7 +41,7 @@ class RealDeleteUploadFile
     /**
      * 获取当前模型实例.
      */
-    public function getModel(): SystemUploadfile
+    public function getModel(): Model
     {
         return $this->model;
     }

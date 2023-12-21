@@ -31,6 +31,7 @@ use Mine\MineRequest;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function Hyperf\Config\config;
 
 /**
  * Class UpdateAspect.

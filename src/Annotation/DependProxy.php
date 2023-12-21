@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Mine\Annotation;
 
 use Hyperf\Di\Annotation\AbstractAnnotation;
+use function Hyperf\Support\make;
 
 /**
  * 依赖代理注解，用于平替某个类.
