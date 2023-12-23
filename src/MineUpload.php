@@ -63,7 +63,12 @@ class MineUpload
         $this->evDispatcher = $evDispatcher;
         $this->configService = $configService;
         $this->mineRequest = $mineRequest;
-        $this->filesystem = $factory->get($this->getStorageMode());
+        $this->filesystem = $factory->get(match ($this->getStorageMode()){
+            2 => 'oss',
+            3 => 'qiniu',
+            4 => 'cos',
+            default => 'local'
+        });
         $this->idGenerator = $idGenerator;
     }
 

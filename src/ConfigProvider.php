@@ -26,10 +26,7 @@ class ConfigProvider
                 'scan' => [
                     'paths' => [
                         __DIR__,
-                    ],
-                    'collectors' => [
-                        DependProxyCollector::class,
-                    ],
+                    ]
                 ],
             ],
             // 默认 Command 的定义，合并到 Hyperf\Contract\ConfigInterface 内，换个方式理解也就是与 config/autoload/commands.php 对应
