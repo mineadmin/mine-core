@@ -196,7 +196,18 @@ if (! function_exists('snowflake_id')) {
      */
     function snowflake_id(): string
     {
-        return container()->get(\Hyperf\Snowflake\IdGeneratorInterface::class)->generate();
+        return container()->get(\Mine\Snowflake\SnowflakeIdGenerator::class)->generate();
+    }
+}
+
+if (! function_exists('uuid')) {
+    /**
+     * 生成UUID
+     * @return String
+     */
+    function uuid(): string
+    {
+        return \Ramsey\Uuid\Uuid::uuid4()->toString();
     }
 }
 

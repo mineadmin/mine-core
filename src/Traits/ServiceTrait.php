@@ -118,9 +118,9 @@ trait ServiceTrait
     /**
      * 新增数据
      * @param array $data
-     * @return int
+     * @return mixed
      */
-    public function save(array $data): int
+    public function save(array $data): mixed
     {
         return $this->mapper->save($data);
     }
@@ -141,11 +141,11 @@ trait ServiceTrait
 
     /**
      * 读取一条数据
-     * @param int $id
+     * @param mixed $id
      * @param array $column
      * @return MineModel|null
      */
-    public function read(int $id, array $column = ['*']): ?MineModel
+    public function read(mixed $id, array $column = ['*']): ?MineModel
     {
         return $this->mapper->read($id, $column);
     }
@@ -180,7 +180,7 @@ trait ServiceTrait
      * @return MineModel
      * @noinspection PhpUnused
      */
-    public function readByRecycle(int $id): MineModel
+    public function readByRecycle(mixed $id): MineModel
     {
         return $this->mapper->readByRecycle($id);
     }
@@ -201,7 +201,7 @@ trait ServiceTrait
      * @param array $data
      * @return bool
      */
-    public function update(int $id, array $data): bool
+    public function update(mixed $id, array $data): bool
     {
         return $this->mapper->update($id, $data);
     }
@@ -266,7 +266,7 @@ trait ServiceTrait
      * @param string $filed
      * @return bool
      */
-    public function changeStatus(int $id, string $value, string $filed = 'status'): bool
+    public function changeStatus(mixed $id, string $value, string $filed = 'status'): bool
     {
         return $value == MineModel::ENABLE ? $this->mapper->enable([ $id ], $filed) : $this->mapper->disable([ $id ], $filed);
     }
@@ -278,7 +278,7 @@ trait ServiceTrait
      * @param int $value
      * @return bool
      */
-    public function numberOperation(int $id, string $field, int $value): bool
+    public function numberOperation(mixed $id, string $field, int $value): bool
     {
         return $this->mapper->numberOperation($id, $field, $value);
     }

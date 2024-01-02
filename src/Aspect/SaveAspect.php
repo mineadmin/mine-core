@@ -63,13 +63,13 @@ class SaveAspect extends AbstractAspect
 
             } catch (\Throwable $e) {}
         }
-        // 生成ID
+
+        // 生成雪花ID 或者 UUID
         if ($instance instanceof MineModel &&
-            !$instance->incrementing &&
-            $instance->getPrimaryKeyType() === 'int' &&
+            ! $instance->incrementing &&
             empty($instance->{$instance->getKeyName()})
         ) {
-            $instance->setPrimaryKeyValue(snowflake_id());
+            $instance->setPrimaryKeyValue($instance->getPrimaryKeyType() === 'int' ? snowflake_id() : uuid());
         }
         return $proceedingJoinPoint->process();
     }

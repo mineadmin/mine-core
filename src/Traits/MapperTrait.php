@@ -264,9 +264,9 @@ trait MapperTrait
     /**
      * 新增数据
      * @param array $data
-     * @return int
+     * @return mixed
      */
-    public function save(array $data): int
+    public function save(array $data): mixed
     {
         $this->filterExecuteAttributes($data, $this->getModel()->incrementing);
         $model = $this->model::create($data);
@@ -279,7 +279,7 @@ trait MapperTrait
      * @param array $column
      * @return MineModel|null
      */
-    public function read(int $id, array $column = ['*']): ?MineModel
+    public function read(mixed $id, array $column = ['*']): ?MineModel
     {
         return ($model = $this->model::find($id, $column)) ? $model : null;
     }
@@ -324,7 +324,7 @@ trait MapperTrait
      * @return MineModel|null
      * @noinspection PhpUnused
      */
-    public function readByRecycle(int $id): ?MineModel
+    public function readByRecycle(mixed $id): ?MineModel
     {
         return ($model = $this->model::withTrashed()->find($id)) ? $model : null;
     }
@@ -352,7 +352,7 @@ trait MapperTrait
      * @param array $data
      * @return bool
      */
-    public function update(int $id, array $data): bool
+    public function update(mixed $id, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
         return $this->model::find($id)->update($data) > 0;
@@ -518,7 +518,7 @@ trait MapperTrait
      * @param int $value
      * @return bool
      */
-    public function numberOperation(int $id, string $field, int $value): bool
+    public function numberOperation(mixed $id, string $field, int $value): bool
     {
         return $this->update($id, [ $field => $value]);
     }
