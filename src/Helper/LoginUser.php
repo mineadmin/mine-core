@@ -49,7 +49,7 @@ class LoginUser
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function check(?string $token = null, string $scene = 'default'): bool
+    public function check(?string $token = null, string $scene = null): bool
     {
         try {
             if ($this->jwt->checkToken($token, $scene, true, true, true)) {
