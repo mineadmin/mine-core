@@ -162,8 +162,8 @@ class LoginUser
      * 刷新token.
      * @throws InvalidArgumentException
      */
-    public function refresh(): string
+    public function refresh(?string $token = null): string
     {
-        return $this->jwt->refreshToken();
+        return $this->jwt->refreshToken($token);
     }
 }
