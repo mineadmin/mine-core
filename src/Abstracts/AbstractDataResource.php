@@ -17,6 +17,9 @@ use Mine\Interfaces\ServiceInterface\Resource\ArrayResource;
 use Mine\Interfaces\ServiceInterface\Resource\ConstResource;
 use Mine\Interfaces\ServiceInterface\Resource\DataResource;
 
+/**
+ * @deprecated 2.0
+ */
 abstract class AbstractDataResource implements DataResource
 {
     public function data(array $params = [], array $extras = []): array

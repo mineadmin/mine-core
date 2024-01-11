@@ -24,6 +24,9 @@ namespace Mine\Abstracts;
 use Hyperf\Context\Context;
 use Mine\Traits\ServiceTrait;
 
+/**
+ * @deprecated 2.0
+ */
 abstract class AbstractService
 {
     use ServiceTrait;

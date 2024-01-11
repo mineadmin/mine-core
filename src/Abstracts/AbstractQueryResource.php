@@ -16,6 +16,9 @@ use Hyperf\Collection\Collection;
 use Hyperf\Database\Model\Builder;
 use Mine\Interfaces\ServiceInterface\QueryResourceServiceInterface;
 
+/**
+ * @deprecated 2.0
+ */
 abstract class AbstractQueryResource implements QueryResourceServiceInterface
 {
     /**
