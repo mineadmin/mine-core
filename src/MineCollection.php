@@ -24,6 +24,10 @@ namespace Mine;
 use Hyperf\Database\Model\Collection;
 use Mine\Office\Excel\PhpOffice;
 use Mine\Office\Excel\XlsWriter;
+use PhpOffice\PhpSpreadsheet\Writer\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
 
 use function Hyperf\Config\config;
 
@@ -92,11 +96,11 @@ class MineCollection extends Collection
 
     /**
      * 导出数据.
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function export(string $dto, string $filename, array|\Closure $closure = null, \Closure $callbackData = null): \Psr\Http\Message\ResponseInterface
+    public function export(string $dto, string $filename, array|\Closure $closure = null, \Closure $callbackData = null): ResponseInterface
     {
         $excelDrive = config('mineadmin.excel_drive');
         if ($excelDrive === 'auto') {
@@ -110,8 +114,8 @@ class MineCollection extends Collection
     /**
      * 数据导入.
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function import(string $dto, MineModel $model, ?\Closure $closure = null): bool
     {

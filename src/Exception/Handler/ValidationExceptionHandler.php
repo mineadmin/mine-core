@@ -34,7 +34,7 @@ class ValidationExceptionHandler extends ExceptionHandler
     public function handle(\Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         $this->stopPropagation();
-        /** @var \Hyperf\Validation\ValidationException $throwable */
+        /** @var ValidationException $throwable */
         $body = $throwable->validator->errors()->first();
         $format = [
             'requestId' => RequestIdHolder::getId(),

@@ -27,6 +27,8 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\CoreMiddleware;
 use Mine\Annotation\DependProxy;
 use Mine\Helper\MineCode;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -57,8 +59,8 @@ class HttpCoreMiddleware extends CoreMiddleware
 
     /**
      * Handle the response when cannot found any routes.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function handleNotFound(ServerRequestInterface $request): ResponseInterface
     {
@@ -75,8 +77,8 @@ class HttpCoreMiddleware extends CoreMiddleware
 
     /**
      * Handle the response when the routes found but doesn't match any available methods.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function handleMethodNotAllowed(
         array $methods,

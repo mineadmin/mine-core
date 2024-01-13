@@ -24,6 +24,8 @@ namespace Mine;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Response;
 use Mine\Log\RequestIdHolder;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
 
@@ -33,8 +35,8 @@ use Swow\Psr7\Message\ResponsePlusInterface;
 class MineResponse extends Response
 {
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function success(string $message = null, array|object $data = [], int $code = 200): ResponseInterface
     {
@@ -53,8 +55,8 @@ class MineResponse extends Response
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function error(string $message = '', int $code = 500, array $data = []): ResponseInterface
     {

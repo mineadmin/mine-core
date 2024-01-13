@@ -21,10 +21,13 @@ declare(strict_types=1);
 
 namespace Mine;
 
+use App\System\Mapper\SystemUploadFileMapper;
 use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Snowflake\IdGeneratorInterface;
+use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
+use Mine\Event\UploadAfter;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
 use Mine\Interfaces\ServiceInterface\ConfigServiceInterface;
@@ -82,7 +85,7 @@ class MineUpload
 
     /**
      * 上传文件.
-     * @throws \League\Flysystem\FileExistsException
+     * @throws FileExistsException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -133,7 +136,7 @@ class MineUpload
                 'url' => $this->assembleUrl(null, $fileName),
             ];
 
-            $this->evDispatcher->dispatch(new \Mine\Event\UploadAfter($fileInfo));
+            $this->evDispatcher->dispatch(new UploadAfter($fileInfo));
 
             return $fileInfo;
         }
@@ -190,7 +193,7 @@ class MineUpload
              * TODO 这里回头做优化，单独拆出来一个upload组件
              * @phpstan-ignore-next-line
              */
-            if ($model = (new \App\System\Mapper\SystemUploadFileMapper())->getFileInfoByHash($hash)) {
+            if ($model = (new SystemUploadFileMapper())->getFileInfoByHash($hash)) {
                 return $model->toArray();
             }
 
@@ -216,7 +219,7 @@ class MineUpload
             'url' => $this->assembleUrl($data['path'] ?? null, $filename),
         ];
 
-        $this->evDispatcher->dispatch(new \Mine\Event\UploadAfter($fileInfo));
+        $this->evDispatcher->dispatch(new UploadAfter($fileInfo));
 
         return $fileInfo;
     }
@@ -283,7 +286,7 @@ class MineUpload
 
     /**
      * 处理上传.
-     * @throws \League\Flysystem\FileExistsException
+     * @throws FileExistsException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws \Exception
@@ -313,7 +316,7 @@ class MineUpload
             'url' => $this->assembleUrl($config['path'] ?? null, $filename),
         ];
 
-        $this->evDispatcher->dispatch(new \Mine\Event\UploadAfter($fileInfo));
+        $this->evDispatcher->dispatch(new UploadAfter($fileInfo));
 
         return $fileInfo;
     }

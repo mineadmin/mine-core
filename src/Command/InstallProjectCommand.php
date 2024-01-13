@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Mine\Command;
 
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Database\Schema\Schema;
 use Hyperf\DbConnection\Db;
 use Mine\Mine;
 use Mine\MineCommand;
@@ -349,7 +350,7 @@ class InstallProjectCommand extends MineCommand
         Db::table('system_user')->truncate();
         Db::table('system_role')->truncate();
         Db::table('system_user_role')->truncate();
-        if (\Hyperf\Database\Schema\Schema::hasTable('system_user_dept')) {
+        if (Schema::hasTable('system_user_dept')) {
             Db::table('system_user_dept')->truncate();
         }
 

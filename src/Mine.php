@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Mine;
 
 use Hyperf\Support\Filesystem\Filesystem;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class Mine
 {
@@ -34,8 +36,8 @@ class Mine
     private array $moduleInfo = [];
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct()
     {
@@ -44,8 +46,8 @@ class Mine
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function scanModule(): void
     {
@@ -112,8 +114,8 @@ class Mine
 
     /**
      * @param false $save
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function setModuleConfigValue(string $key, string $value, bool $save = false): bool
     {
@@ -129,8 +131,8 @@ class Mine
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function saveModuleConfig(string $mod): void
     {

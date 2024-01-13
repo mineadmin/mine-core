@@ -22,6 +22,7 @@ use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineCollection;
 use Mine\MineModel;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -378,9 +379,9 @@ trait MapperTrait
 
     /**
      * 数据导入.
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     #[Transaction]
     public function import(string $dto, ?\Closure $closure = null): bool

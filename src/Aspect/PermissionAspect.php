@@ -28,8 +28,11 @@ use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\Permission;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\LoginUser;
+use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\MineRequest;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class PermissionAspect.
@@ -72,8 +75,8 @@ class PermissionAspect extends AbstractAspect
     /**
      * @return mixed
      * @throws Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -98,8 +101,8 @@ class PermissionAspect extends AbstractAspect
 
     /**
      * 检查权限.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function checkPermission(string $codeString, string $where): bool
     {
@@ -120,7 +123,7 @@ class PermissionAspect extends AbstractAspect
             foreach (explode(',', $codeString) as $code) {
                 $code = trim($code);
                 if (! in_array($code, $codes)) {
-                    $service = container()->get(\Mine\Interfaces\ServiceInterface\MenuServiceInterface::class);
+                    $service = container()->get(MenuServiceInterface::class);
                     throw new NoPermissionException(
                         t('system.no_permission') . ' -> [ ' . $service->findNameByCode($code) . ' ]'
                     );

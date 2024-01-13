@@ -25,7 +25,9 @@ use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Mine\Event\Operation;
 use Mine\Interfaces\ServiceInterface\OperLogServiceInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class OperationListener.
@@ -53,8 +55,8 @@ class OperationListener implements ListenerInterface
     /**
      * Handle the Event when the event is triggered, all listeners will
      * complete before the event is returned to the EventDispatcher.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function process(object $event): void
     {

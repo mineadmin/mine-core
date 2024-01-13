@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Mine\Abstracts;
 
 use Hyperf\Redis\Redis;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -67,8 +69,8 @@ abstract class AbstractRedis
 
     /**
      * 获取redis实例.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function redis(): Redis
     {

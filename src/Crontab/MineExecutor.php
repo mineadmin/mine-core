@@ -33,7 +33,9 @@ use Mine\Crontab\Mutex\ServerMutex;
 use Mine\Crontab\Mutex\TaskMutex;
 use Mine\Interfaces\ServiceInterface\CrontabLogServiceInterface;
 use Mine\MineModel;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Swoole\Timer;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -62,8 +64,8 @@ class MineExecutor
     protected ServerMutex $serverMutex;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {
@@ -77,8 +79,8 @@ class MineExecutor
 
     /**
      * 执行定时任务
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function execute(MineCrontab $crontab, bool $run = false): ?bool
     {

@@ -26,6 +26,8 @@ use Hyperf\Di\Annotation\Inject;
 use Mine\Exception\NormalStatusException;
 use Mine\Helper\Str;
 use Mine\Interfaces\ServiceInterface\ModuleServiceInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -43,8 +45,8 @@ class CheckModuleMiddleware implements MiddlewareInterface
     protected ModuleServiceInterface $service;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

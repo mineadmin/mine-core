@@ -24,6 +24,8 @@ namespace Mine\Traits;
 use Hyperf\Di\Annotation\Inject;
 use Mine\MineRequest;
 use Mine\MineResponse;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 
 trait ControllerTrait
@@ -43,8 +45,8 @@ trait ControllerTrait
     protected MineResponse $response;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function success(null|array|object|string $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
     {
@@ -58,8 +60,8 @@ trait ControllerTrait
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function error(string $message = '', int $code = 500, array $data = []): ResponseInterface
     {

@@ -24,6 +24,7 @@ namespace Mine\Aspect;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\OperationLog;
 use Mine\Annotation\Permission;
 use Mine\Event\Operation;
@@ -31,7 +32,9 @@ use Mine\Helper\Ip2region;
 use Mine\Helper\LoginUser;
 use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Mine\MineRequest;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -60,9 +63,9 @@ class OperationLogAspect extends AbstractAspect
 
     /**
      * @return mixed|void
-     * @throws \Hyperf\Di\Exception\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -86,8 +89,8 @@ class OperationLogAspect extends AbstractAspect
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getRequestInfo(array $data): array
     {
@@ -117,8 +120,8 @@ class OperationLogAspect extends AbstractAspect
 
     /**
      * 获取菜单名称.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getOperationMenuName(string $code): string
     {

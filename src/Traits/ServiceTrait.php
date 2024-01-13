@@ -18,6 +18,9 @@ use Mine\Annotation\Transaction;
 use Mine\MineCollection;
 use Mine\MineModel;
 use Mine\MineResponse;
+use PhpOffice\PhpSpreadsheet\Writer\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Hyperf\Collection\collect;
@@ -231,9 +234,9 @@ trait ServiceTrait
 
     /**
      * 导出数据.
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function export(array $params, ?string $dto, string $filename = null, \Closure $callbackData = null): ResponseInterface
     {
@@ -251,8 +254,8 @@ trait ServiceTrait
     /**
      * 数据导入.
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     #[Transaction]
     public function import(string $dto, ?\Closure $closure = null): bool

@@ -23,6 +23,9 @@ namespace Mine\Crontab;
 
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Swoole\Coroutine;
 
 use function Hyperf\Coroutine\co;
 
@@ -41,15 +44,15 @@ class MineCrontabStrategy
     protected MineExecutor $executor;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function dispatch(MineCrontab $crontab)
     {
         co(function () use ($crontab) {
             if ($crontab->getExecuteTime() instanceof Carbon) {
                 $wait = $crontab->getExecuteTime()->getTimestamp() - time();
-                $wait > 0 && \Swoole\Coroutine::sleep($wait);
+                $wait > 0 && Coroutine::sleep($wait);
                 $this->executor->execute($crontab);
             }
         });
@@ -57,8 +60,8 @@ class MineCrontabStrategy
 
     /**
      * 执行一次
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function executeOnce(MineCrontab $crontab)
     {

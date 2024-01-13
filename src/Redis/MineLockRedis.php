@@ -16,6 +16,8 @@ use Hyperf\Coroutine\Coroutine;
 use Mine\Abstracts\AbstractRedis;
 use Mine\Exception\NormalStatusException;
 use Mine\Interfaces\MineRedisInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class MineLockRedis extends AbstractRedis implements MineRedisInterface
 {
@@ -62,8 +64,8 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 检查锁
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function check(string $key): bool
     {
@@ -72,8 +74,8 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 添加锁
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function lock(string $key, int $expired, int $timeout = 0, float $sleep = 0.1): bool
     {
@@ -96,8 +98,8 @@ class MineLockRedis extends AbstractRedis implements MineRedisInterface
 
     /**
      * 释放锁
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function freed(string $key): bool
     {

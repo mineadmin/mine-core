@@ -28,7 +28,10 @@ use Hyperf\Crontab\Strategy\StrategyInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\ProcessManager;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Swoole\Coroutine;
 use Swoole\Server;
 
 class MineCrontabProcess extends AbstractProcess
@@ -59,8 +62,8 @@ class MineCrontabProcess extends AbstractProcess
     private $logger;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {
@@ -89,8 +92,8 @@ class MineCrontabProcess extends AbstractProcess
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function handle(): void
     {
@@ -113,6 +116,6 @@ class MineCrontabProcess extends AbstractProcess
         $current = date('s', time());
         $sleep = 60 - $current;
         $this->logger->debug('MineAdmin Crontab dispatcher sleep ' . $sleep . 's.');
-        $sleep > 0 && \Swoole\Coroutine::sleep($sleep);
+        $sleep > 0 && Coroutine::sleep($sleep);
     }
 }

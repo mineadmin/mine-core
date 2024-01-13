@@ -28,8 +28,11 @@ use Hyperf\Di\Exception\Exception;
 use Mine\Annotation\Role;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\LoginUser;
+use Mine\Interfaces\ServiceInterface\RoleServiceInterface;
 use Mine\Interfaces\ServiceInterface\UserServiceInterface;
 use Mine\MineRequest;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class RoleAspect.
@@ -72,8 +75,8 @@ class RoleAspect extends AbstractAspect
     /**
      * @return mixed
      * @throws Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -99,8 +102,8 @@ class RoleAspect extends AbstractAspect
 
     /**
      * 检查角色.
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function checkRole(string $codeString, string $where): bool
     {
@@ -121,7 +124,7 @@ class RoleAspect extends AbstractAspect
             foreach (explode(',', $codeString) as $code) {
                 $code = trim($code);
                 if (! in_array($code, $roles)) {
-                    $service = container()->get(\Mine\Interfaces\ServiceInterface\RoleServiceInterface::class);
+                    $service = container()->get(RoleServiceInterface::class);
                     throw new NoPermissionException(
                         t('system.no_role') . ' -> [ ' . $service->findNameByCode($code) . ' ]'
                     );
