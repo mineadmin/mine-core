@@ -556,9 +556,6 @@ trait MapperTrait
                 switch ($operator) {
                     case 'like':
                     case 'like%':
-                        if (is_scalar($value)) {
-                            throw new NormalStatusException("{$field} type error:The expectation is a string");
-                        }
                         $likeMap = ['like' => '%#{val}%', 'like%' => '#{val}%'];
                         $value = str_replace('#{val}', $value, $likeMap[$operator]);
                         break;
