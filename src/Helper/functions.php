@@ -261,35 +261,37 @@ if (! function_exists('add_queue')) {
 }
 
 if (! function_exists('blank')) {
-
     /**
-     * 判断给定的值是否为空
-     *
-     * @param  mixed  $value
-     * @return bool
+     * 判断给定的值是否为空.
      */
     function blank(mixed $value): bool
     {
         if (is_null($value)) {
-            return false;
+            return true;
         }
 
         if (is_string($value)) {
-            return ! (trim($value) === '');
+            return trim($value) === '';
         }
 
-        if (is_bool($value)) {
-            return true;
-        }
-
-        if (is_array($value)) {
-            return true;
+        if (is_numeric($value) || is_bool($value)) {
+            return false;
         }
 
         if ($value instanceof Countable) {
-            return ! (count($value) === 0 );
+            return count($value) === 0;
         }
 
-        return ! empty($value);
+        return empty($value);
+    }
+}
+
+if (! function_exists('filled')) {
+    /**
+     * 判断给定的值是否不为空.
+     */
+    function filled(mixed $value): bool
+    {
+        return ! blank($value);
     }
 }
