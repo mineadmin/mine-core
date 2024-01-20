@@ -1,0 +1,91 @@
+{
+    "name": "xmo/mine-core",
+    "type": "library",
+    "license": "Apache-2.0",
+    "keywords": [
+        "php",
+        "mineadmin core"
+    ],
+    "description": "mineadmin core package",
+    "autoload": {
+        "psr-4": {
+            "Mine\\": "src/"
+        },
+        "files": [
+            "./src/Helper/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-redis": "*",
+        "ext-swoole": ">=5.0",
+        "doctrine/dbal": "^3.1",
+        "hyperf/di": "~3.1.0",
+        "hyperf/amqp": "~3.1.0",
+        "hyperf/async-queue": "~3.1.0",
+        "hyperf/cache": "~3.1.0",
+        "hyperf/codec": "~3.1.0",
+        "hyperf/command": "~3.1.0",
+        "hyperf/config": "~3.1.0",
+        "hyperf/crontab": "~3.1.0",
+        "hyperf/database": "~3.1.0",
+        "hyperf/database-pgsql": "~3.1.0",
+        "hyperf/constants": "~3.1.0",
+        "hyperf/db-connection": "~3.1.0",
+        "hyperf/filesystem": "~3.1.0",
+        "hyperf/flysystem-oss": "^1.2",
+        "hyperf/framework": "~3.1.0",
+        "hyperf/guzzle": "~3.1.0",
+        "hyperf/http-server": "~3.1.0",
+        "hyperf/logger": "~3.1.0",
+        "hyperf/memory": "~3.1.0",
+        "hyperf/model-cache": "~3.1.0",
+        "hyperf/paginator": "~3.1.0",
+        "hyperf/pool": "~3.1.0",
+        "hyperf/process": "~3.1.0",
+        "hyperf/redis": "~3.1.0",
+        "hyperf/snowflake": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "hyperf/translation": "~3.1.0",
+        "hyperf/validation": "~3.1.0",
+        "hyperf/websocket-server": "~3.1.0",
+        "hyperf/migration-generator": "~3.1.0",
+        "overtrue/flysystem-cos": "^5.0",
+        "overtrue/flysystem-qiniu": "^3.0",
+        "symfony/property-access": "^6.0",
+        "symfony/serializer": "^6.0",
+        "tangwei/apidocs": "^3.0",
+        "yurunsoft/phpmailer-swoole": "^1.0",
+        "zoujingli/ip2region": "2.0.*",
+        "ramsey/uuid": "^4.7"
+    },
+    "suggest": {
+        "ext-openssl": "Required to use HTTPS.",
+        "ext-json": "Required to use JSON.",
+        "ext-pdo": "Required to use MySQL Client.",
+        "ext-pdo_mysql": "Required to use MySQL Client.",
+        "ext-redis": "Required to use Redis Client.",
+        "ext-xlswriter": "Required to use xlswriter."
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "Mine\\ConfigProvider"
+        }
+    }
+}
