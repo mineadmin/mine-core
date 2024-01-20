@@ -44,10 +44,63 @@ trait MapperGeneratorTraits
      */
     protected function getSearchPHPString($name, $mark, $comment): string
     {
-        return <<<PHP
-            // {$comment}
-            '{$name}' => '{$mark}',
+        if ($mark == 'like') {
+            return <<<php
 
-PHP;
+        // {$comment}
+        if ( isset(\$params['{$name}']) && filled(\$params['{$name}']) ) {
+            \$query->where('{$name}', 'like', '%'.\$params['{$name}'].'%');
+        }
+
+php;
+
+        }
+
+        if ($mark == 'between') {
+            return <<<php
+
+        // {$comment}
+        if ( isset(\$params['{$name}']) && filled(\$params['{$name}']) && count(\$params['{$name}']) === 2 ) {
+            \$query->whereBetween(
+                '{$name}',
+                [ \$params['{$name}'][0], \$params['{$name}'][1] ]
+            );
+        }
+
+php;
+        }
+
+        if ($mark == 'in') {
+            return <<<php
+
+        // {$comment}
+        if ( isset(\$params['{$name}']) && filled(\$params['{$name}']) ) {
+            \$query->whereIn('{$name}', \$params['{$name}']);
+        }
+
+php;
+
+        }
+
+        if ($mark == 'notin') {
+            return <<<php
+
+        // {$comment}
+        if ( isset(\$params['{$name}']) && filled(\$params['{$name}']) ) {
+            \$query->whereNotIn('{$name}', \$params['{$name}']);
+        }
+
+php;
+
+        }
+
+        return <<<php
+
+        // {$comment}
+        if ( isset(\$params['{$name}']) && filled(\$params['{$name}']) ) {
+            \$query->where('{$name}', '{$mark}', \$params['{$name}']);
+        }
+
+php;
     } // 该方法结束位置
 }
