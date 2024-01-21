@@ -53,8 +53,6 @@ class ResubmitAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         try {
-            $result = $proceedingJoinPoint->process();
-
             /* @var $resubmit Resubmit */
             if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
                 $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
@@ -78,7 +76,7 @@ class ResubmitAspect extends AbstractAspect
             $lockRedis->lock($key, $resubmit->second);
             $lockRedis = null;
 
-            return $result;
+            return $proceedingJoinPoint->process();
         } catch (\Throwable $e) {
             throw new MineException($e->getMessage(), $e->getCode());
         }
