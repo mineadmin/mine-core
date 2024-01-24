@@ -34,7 +34,7 @@ abstract class AbstractMapper
     use MapperTrait;
 
     /**
-     * @var MineModel
+     * @var class-string|MineModel
      */
     public $model;
 

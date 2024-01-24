@@ -310,7 +310,7 @@ trait MapperTrait
         $this->model::destroy($ids);
 
         $manager = ApplicationContext::getContainer()->get(Manager::class);
-        $manager->destroy($ids, $this->model::class);
+        $manager->destroy($ids, $this->model);
 
         return true;
     }
