@@ -250,7 +250,7 @@ trait MapperTrait
     /**
      * 新增数据.
      */
-    public function save(array $data): int
+    public function save(array $data): mixed
     {
         $this->filterExecuteAttributes($data, $this->getModel()->incrementing);
         $model = $this->model::create($data);
@@ -260,7 +260,7 @@ trait MapperTrait
     /**
      * 读取一条数据.
      */
-    public function read(int $id, array $column = ['*']): ?MineModel
+    public function read(mixed $id, array $column = ['*']): ?MineModel
     {
         return ($model = $this->model::find($id, $column)) ? $model : null;
     }
@@ -295,7 +295,7 @@ trait MapperTrait
      * 从回收站读取一条数据.
      * @noinspection PhpUnused
      */
-    public function readByRecycle(int $id): ?MineModel
+    public function readByRecycle(mixed $id): ?MineModel
     {
         return ($model = $this->model::withTrashed()->find($id)) ? $model : null;
     }
@@ -318,7 +318,7 @@ trait MapperTrait
     /**
      * 更新一条数据.
      */
-    public function update(int $id, array $data): bool
+    public function update(mixed $id, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
         return $this->model::find($id)->update($data) > 0;
@@ -450,7 +450,7 @@ trait MapperTrait
     /**
      * 数字更新操作.
      */
-    public function numberOperation(int $id, string $field, int $value): bool
+    public function numberOperation(mixed $id, string $field, int $value): bool
     {
         return $this->update($id, [$field => $value]);
     }
@@ -588,7 +588,7 @@ trait MapperTrait
      * 动态关联模型.
      * @param $config ['name', 'model', 'type', 'localKey', 'foreignKey', 'middleTable', 'as', 'where', 'whereIn' ]
      */
-    public function dynamicRelations(MineModel &$model, &$config): void
+    public function dynamicRelations(MineModel $model, &$config): void
     {
         $model->resolveRelationUsing($config['name'], function ($primaryModel) use ($config) {
             $namespace = str_replace('.', '\\', $config['model']);

@@ -106,7 +106,7 @@ trait ServiceTrait
     /**
      * 新增数据.
      */
-    public function save(array $data): int
+    public function save(array $data): mixed
     {
         return $this->mapper->save($data);
     }
@@ -126,7 +126,7 @@ trait ServiceTrait
     /**
      * 读取一条数据.
      */
-    public function read(int $id, array $column = ['*']): ?MineModel
+    public function read(mixed $id, array $column = ['*']): ?MineModel
     {
         return $this->mapper->read($id, $column);
     }
@@ -155,7 +155,7 @@ trait ServiceTrait
      * 从回收站读取一条数据.
      * @noinspection PhpUnused
      */
-    public function readByRecycle(int $id): MineModel
+    public function readByRecycle(mixed $id): MineModel
     {
         return $this->mapper->readByRecycle($id);
     }
@@ -171,7 +171,7 @@ trait ServiceTrait
     /**
      * 更新一条数据.
      */
-    public function update(int $id, array $data): bool
+    public function update(mixed $id, array $data): bool
     {
         return $this->mapper->update($id, $data);
     }
@@ -219,7 +219,7 @@ trait ServiceTrait
     /**
      * 修改数据状态
      */
-    public function changeStatus(int $id, string $value, string $filed = 'status'): bool
+    public function changeStatus(mixed $id, string $value, string $filed = 'status'): bool
     {
         return $value == MineModel::ENABLE ? $this->mapper->enable([$id], $filed) : $this->mapper->disable([$id], $filed);
     }
@@ -227,7 +227,7 @@ trait ServiceTrait
     /**
      * 数字更新操作.
      */
-    public function numberOperation(int $id, string $field, int $value): bool
+    public function numberOperation(mixed $id, string $field, int $value): bool
     {
         return $this->mapper->numberOperation($id, $field, $value);
     }
