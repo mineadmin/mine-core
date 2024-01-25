@@ -318,7 +318,7 @@ trait MapperTrait
     public function update(int $id, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
-        return $this->model::find($id)->update($data) > 0;
+        return $this->model::query(true)->where((new $this->model)->getKeyName(), $id)->update($data) > 0;
     }
 
     /**
