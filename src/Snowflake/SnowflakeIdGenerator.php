@@ -15,8 +15,9 @@ declare(strict_types=1);
  *  /_  /  / / / / / __  /
  *   / /_ / /_/ / / /_/ /
  *  /___/ \__, /  \__,_/
- *       /____/          众熠达
+ *       /____/          众熠达.
  */
+
 namespace Mine\Snowflake;
 
 use Hyperf\Context\ApplicationContext;
