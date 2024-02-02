@@ -80,16 +80,16 @@ class MineCrontabManage
     public function getCrontabList(): array
     {
         $prefix = config('cache.default.prefix');
-        $data = $this->redis->get($prefix . 'crontab');
+//        $data = $this->redis->get($prefix . 'crontab');
 
-        if ($data === false) {
+//        if ($data === false) {
             $data = SettingCrontab::query()
                 ->where('status', MineModel::ENABLE)
                 ->get(explode(',', 'id,name,type,target,rule,parameter'))->toArray();
             $this->redis->set($prefix . 'crontab', serialize($data));
-        } else {
-            $data = unserialize($data);
-        }
+//        } else {
+//            $data = unserialize($data);
+//        }
 
         if (is_null($data)) {
             return [];
