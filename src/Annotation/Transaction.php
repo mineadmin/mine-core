@@ -32,5 +32,5 @@ class Transaction extends AbstractAnnotation
     /**
      * @param int $retry 重试次数
      */
-    public function __construct(public int $retry = 1) {}
+    public function __construct(public int $retry = 1, public ?string $connection = null) {}
 }

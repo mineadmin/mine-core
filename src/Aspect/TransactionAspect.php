@@ -48,7 +48,8 @@ class TransactionAspect extends AbstractAspect
             $transaction = $proceedingJoinPoint->getAnnotationMetadata()->method[Transaction::class];
         }
         try {
-            Db::beginTransaction();
+            $connection = $transaction->connection;
+            Db::connection($connection)->beginTransaction();
             $number = 0;
             $retry = intval($transaction->retry);
             do {
@@ -58,9 +59,9 @@ class TransactionAspect extends AbstractAspect
                 }
                 ++$number;
             } while ($number < $retry);
-            Db::commit();
+            Db::connection($connection)->commit();
         } catch (\Throwable $e) {
-            Db::rollBack();
+            Db::connection($connection)->rollBack();
             throw new MineException($e->getMessage(), 500);
         }
         return $result;
