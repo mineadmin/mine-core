@@ -12,11 +12,9 @@ declare(strict_types=1);
 
 namespace Mine\Traits;
 
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
-use Hyperf\ModelCache\Manager;
 use Mine\Annotation\Transaction;
 use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
