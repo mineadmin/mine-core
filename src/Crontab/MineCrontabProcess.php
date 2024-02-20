@@ -29,7 +29,6 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\ProcessManager;
 use Psr\Container\ContainerInterface;
-use Swoole\Server;
 
 class MineCrontabProcess extends AbstractProcess
 {
@@ -39,7 +38,7 @@ class MineCrontabProcess extends AbstractProcess
     protected MineCrontabManage $mineCrontabManage;
 
     /**
-     * @var Server
+     * @var \Swoole\Server|\Swow\Psr7\Server\Server
      */
     private $server;
 
@@ -78,7 +77,7 @@ class MineCrontabProcess extends AbstractProcess
 
     /**
      * 是否自启进程.
-     * @param \Swoole\Coroutine\Server|\Swoole\Server $server
+     * @param \Swoole\Coroutine\Server|\Swoole\Server|\Swow\Psr7\Server\Server $server
      */
     public function isEnable($server): bool
     {
@@ -113,6 +112,6 @@ class MineCrontabProcess extends AbstractProcess
         $current = date('s', time());
         $sleep = 60 - $current;
         $this->logger->debug('MineAdmin Crontab dispatcher sleep ' . $sleep . 's.');
-        $sleep > 0 && \Swoole\Coroutine::sleep($sleep);
+        $sleep > 0 && sleep($sleep);
     }
 }
