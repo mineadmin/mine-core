@@ -71,7 +71,7 @@ class MineCrontabProcess extends AbstractProcess
 
     /**
      * 是否自启进程.
-     * @param \Swoole\Coroutine\Server|\Swoole\Server $server
+     * @param Coroutine\Server|Server $server
      */
     public function isEnable($server): bool
     {

@@ -15,6 +15,7 @@ namespace Mine\Traits;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
+use Hyperf\Tappable\HigherOrderTapProxy;
 use Mine\Annotation\Transaction;
 use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
@@ -274,7 +275,7 @@ trait MapperTrait
 
     /**
      * 获取单个值
-     * @return null|\Hyperf\Tappable\HigherOrderTapProxy|mixed|void
+     * @return null|HigherOrderTapProxy|mixed|void
      */
     public function value(array $condition, string $columns = 'id')
     {

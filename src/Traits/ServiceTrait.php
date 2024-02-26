@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Mine\Traits;
 
 use Hyperf\Database\Model\Collection;
+use Hyperf\Tappable\HigherOrderTapProxy;
 use Mine\Abstracts\AbstractMapper;
 use Mine\Annotation\Transaction;
 use Mine\MineCollection;
@@ -134,7 +135,7 @@ trait ServiceTrait
     /**
      * Description:获取单个值
      * User:mike.
-     * @return null|\Hyperf\Tappable\HigherOrderTapProxy|mixed|void
+     * @return null|HigherOrderTapProxy|mixed|void
      */
     public function value(array $condition, string $columns = 'id')
     {
