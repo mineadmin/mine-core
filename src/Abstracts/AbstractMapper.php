@@ -27,7 +27,6 @@ use Mine\Traits\MapperTrait;
 
 /**
  * Class AbstractMapper.
- * @deprecated 2.0
  */
 abstract class AbstractMapper
 {
