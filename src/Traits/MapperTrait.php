@@ -15,8 +15,8 @@ namespace Mine\Traits;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
+use Hyperf\DbConnection\Db;
 use Hyperf\Tappable\HigherOrderTapProxy;
-use Mine\Annotation\Transaction;
 use Mine\Exception\MineException;
 use Mine\Exception\NormalStatusException;
 use Mine\MineCollection;
@@ -378,10 +378,11 @@ trait MapperTrait
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[Transaction]
     public function import(string $dto, ?\Closure $closure = null): bool
     {
-        return (new MineCollection())->import($dto, $this->getModel(), $closure);
+        return Db::transaction(function () use ($dto, $closure) {
+            return (new MineCollection())->import($dto, $this->getModel(), $closure);
+        });
     }
 
     /**

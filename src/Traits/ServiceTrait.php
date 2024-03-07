@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Mine\Traits;
 
 use Hyperf\Database\Model\Collection;
+use Hyperf\DbConnection\Db;
 use Hyperf\Tappable\HigherOrderTapProxy;
 use Mine\Abstracts\AbstractMapper;
-use Mine\Annotation\Transaction;
 use Mine\MineCollection;
 use Mine\MineModel;
 use Mine\MineResponse;
@@ -115,13 +115,14 @@ trait ServiceTrait
     /**
      * 批量新增.
      */
-    #[Transaction]
     public function batchSave(array $collects): bool
     {
-        foreach ($collects as $collect) {
-            $this->mapper->save($collect);
-        }
-        return true;
+        return Db::transaction(function () use ($collects) {
+            foreach ($collects as $collect) {
+                $this->mapper->save($collect);
+            }
+            return true;
+        });
     }
 
     /**
@@ -258,10 +259,11 @@ trait ServiceTrait
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[Transaction]
     public function import(string $dto, ?\Closure $closure = null): bool
     {
-        return $this->mapper->import($dto, $closure);
+        return Db::transaction(function () use ($dto, $closure) {
+            return $this->mapper->import($dto, $closure);
+        });
     }
 
     /**
