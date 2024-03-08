@@ -14,15 +14,14 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Mine\Aspect\ConfigCryptAspect;
 
 beforeEach(function () {
-    $proceedingJoinPoint = Mockery::mock(ProceedingJoinPoint::class);
     $this->configEnable = new Config([
         'mineadmin' => [
             'config_encryption' => true,
-            'config_encryption_key' => '8W2w7QNSaBsSqRk2LHWoAbXpMOE3piGYo6VAImvdrZk=',
-            'config_encryption_iv' => 'RqoZmqew71IUd9jW3mZ6QQ==',
+            'config_encryption_key' => 'N1pQLQd8qkTDvb//iOwZ5uGvpBusW6PsNwbKUXroXKE=',
+            'config_encryption_iv' => 'ZmGep5xz4oFCfDrzzHJ26Q==',
         ],
         'test' => [
-            'key1' => 'ENC(YMKaQ9qIhnHANf3Cnpi05Q=)',
+            'key1' => 'ENC(qJhrnXpKmxZJC2MxNoTAbg==)',
         ],
     ]);
     $this->configDisable = new Config([
@@ -33,20 +32,24 @@ beforeEach(function () {
             'key1' => 'ENC(6SX9TNnNO7KH+WFTOmVOFZ2jGsbR4K/0M0BwXvxtu34=)',
         ],
     ]);
-    $proceedingJoinPoint->allows('process')->andReturn($this->configEnable, $this->configDisable);
-    $this->proceedingJoinPoint = $proceedingJoinPoint;
 });
 
 test(ConfigCryptAspect::class . ' testing', function () {
     // enable
+    $proceedingJoinPoint = Mockery::mock(ProceedingJoinPoint::class);
+    $proceedingJoinPoint->allows('process')->andreturn($this->configEnable);
     $configCryptAspect = new ConfigCryptAspect();
-    $config = $configCryptAspect->process($this->proceedingJoinPoint);
-        var_dump($config , $this->configEnable);
-    expect($config !== $this->configEnable)->toBeFalse();
+    $config = $configCryptAspect->process($proceedingJoinPoint);
+    expect($config !== $this->configEnable)
+        ->toBeFalse()
+        ->and($config->get('test.key1'))
+        ->toEqual('1234');
 
     // disable
 
+    $proceedingJoinPoint = Mockery::mock(ProceedingJoinPoint::class);
+    $proceedingJoinPoint->allows('process')->andreturn($this->configDisable);
     $configCryptAspect = new ConfigCryptAspect();
-    $config = $configCryptAspect->process($this->proceedingJoinPoint);
-    expect($config !== $this->configEnable)->toBeTrue();
+    $config = $configCryptAspect->process($proceedingJoinPoint);
+    expect($config)->toEqual($this->configDisable);
 });
