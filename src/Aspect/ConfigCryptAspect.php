@@ -35,7 +35,12 @@ class ConfigCryptAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $result = $proceedingJoinPoint->process();
-        $this->processConfig($result);
+        if (is_null($this->enable)) {
+            $this->enable = (bool) $result->get('mineadmin.config_encryption', false);
+        }
+        if ($this->enable) {
+            $this->processConfig($result);
+        }
         return $result;
     }
 
@@ -61,16 +66,6 @@ class ConfigCryptAspect extends AbstractAspect
             } else {
                 if (is_string($value)) {
                     if (preg_match('#ENC\((.*?)\)#is', $value, $matches)) {
-                        if (is_null($this->enable)) {
-                            $this->enable = $result->get('mineadmin.config_encryption_key', false);
-                        }
-                        if (is_null($this->key)) {
-                            $this->key = $result->get('mineadmin.config_encryption_key', '');
-                            if (! empty($this->key)) {
-                                $this->key = @base64_decode($this->key);
-                            }
-                        }
-
                         if (is_null($this->key)) {
                             $this->key = $result->get('mineadmin.config_encryption_key', '');
                             if (! empty($this->key)) {
@@ -89,6 +84,7 @@ class ConfigCryptAspect extends AbstractAspect
                         if (empty($value)) {
                             $value = $matches[1];
                         }
+
                         $config[$key] = $value;
                     }
                 }
