@@ -24,6 +24,7 @@ namespace Mine\Command;
 use Hyperf\Command\Annotation\Command;
 use Mine\MineCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use function Hyperf\Config\config;
 
 /**
  * Class JwtCommand.
