@@ -18,11 +18,11 @@ beforeEach(function () {
     $this->configEnable = new Config([
         'mineadmin' => [
             'config_encryption' => true,
-            'config_encryption_key' => '1234567890',
-            'config_encryption_iv' => '1234567890',
+            'config_encryption_key' => '8W2w7QNSaBsSqRk2LHWoAbXpMOE3piGYo6VAImvdrZk=',
+            'config_encryption_iv' => 'RqoZmqew71IUd9jW3mZ6QQ==',
         ],
         'test' => [
-            'key1' => 'ENC(6SX9TNnNO7KH+WFTOmVOFZ2jGsbR4K/0M0BwXvxtu34=)',
+            'key1' => 'ENC(YMKaQ9qIhnHANf3Cnpi05Q=)',
         ],
     ]);
     $this->configDisable = new Config([
@@ -41,7 +41,7 @@ test(ConfigCryptAspect::class . ' testing', function () {
     // enable
     $configCryptAspect = new ConfigCryptAspect();
     $config = $configCryptAspect->process($this->proceedingJoinPoint);
-    //    var_dump($config , $this->configEnable);
+        var_dump($config , $this->configEnable);
     expect($config !== $this->configEnable)->toBeFalse();
 
     // disable
