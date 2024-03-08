@@ -19,7 +19,6 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 /**
  * Class ConfigCryptAspect.
  */
-#[Aspect]
 class ConfigCryptAspect extends AbstractAspect
 {
     public array $classes = [
