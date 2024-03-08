@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace Mine\Command;
 
 use Hyperf\Command\Annotation\Command;
-use Mine\Helper\Str;
 use Mine\MineCommand;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class JwtCommand.
@@ -33,7 +31,7 @@ use Symfony\Component\Console\Input\InputOption;
 class ConfigCryptGenCommand extends MineCommand
 {
     /**
-     * 生成key和向量
+     * 生成key和向量.
      */
     protected ?string $name = 'mine:config-crypt-gen';
 
@@ -49,12 +47,10 @@ class ConfigCryptGenCommand extends MineCommand
      */
     public function handle()
     {
-
         $key = base64_encode(random_bytes(32));
         $iv = base64_encode(random_bytes(openssl_cipher_iv_length('AES-128-CBC')));
 
         $this->info('config encrypt key generator successfully:' . $key);
         $this->info('config encrypt iv generator successfully:' . $iv);
     }
-
 }

@@ -22,11 +22,8 @@ declare(strict_types=1);
 namespace Mine\Command;
 
 use Hyperf\Command\Annotation\Command;
-use Hyperf\Context\ApplicationContext;
-use Mine\Helper\Str;
 use Mine\MineCommand;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class JwtCommand.
@@ -76,20 +73,20 @@ class ConfigCryptCommand extends MineCommand
             return self::FAILURE;
         }
 
-        $encrypt = @openssl_encrypt($value, 'AES-128-CBC', $key,  0, $iv);
+        $encrypt = @openssl_encrypt($value, 'AES-128-CBC', $key, 0, $iv);
 
         if (empty($encrypt)) {
             $this->line('iv or key content error.please regen', 'error');
             return self::FAILURE;
         }
 
-        $this->info('config crypt string is: ENC(' . $encrypt .')');
+        $this->info('config crypt string is: ENC(' . $encrypt . ')');
     }
 
     protected function getArguments()
     {
         return [
-            ['value', InputArgument::REQUIRED, 'source value']
+            ['value', InputArgument::REQUIRED, 'source value'],
         ];
     }
 }

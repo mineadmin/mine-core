@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of MineAdmin.
+ *
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
+ */
+
 namespace Mine\Aspect;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -17,7 +27,9 @@ class ConfigCryptAspect extends AbstractAspect
     ];
 
     private ?bool $enable = null;
+
     private ?string $key = null;
+
     private ?string $iv = null;
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -32,7 +44,7 @@ class ConfigCryptAspect extends AbstractAspect
         $config = (array) $result;
         $config = array_shift($config);
 
-        foreach($config as $key => $value) {
+        foreach ($config as $key => $value) {
             if ($key != 'mineadmin') {
                 if (is_array($value)) {
                     $result->set($key, $this->processDecryption($result, $value));
@@ -41,11 +53,9 @@ class ConfigCryptAspect extends AbstractAspect
         }
     }
 
-
-
     private function processDecryption($result, $config): array
     {
-        foreach($config as $key => $value) {
+        foreach ($config as $key => $value) {
             if (is_array($value)) {
                 $config[$key] = $this->processDecryption($result, $value);
             } else {
@@ -56,21 +66,21 @@ class ConfigCryptAspect extends AbstractAspect
                         }
                         if (is_null($this->key)) {
                             $this->key = $result->get('mineadmin.config_encryption_key', '');
-                            if (!empty($this->key)) {
+                            if (! empty($this->key)) {
                                 $this->key = @base64_decode($this->key);
                             }
                         }
 
                         if (is_null($this->key)) {
                             $this->key = $result->get('mineadmin.config_encryption_key', '');
-                            if (!empty($this->key)) {
+                            if (! empty($this->key)) {
                                 $this->key = @base64_decode($this->key);
                             }
                         }
 
                         if (is_null($this->iv)) {
                             $this->iv = $result->get('mineadmin.config_encryption_iv', '');
-                            if (!empty($this->iv)) {
+                            if (! empty($this->iv)) {
                                 $this->iv = @base64_decode($this->iv);
                             }
                         }
