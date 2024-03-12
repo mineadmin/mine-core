@@ -19,4 +19,8 @@ return [
     'excel_drive' => 'auto',
     // 是否启用 远程通用列表查询 功能
     'remote_api_enabled' => true,
+
+    'config_encryption' => false,
+    'config_encryption_key' => 'oqye5o39exzj47LDFMT2oxRJUmy18Fwo0LB006Uo6fk=',
+    'config_encryption_iv' => 'bQEvWfcM6xlt3ZtYgBoK/A==',
 ];

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Mine;
 
-use Hyperf\Di\Annotation\Inject;
 use Mine\Traits\ControllerTrait;
 
 /**
@@ -32,6 +31,19 @@ abstract class MineController
 {
     use ControllerTrait;
 
-    #[Inject]
-    protected Mine $mine;
+    public function __construct(
+        readonly protected Mine $mine,
+        readonly protected MineRequest $request,
+        readonly protected MineResponse $response
+    ) {}
+
+    public function getResponse(): MineResponse
+    {
+        return $this->response;
+    }
+
+    public function getRequest(): MineRequest
+    {
+        return $this->request;
+    }
 }

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Mine\Traits;
 
-use Hyperf\Di\Annotation\Inject;
 use Mine\MineRequest;
 use Mine\MineResponse;
 use Psr\Container\ContainerExceptionInterface;
@@ -30,19 +29,9 @@ use Psr\Http\Message\ResponseInterface;
 
 trait ControllerTrait
 {
-    /**
-     * Mine 请求处理
-     * MineRequest.
-     */
-    #[Inject]
-    protected MineRequest $request;
+    abstract public function getRequest(): MineRequest;
 
-    /**
-     * Mine 响应处理
-     * MineResponse.
-     */
-    #[Inject]
-    protected MineResponse $response;
+    abstract public function getResponse(): MineResponse;
 
     /**
      * @throws ContainerExceptionInterface
@@ -51,12 +40,12 @@ trait ControllerTrait
     public function success(null|array|object|string $msgOrData = '', array|object $data = [], int $code = 200): ResponseInterface
     {
         if (is_string($msgOrData) || is_null($msgOrData)) {
-            return $this->response->success($msgOrData, $data, $code);
+            return $this->getResponse()->success($msgOrData, $data, $code);
         }
         if (is_array($msgOrData) || is_object($msgOrData)) {
-            return $this->response->success(null, $msgOrData, $code);
+            return $this->getResponse()->success(null, $msgOrData, $code);
         }
-        return $this->response->success(null, $data, $code);
+        return $this->getResponse()->success(null, $data, $code);
     }
 
     /**
@@ -65,7 +54,7 @@ trait ControllerTrait
      */
     public function error(string $message = '', int $code = 500, array $data = []): ResponseInterface
     {
-        return $this->response->error($message, $code, $data);
+        return $this->getResponse()->error($message, $code, $data);
     }
 
     /**
@@ -73,7 +62,7 @@ trait ControllerTrait
      */
     public function redirect(string $toUrl, int $status = 302, string $schema = 'http'): ResponseInterface
     {
-        return $this->response->redirect($toUrl, $status, $schema);
+        return $this->getResponse()->redirect($toUrl, $status, $schema);
     }
 
     /**
@@ -81,6 +70,6 @@ trait ControllerTrait
      */
     public function _download(string $filePath, string $name = ''): ResponseInterface
     {
-        return $this->response->download($filePath, $name);
+        return $this->getResponse()->download($filePath, $name);
     }
 }

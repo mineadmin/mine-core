@@ -30,4 +30,19 @@ use Mine\Traits\ControllerTrait;
 abstract class MineApi
 {
     use ControllerTrait;
+
+    public function __construct(
+        readonly protected MineRequest $request,
+        readonly protected MineResponse $response
+    ) {}
+
+    public function getResponse(): MineResponse
+    {
+        return $this->response;
+    }
+
+    public function getRequest(): MineRequest
+    {
+        return $this->request;
+    }
 }
