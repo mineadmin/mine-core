@@ -108,6 +108,14 @@ class PermissionAspect extends AbstractAspect
     {
         $codes = $this->service->getInfo()['codes'];
 
+        if (preg_match_all('#{(.*?)}#U', $codeString, $matches)) {
+            if (isset($matches[1])) {
+                foreach ($matches[1] as $name) {
+                    $codeString = str_replace('{' . $name . '}', $this->request->route($name), $codeString);
+                }
+            }
+        }
+
         if ($where === 'OR') {
             foreach (explode(',', $codeString) as $code) {
                 if (in_array(trim($code), $codes)) {
