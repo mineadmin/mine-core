@@ -19,8 +19,12 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
 use Mine\Log\RequestIdHolder;
+use Mine\MineRequest;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class AppExceptionHandler.
+ */
 class AppExceptionHandler extends ExceptionHandler
 {
     protected Logger $logger;
@@ -40,6 +44,7 @@ class AppExceptionHandler extends ExceptionHandler
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => false,
             'code' => 500,
             'message' => $throwable->getMessage(),

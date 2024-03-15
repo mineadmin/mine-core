@@ -26,10 +26,11 @@ use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Mine\Exception\NormalStatusException;
 use Mine\Log\RequestIdHolder;
+use Mine\MineRequest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class DataNotFoundExceptionHandler.
+ * Class NormalStatusExceptionHandler.
  */
 class NormalStatusExceptionHandler extends ExceptionHandler
 {
@@ -38,13 +39,15 @@ class NormalStatusExceptionHandler extends ExceptionHandler
         $this->stopPropagation();
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => false,
             'message' => $throwable->getMessage(),
         ];
         if ($throwable->getCode() != 200 && $throwable->getCode() != 0) {
             $format['code'] = $throwable->getCode();
         }
-        //        logger('Exception log')->debug($throwable->getMessage());
+        // 这里日志 还是需要打开吧，
+        logger('Exception log')->debug($throwable->getMessage());
         return $response->withHeader('Server', 'MineAdmin')
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')

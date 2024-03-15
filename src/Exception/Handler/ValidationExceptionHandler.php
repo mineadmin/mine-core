@@ -27,8 +27,12 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Validation\ValidationException;
 use Mine\Helper\MineCode;
 use Mine\Log\RequestIdHolder;
+use Mine\MineRequest;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class ValidationExceptionHandler.
+ */
 class ValidationExceptionHandler extends ExceptionHandler
 {
     public function handle(\Throwable $throwable, ResponseInterface $response): ResponseInterface
@@ -38,6 +42,7 @@ class ValidationExceptionHandler extends ExceptionHandler
         $body = $throwable->validator->errors()->first();
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => false,
             'message' => $body,
             'code' => MineCode::VALIDATE_FAILED,

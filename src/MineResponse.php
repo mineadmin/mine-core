@@ -42,6 +42,7 @@ class MineResponse extends Response
     {
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => true,
             'message' => $message ?: t('mineadmin.response_success'),
             'code' => $code,
@@ -62,6 +63,7 @@ class MineResponse extends Response
     {
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => false,
             'code' => $code,
             'message' => $message ?: t('mineadmin.response_error'),

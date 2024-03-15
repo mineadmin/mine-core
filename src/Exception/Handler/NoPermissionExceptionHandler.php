@@ -27,10 +27,11 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Mine\Exception\NoPermissionException;
 use Mine\Helper\MineCode;
 use Mine\Log\RequestIdHolder;
+use Mine\MineRequest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class TokenExceptionHandler.
+ * Class NoPermissionExceptionHandler.
  */
 class NoPermissionExceptionHandler extends ExceptionHandler
 {
@@ -39,6 +40,7 @@ class NoPermissionExceptionHandler extends ExceptionHandler
         $this->stopPropagation();
         $format = [
             'requestId' => RequestIdHolder::getId(),
+            'path' => container()->get(MineRequest::class)->getUri()->getPath(),
             'success' => false,
             'message' => $throwable->getMessage(),
             'code' => MineCode::NO_PERMISSION,
