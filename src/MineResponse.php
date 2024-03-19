@@ -100,7 +100,7 @@ class MineResponse extends Response
 
     private function handleHeader(ResponseInterface $response): ResponseInterface
     {
-        $headers = config('mineadmin.headers', [
+        $headers = config('mineadmin.http.headers', [
             'Server' => 'MineAdmin',
         ]);
         foreach ($headers as $key => $value) {
