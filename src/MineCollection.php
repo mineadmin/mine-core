@@ -100,7 +100,7 @@ class MineCollection extends Collection
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function export(string $dto, string $filename, array|\Closure $closure = null, \Closure $callbackData = null): ResponseInterface
+    public function export(string $dto, string $filename, null|array|\Closure $closure = null, ?\Closure $callbackData = null): ResponseInterface
     {
         $excelDrive = config('mineadmin.excel_drive');
         if ($excelDrive === 'auto') {

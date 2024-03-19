@@ -96,7 +96,7 @@ class Mine
     /**
      * @return mixed
      */
-    public function getModuleInfo(string $name = null): array
+    public function getModuleInfo(?string $name = null): array
     {
         if (empty($name)) {
             return $this->moduleInfo;
