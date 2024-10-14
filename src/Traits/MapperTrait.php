@@ -345,7 +345,10 @@ trait MapperTrait
      */
     public function recovery(array $ids): bool
     {
-        $this->model::withTrashed()->whereIn((new $this->model())->getKeyName(), $ids)->restore();
+        foreach ($ids as $id) {
+            $model = $this->model::withTrashed()->find($id);
+            $model && $model->restore();
+        }
         return true;
     }
 
